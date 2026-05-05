@@ -153,7 +153,7 @@
 
 ```
 
-car-rental-mern/
+RentRide/
 ├── Frontend/ 
 │ ├── public/
 │ ├── src/
@@ -260,8 +260,8 @@ car-rental-mern/
 #### Clone the Repository
 
 ```
-git clone https://github.com/AkshatKardak/car-rental-mern.git
-cd car-rental-mern
+git clone https://github.com/AkshatKardak/RentRide.git
+cd RentRide
 
 ```
 ---
@@ -352,8 +352,8 @@ Fork the repository
 Clone your fork
 
 bash
-git clone https://github.com/YOUR_USERNAME/car-rental-mern.git
-cd car-rental-mern
+git clone https://github.com/AkshatKardak/RentRide.git
+cd RentRide
 Create a branch
 
 bash
