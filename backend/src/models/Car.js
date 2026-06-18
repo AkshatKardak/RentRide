@@ -64,6 +64,9 @@ const carSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  city: {
+    type: String
+  },
   available: {
     type: Boolean,
     default: true
@@ -77,6 +80,21 @@ const carSchema = new mongoose.Schema({
   totalReviews: {
     type: Number,
     default: 0
+  },
+  popularityScore: {
+    type: Number,
+    default: 0
+  },
+  registrationNumber: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  lastServiced: {
+    type: Date
+  },
+  insuranceExpiry: {
+    type: Date
   },
   description: {
     type: String,
