@@ -144,6 +144,42 @@ try {
     console.error('❌ Promotion routes failed:', error.message);
 }
 
+// 7 Game-Changing Feature Routes
+try {
+    app.use('/api/vehicles', require('./routes/vehicleApiRoutes'));
+    console.log('✅ Vehicles (CarsXE) routes loaded');
+} catch (error) {
+    console.error('❌ Vehicles routes failed:', error.message);
+}
+
+try {
+    app.use('/api/blockchain', require('./routes/blockchainRoutes'));
+    console.log('✅ Blockchain Passport routes loaded');
+} catch (error) {
+    console.error('❌ Blockchain routes failed:', error.message);
+}
+
+try {
+    app.use('/api/maintenance', require('./routes/predictiveMaintenanceRoutes'));
+    console.log('✅ Predictive Maintenance routes loaded');
+} catch (error) {
+    console.error('❌ Predictive Maintenance routes failed:', error.message);
+}
+
+try {
+    app.use('/api/recommendations', require('./routes/recommendationRoutes'));
+    console.log('✅ Recommendation & Dynamic Pricing routes loaded');
+} catch (error) {
+    console.error('❌ Recommendation routes failed:', error.message);
+}
+
+try {
+    app.use('/api/analytics', require('./routes/analyticsRoutes'));
+    console.log('✅ Real-Time Fleet Analytics routes loaded');
+} catch (error) {
+    console.error('❌ Analytics routes failed:', error.message);
+}
+
 console.log('✅ Route loading completed');
 
 // 404 Handler

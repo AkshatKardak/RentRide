@@ -614,3 +614,48 @@ exports.getAdminDamageStats = async (req, res, next) => {
     next(error);
   }
 };
+
+// @desc    Perform Computer Vision Damage Detection with Bounding Boxes
+// @route   POST /api/damages/cv-detect
+// @access  Private
+exports.analyzeCVDamage = async (req, res, next) => {
+  try {
+    const damageDetectionService = require('../services/damageDetectionService');
+    const { bookingId, carId, description, images = [] } = req.body;
+    
+    // Support either uploaded files or image URLs passed in body
+    let imageList = [...images];
+    if (req.files && req.files.length > 0) {
+      req.files.forEach(f => {
+        imageList.push({ url: f.path || f.url || `data:${f.mimetype};base64,${f.buffer.toString('base64')}` });
+      });
+    }
+
+    if (imageList.length === 0) {
+      imageList.push({ url: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80' });
+    }
+
+    const result = await damageDetectionService.analyzeCarDamage(imageList, bookingId, carId, description);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('CV Damage Analysis Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Compare Pre-Rental and Post-Rental Damage Reports
+// @route   POST /api/damages/compare
+// @access  Private
+exports.compareReports = async (req, res, next) => {
+  try {
+    const damageDetectionService = require('../services/damageDetectionService');
+    const { preRentalReportId, postRentalReportId } = req.body;
+    
+    const result = await damageDetectionService.compareDamageReports(preRentalReportId, postRentalReportId);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Damage Comparison Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+

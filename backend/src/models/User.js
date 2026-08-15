@@ -68,6 +68,23 @@ const UserSchema = new mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user'
     },
+    status: {
+        type: String,
+        enum: ['active', 'suspended', 'inactive'],
+        default: 'active'
+    },
+    totalBookings: {
+        type: Number,
+        default: 0
+    },
+    totalSpent: {
+        type: Number,
+        default: 0
+    },
+    averageRating: {
+        type: Number,
+        default: 5.0
+    },
     createdAt: {
         type: Date,
         default: Date.now

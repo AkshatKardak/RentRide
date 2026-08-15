@@ -1,5 +1,18 @@
 const mongoose = require('mongoose');
 
+const damageDetectionSchema = new mongoose.Schema({
+  type: { type: String, required: true },
+  confidence: { type: Number, default: 0 },
+  boundingBox: {
+    x: { type: Number, default: 0 },
+    y: { type: Number, default: 0 },
+    width: { type: Number, default: 0 },
+    height: { type: Number, default: 0 }
+  },
+  imageUrl: { type: String },
+  severity: { type: String, enum: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'], default: 'LOW' }
+}, { _id: false });
+
 const damageReportSchema = new mongoose.Schema({
   booking: {
     type: mongoose.Schema.Types.ObjectId,
@@ -8,8 +21,7 @@ const damageReportSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: 'User'
   },
   car: {
     type: mongoose.Schema.Types.ObjectId,
@@ -18,16 +30,20 @@ const damageReportSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: [true, 'Please provide damage description']
+    default: 'Damage inspection report'
   },
   images: [{
-    type: String
+    type: mongoose.Schema.Types.Mixed
   }],
-  aiAnalysis: {
-    damageType: String,
-    severity: String,
-    estimatedCost: Number,
-    description: String
+  detections: [damageDetectionSchema],
+  overallSeverity: {
+    type: String,
+    enum: ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'],
+    default: 'LOW'
+  },
+  estimatedRepairCost: {
+    type: Number,
+    default: 0
   },
   estimatedCost: {
     type: Number,
@@ -35,6 +51,9 @@ const damageReportSchema = new mongoose.Schema({
   },
   actualCost: {
     type: Number
+  },
+  aiAnalysis: {
+    type: mongoose.Schema.Types.Mixed
   },
   status: {
     type: String,
@@ -58,9 +77,25 @@ const damageReportSchema = new mongoose.Schema({
   },
   reviewedAt: {
     type: Date
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+// Sync estimatedRepairCost and estimatedCost
+damageReportSchema.pre('validate', function(next) {
+  if (this.estimatedRepairCost && !this.estimatedCost) {
+    this.estimatedCost = this.estimatedRepairCost;
+  } else if (this.estimatedCost && !this.estimatedRepairCost) {
+    this.estimatedRepairCost = this.estimatedCost;
+  }
+  next();
 });
 
 module.exports = mongoose.model('DamageReport', damageReportSchema);

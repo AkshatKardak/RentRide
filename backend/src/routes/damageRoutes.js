@@ -14,7 +14,9 @@ const {
   rejectDamageReport,
   setUnderReview,
   getUserDamageReports,
-  getAdminDamageStats
+  getAdminDamageStats,
+  analyzeCVDamage,
+  compareReports
 } = require('../controllers/damageReportController');
 
 const { protect, authorize } = require('../middleware/authMiddleware');
@@ -22,6 +24,8 @@ const upload = require('../middleware/upload');
 
 // Public/User routes
 router.post('/analyze-ai', protect, upload.array('images', 5), analyzeDamageWithAI);
+router.post('/cv-detect', protect, upload.array('images', 5), analyzeCVDamage);
+router.post('/compare', protect, compareReports);
 router.post('/', protect, upload.array('images', 5), createDamageReport);
 router.get('/user/my-reports', protect, getUserDamageReports);
 
