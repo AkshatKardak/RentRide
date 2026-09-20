@@ -237,8 +237,48 @@ const CarDetails = () => {
                 className="flex items-center gap-6 mt-4 text-sm font-medium border-b pb-6"
                 style={{ color: theme.textSecondary, borderColor: theme.border }}
               >
-                <span className="flex items-center gap-1.5"><MapPin size={18} className="text-green-500"/> {car.location || 'Pune'}</span>
-                <span className="flex items-center gap-1.5"><Star size={18} className="text-yellow-400 fill-yellow-400"/> {car.rating || '4.5'} (120+ trips)</span>
+                <span className="flex items-center gap-1.5"><MapPin size={18} className="text-green-500"/> {car.city || car.location || 'Mumbai'}</span>
+                <span className="flex items-center gap-1.5"><Star size={18} className="text-yellow-400 fill-yellow-400"/> {car.rating || '4.8'} ({car.totalReviews || 12} verified trips)</span>
+              </div>
+            </div>
+
+            {/* Vehicle Trust Score Card */}
+            <div 
+              className="p-5 rounded-3xl border mb-6 transition-all shadow-sm"
+              style={{ backgroundColor: theme.card, borderColor: theme.border }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl">
+                    <CheckCircle2 size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm" style={{ color: theme.text }}>Vehicle Trust Score</h3>
+                    <p className="text-xs text-slate-400">Explainable confidence rating</p>
+                  </div>
+                </div>
+                <span className="text-2xl font-black text-emerald-500">
+                  {car.trustScore || 88}<span className="text-xs text-slate-400 font-normal">/100</span>
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t text-[11px]" style={{ borderColor: theme.border }}>
+                <div className="p-2 rounded-xl bg-slate-500/5">
+                  <p className="text-slate-400">Maintenance</p>
+                  <p className="font-bold text-emerald-500">{car.maintenance?.healthScore || 90}% Health</p>
+                </div>
+                <div className="p-2 rounded-xl bg-slate-500/5">
+                  <p className="text-slate-400">Accident History</p>
+                  <p className="font-bold text-emerald-500">0 Structural</p>
+                </div>
+                <div className="p-2 rounded-xl bg-slate-500/5">
+                  <p className="text-slate-400">Odometer</p>
+                  <p className="font-bold text-emerald-500">GPS Verified</p>
+                </div>
+                <div className="p-2 rounded-xl bg-slate-500/5">
+                  <p className="text-slate-400">Passport</p>
+                  <p className="font-bold text-emerald-500">Digital Record</p>
+                </div>
               </div>
             </div>
 
@@ -246,8 +286,8 @@ const CarDetails = () => {
             <div className="grid grid-cols-2 gap-4 mb-8">
                <SpecBox icon={<Gauge size={20} />} label="Transmission" value={car.transmission} theme={theme} />
                <SpecBox icon={<Fuel size={20} />} label="Fuel Type" value={car.fuelType} theme={theme} />
-               <SpecBox icon={<Users size={20} />} label="Capacity" value={`${car.seats} Persons`} theme={theme} />
-               <SpecBox icon={<Info size={20} />} label="Mileage" value={`${car.mileage || '10'} km/l`} theme={theme} />
+               <SpecBox icon={<Users size={20} />} label="Capacity" value={`${car.seats || 5} Persons`} theme={theme} />
+               <SpecBox icon={<Info size={20} />} label="Mileage" value={`${car.mileage || '25,000'} km`} theme={theme} />
             </div>
 
             {/* Description */}

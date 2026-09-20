@@ -621,4 +621,203 @@ router.get('/stats/vehicle-analytics', protect, authorize('admin', 'manager'), a
   }
 });
 
+// Alias /dashboard to /stats/dashboard
+router.get('/dashboard', protect, authorize('admin', 'manager'), async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const activeUsers = await User.countDocuments({ status: 'active' });
+    const totalBookings = await Booking.countDocuments();
+    const activeBookings = await Booking.countDocuments({ status: 'confirmed' });
+    const pendingBookings = await Booking.countDocuments({ status: 'pending' });
+    const totalCars = await Car.countDocuments();
+    const availableCars = await Car.countDocuments({ available: true });
+    const totalPromotions = await Promotion.countDocuments({ active: true });
+
+    const revenue = await Booking.aggregate([
+      { $match: { status: 'confirmed' } },
+      { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+    ]);
+
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const monthlyRevenue = await Booking.aggregate([
+      {
+        $match: {
+          status: 'confirmed',
+          createdAt: { $gte: startOfMonth }
+        }
+      },
+      { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+    ]);
+
+    const fleetUtilization = totalCars > 0 ? Math.round(((totalCars - availableCars) / totalCars) * 100) : 0;
+
+    res.json({
+      success: true,
+      data: {
+        totalUsers,
+        activeUsers,
+        totalBookings,
+        activeBookings,
+        pendingBookings,
+        totalCars,
+        availableCars,
+        totalPromotions,
+        totalRevenue: revenue[0]?.total || 0,
+        monthlyRevenue: monthlyRevenue[0]?.total || 0,
+        fleetUtilization
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ========================================
+// ADMIN CAR MANAGEMENT ROUTES
+// ========================================
+router.get('/cars', protect, authorize('admin', 'manager'), async (req, res) => {
+  try {
+    const { search, category, city, available, page = 1, limit = 50 } = req.query;
+    const filter = {};
+
+    if (category && category !== 'All') filter.category = category.toLowerCase();
+    if (city && city !== 'All') filter.city = new RegExp(city, 'i');
+    if (available !== undefined && available !== 'All') filter.available = available === 'true';
+
+    if (search && search.trim()) {
+      const q = search.trim();
+      const regex = new RegExp(q, 'i');
+      filter.$or = [{ brand: regex }, { model: regex }, { city: regex }];
+    }
+
+    const cars = await Car.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(Number(limit))
+      .skip((Number(page) - 1) * Number(limit));
+
+    const total = await Car.countDocuments(filter);
+
+    res.json({
+      success: true,
+      data: cars,
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / Number(limit))
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/cars', protect, authorize('admin'), async (req, res) => {
+  try {
+    const car = await Car.create(req.body);
+    res.status(201).json({ success: true, data: car });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.put('/cars/:id', protect, authorize('admin', 'manager'), async (req, res) => {
+  try {
+    const car = await Car.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!car) return res.status(404).json({ success: false, message: 'Car not found' });
+    res.json({ success: true, data: car });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.patch('/cars/:id/status', protect, authorize('admin', 'manager'), async (req, res) => {
+  try {
+    const { available, status, pricePerDay } = req.body;
+    const update = {};
+    if (available !== undefined) update.available = available;
+    if (status) update.status = status;
+    if (pricePerDay !== undefined) update.pricePerDay = Number(pricePerDay);
+
+    const car = await Car.findByIdAndUpdate(req.params.id, update, { new: true });
+    if (!car) return res.status(404).json({ success: false, message: 'Car not found' });
+    res.json({ success: true, data: car });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/cars/:id', protect, authorize('admin'), async (req, res) => {
+  try {
+    const car = await Car.findByIdAndDelete(req.params.id);
+    if (!car) return res.status(404).json({ success: false, message: 'Car not found' });
+    res.json({ success: true, message: 'Car deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Admin Damage Inspection & Review
+router.get('/damage', protect, authorize('admin', 'manager'), async (req, res) => {
+  try {
+    const DamageReport = require('../models/DamageReport');
+    const reports = await DamageReport.find()
+      .populate('car', 'brand model name city pricePerDay images')
+      .populate('user', 'name email phone')
+      .populate('booking')
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, data: reports });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Admin Maintenance Alerts
+router.get('/maintenance', protect, authorize('admin', 'manager'), async (req, res) => {
+  try {
+    const cars = await Car.find({ 'maintenance.healthScore': { $lt: 80 } })
+      .select('brand model year city maintenance trustScore pricePerDay available')
+      .sort({ 'maintenance.healthScore': 1 });
+
+    res.json({ success: true, data: cars });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Admin Vehicle Passports
+router.get('/passports', protect, authorize('admin', 'manager'), async (req, res) => {
+  try {
+    const cars = await Car.find({ 'vehiclePassport.isConfigured': true })
+      .select('brand model year vin vehiclePassport trustScore city')
+      .sort({ 'vehiclePassport.mintedAt': -1 });
+
+    res.json({ success: true, data: cars });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Admin Fleet Analytics alias
+router.get('/analytics', protect, authorize('admin', 'manager'), async (req, res) => {
+  try {
+    const analyticsService = require('../services/analyticsService');
+    const overview = await analyticsService.getFleetOverview();
+    const revenue = await analyticsService.getRevenueTrends(30);
+    const locations = await analyticsService.getTopLocations();
+
+    res.json({
+      success: true,
+      data: {
+        overview,
+        revenue,
+        locations
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 module.exports = router;

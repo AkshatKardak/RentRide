@@ -38,6 +38,20 @@ export const carService = {
     }
   },
 
+  // Get distinct filter options directly from database
+  getFilterOptions: async () => {
+    try {
+      const response = await api.get('/cars/filters/options');
+      return {
+        success: true,
+        data: response.data.data
+      };
+    } catch (error) {
+      console.error('Get filter options error:', error);
+      return { success: false, data: null };
+    }
+  },
+
   // Get single car by ID (Public route)
   getCarById: async (carId) => {
     try {

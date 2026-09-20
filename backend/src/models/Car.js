@@ -1,75 +1,50 @@
 const mongoose = require('mongoose');
 
 const carSchema = new mongoose.Schema({
-  // Basic & Identity
-  name: {
-    type: String,
-    trim: true
-  },
-  make: {
-    type: String,
-    trim: true
-  },
+  // Identity
   brand: {
     type: String,
-    trim: true
+    required: [true, 'Please provide vehicle brand'],
+    trim: true,
+    index: true
   },
   model: {
     type: String,
-    required: [true, 'Please provide car model'],
-    trim: true
-  },
-  year: {
-    type: Number,
-    required: [true, 'Please provide manufacturing year']
+    required: [true, 'Please provide vehicle model'],
+    trim: true,
+    index: true
   },
   variant: {
     type: String,
+    trim: true,
     default: 'Base'
   },
-  vin: {
-    type: String,
-    trim: true
+  year: {
+    type: Number,
+    required: [true, 'Please provide manufacturing year'],
+    min: 2000,
+    max: new Date().getFullYear() + 1
   },
   color: {
     type: String,
     default: 'White'
   },
-
-  // API Integration (CarsXE)
-  apiVehicleId: {
+  registrationNumber: {
     type: String,
+    trim: true
+  },
+  vin: {
+    type: String,
+    trim: true,
     sparse: true
-  },
-  source: {
-    type: String,
-    enum: ['manual', 'carsxe', 'seed', 'api'],
-    default: 'manual'
-  },
-  lastSyncedAt: {
-    type: Date
-  },
-
-  // Pricing
-  pricePerDay: {
-    type: Number,
-    min: 0,
-    default: 0
-  },
-  rentalPrice: {
-    perDay: { type: Number, default: 0 },
-    currency: { type: String, default: 'INR' }
-  },
-  securityDeposit: {
-    type: Number,
-    default: 5000
   },
 
   // Specifications
   category: {
     type: String,
-    enum: ['sedan', 'suv', 'hatchback', 'luxury', 'sports', 'electric', 'muv', 'compact', 'coupe', 'convertible'],
-    default: 'sedan'
+    enum: ['hatchback', 'sedan', 'suv', 'mpv', 'luxury', 'sports', 'compact', 'convertible'],
+    default: 'sedan',
+    index: true
   },
   bodyType: {
     type: String,
@@ -77,93 +52,100 @@ const carSchema = new mongoose.Schema({
   },
   fuelType: {
     type: String,
-    enum: ['petrol', 'diesel', 'electric', 'hybrid', 'cng', 'Petrol', 'Diesel', 'Electric', 'Hybrid', 'CNG'],
-    default: 'petrol'
+    enum: ['petrol', 'diesel', 'electric', 'hybrid', 'cng'],
+    default: 'petrol',
+    index: true
   },
   transmission: {
     type: String,
-    enum: ['manual', 'automatic', 'Manual', 'Automatic'],
-    default: 'manual'
-  },
-  engine: {
-    type: String
-  },
-  drivetrain: {
-    type: String
+    enum: ['manual', 'automatic'],
+    default: 'manual',
+    index: true
   },
   seats: {
     type: Number,
     default: 5,
     min: 2,
-    max: 15
-  },
-  seatingCapacity: {
-    type: Number,
-    default: 5
+    max: 12
   },
   mileage: {
     type: Number,
-    default: 15
+    default: 25000 // Odometer km or fuel efficiency
+  },
+  engine: {
+    type: String
+  },
+  drivetrain: {
+    type: String,
+    default: 'FWD'
   },
   features: [{
     type: String
   }],
-  specs: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {}
+
+  // Pricing
+  pricePerDay: {
+    type: Number,
+    required: [true, 'Please provide price per day'],
+    min: 0,
+    index: true
+  },
+  securityDeposit: {
+    type: Number,
+    default: 5000
+  },
+  currency: {
+    type: String,
+    default: 'INR'
+  },
+  valuation: {
+    type: Number,
+    default: 0
   },
 
   // Media
   images: [{
-    type: mongoose.Schema.Types.Mixed
+    type: String
   }],
   primaryImage: {
     type: String
   },
 
-  // Location & Availability
-  location: {
-    type: String,
-    default: 'Mumbai'
-  },
-  pickupLocation: {
-    city: { type: String, default: 'Mumbai' },
-    address: { type: String, default: 'City Center' },
-    state: { type: String, default: 'Maharashtra' },
-    coordinates: {
-      lat: { type: Number, default: 19.0760 },
-      lng: { type: Number, default: 72.8777 }
-    }
-  },
+  // Location
   city: {
-    type: String
+    type: String,
+    required: true,
+    default: 'Mumbai',
+    index: true
   },
+  state: {
+    type: String,
+    default: 'Maharashtra'
+  },
+  address: {
+    type: String,
+    default: 'Central Hub'
+  },
+  coordinates: {
+    lat: { type: Number, default: 19.0760 },
+    lng: { type: Number, default: 72.8777 }
+  },
+
+  // Availability & Status
   available: {
     type: Boolean,
-    default: true
-  },
-  isAvailable: {
-    type: Boolean,
-    default: true
-  },
-  isApproved: {
-    type: Boolean,
-    default: true
+    default: true,
+    index: true
   },
   status: {
     type: String,
     enum: ['active', 'booked', 'maintenance', 'inactive'],
-    default: 'active'
+    default: 'active',
+    index: true
   },
 
-  // Ratings & Ownership
+  // Ratings
   rating: {
-    type: Number,
-    default: 4.8,
-    min: 0,
-    max: 5
-  },
-  averageRating: {
     type: Number,
     default: 4.8,
     min: 0,
@@ -173,141 +155,115 @@ const carSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  popularityScore: {
+
+  // Vehicle Trust & Verification
+  trustScore: {
     type: Number,
-    default: 0
+    default: 88,
+    min: 0,
+    max: 100
   },
-  registrationNumber: {
+  trustBreakdown: {
+    type: mongoose.Schema.Types.Mixed
+  },
+
+  // Telemetry & Maintenance Health
+  maintenance: {
+    healthScore: { type: Number, default: 90 },
+    reliabilityBadge: { type: String, default: 'EXCELLENT' },
+    predictedFailures: { type: Array, default: [] },
+    recommendedActions: { type: Array, default: [] },
+    lastServiceDate: { type: Date }
+  },
+
+  // Damage & Inspection History
+  damageHistory: [{
+    reportId: { type: mongoose.Schema.Types.ObjectId, ref: 'DamageReport' },
+    severity: String,
+    date: { type: Date, default: Date.now },
+    resolved: { type: Boolean, default: false }
+  }],
+
+  // Blockchain Vehicle Passport (Polygon)
+  vehiclePassport: {
+    isConfigured: { type: Boolean, default: false },
+    network: { type: String, default: 'Polygon' },
+    tokenId: { type: Number },
+    txHash: { type: String },
+    mintedAt: { type: Date },
+    verificationStatus: { type: String, default: 'Local Verified' }
+  },
+
+  // Metadata
+  source: {
     type: String,
-    unique: true,
-    sparse: true
-  },
-  lastServiced: {
-    type: Date
-  },
-  insuranceExpiry: {
-    type: Date
-  },
-  description: {
-    type: String,
-    trim: true
+    enum: ['dataset', 'carsxe', 'manual'],
+    default: 'dataset'
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  },
-
-  // Blockchain DNA & History (Polygon)
-  dna: {
-    passport: {
-      tokenId: { type: Number },
-      txHash: { type: String },
-      blockNumber: { type: Number },
-      mintedAt: { type: Date },
-      vin: { type: String },
-      metadata: { type: String }
-    },
-    odometerHistory: [{
-      reading: { type: Number },
-      timestamp: { type: Number },
-      gpsHash: { type: String },
-      txHash: { type: String }
-    }],
-    serviceRecords: [{
-      serviceData: { type: String },
-      garageAddress: { type: String },
-      txHash: { type: String },
-      timestamp: { type: Date, default: Date.now }
-    }],
-    accidentReports: [{
-      reportData: { type: String },
-      insuranceAddress: { type: String },
-      txHash: { type: String },
-      timestamp: { type: Date, default: Date.now }
-    }],
-    maintenance: {
-      overallHealthScore: { type: Number, default: 90 },
-      reliabilityBadge: { type: String, default: 'EXCELLENT' },
-      predictedFailures: { type: Array, default: [] },
-      recommendedActions: { type: Array, default: [] },
-      calculatedAt: { type: Date }
-    }
-  },
-
-  // AI Predictive Maintenance Telemetry
-  ageInYears: { type: Number, default: 2 },
-  totalMileage: { type: Number, default: 25000 },
-  lastServiceDate: { type: Date, default: () => new Date(Date.now() - 45 * 24 * 60 * 60 * 1000) },
-  rentalFrequency: { type: Number, default: 12 },
-  averageTripDistance: { type: Number, default: 120 },
-  climateExposureScore: { type: Number, default: 50 },
-  cityDrivingRatio: { type: Number, default: 0.6 },
-  highwayDrivingRatio: { type: Number, default: 0.4 },
-  previousAccidents: { type: Number, default: 0 },
-  serviceHistoryCompleteness: { type: Number, default: 1.0 },
-  batteryAge: { type: Number, default: 1.5 },
-  tireWearLevel: { type: Number, default: 0.2 },
-  brakeWearLevel: { type: Number, default: 0.25 },
-  engineHealthScore: { type: Number, default: 95 },
-  transmissionHealthScore: { type: Number, default: 95 },
-  acPerformanceScore: { type: Number, default: 92 },
-  suspensionHealthScore: { type: Number, default: 90 },
-  fuelSystemHealthScore: { type: Number, default: 95 },
-  electricalSystemHealthScore: { type: Number, default: 94 },
-  exteriorConditionScore: { type: Number, default: 92 }
+  }
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
 });
 
-// Auto-sync alias fields before validation & save
-carSchema.pre('validate', function (next) {
-  if (!this.brand && this.make) this.brand = this.make;
-  if (!this.make && this.brand) this.make = this.brand;
-  if (!this.name) this.name = `${this.brand || this.make || ''} ${this.model}`.trim();
-  
-  if (this.pricePerDay && (!this.rentalPrice || !this.rentalPrice.perDay)) {
-    this.rentalPrice = { perDay: this.pricePerDay, currency: 'INR' };
-  } else if (this.rentalPrice?.perDay && !this.pricePerDay) {
-    this.pricePerDay = this.rentalPrice.perDay;
-  }
+// Computed Full Vehicle Name Virtual
+carSchema.virtual('name').get(function() {
+  return `${this.brand} ${this.model} ${this.variant || ''}`.trim();
+});
 
-  if (this.available !== undefined) {
-    this.isAvailable = this.available;
-  } else if (this.isAvailable !== undefined) {
-    this.available = this.isAvailable;
-  }
+// Backward-compatibility Aliases
+carSchema.virtual('make').get(function() { return this.brand; });
+carSchema.virtual('make').set(function(v) { this.brand = v; });
 
-  if (this.seats) this.seatingCapacity = this.seats;
-  if (this.seatingCapacity) this.seats = this.seatingCapacity;
+carSchema.virtual('isAvailable').get(function() { return this.available; });
+carSchema.virtual('isAvailable').set(function(v) { this.available = v; });
 
-  if (this.category && !this.bodyType) this.bodyType = this.category.toUpperCase();
-  if (this.bodyType && !this.category) this.category = this.bodyType.toLowerCase();
+carSchema.virtual('averageRating').get(function() { return this.rating; });
+carSchema.virtual('averageRating').set(function(v) { this.rating = v; });
 
-  if (this.rating) this.averageRating = this.rating;
-  if (this.averageRating) this.rating = this.averageRating;
+carSchema.virtual('location').get(function() { return this.city; });
+carSchema.virtual('location').set(function(v) { this.city = v; });
 
-  if (this.location && (!this.pickupLocation || !this.pickupLocation.city)) {
-    this.pickupLocation = {
-      city: this.location,
-      address: `${this.location} Hub`,
-      state: 'State',
-      coordinates: { lat: 19.0760, lng: 72.8777 }
-    };
-  }
+carSchema.virtual('rentalPrice').get(function() {
+  return { perDay: this.pricePerDay, currency: this.currency };
+});
+
+carSchema.virtual('pickupLocation').get(function() {
+  return {
+    city: this.city,
+    state: this.state,
+    address: this.address,
+    coordinates: this.coordinates
+  };
+});
+
+carSchema.virtual('dna').get(function() {
+  return {
+    passport: this.vehiclePassport,
+    maintenance: this.maintenance
+  };
+});
+
+// Normalize fields before save
+carSchema.pre('save', function(next) {
+  if (this.category) this.category = this.category.toLowerCase();
+  if (this.fuelType) this.fuelType = this.fuelType.toLowerCase();
+  if (this.transmission) this.transmission = this.transmission.toLowerCase();
+  if (!this.bodyType && this.category) this.bodyType = this.category.toUpperCase();
 
   if (this.images && this.images.length > 0 && !this.primaryImage) {
-    const first = this.images[0];
-    this.primaryImage = typeof first === 'string' ? first : first?.url;
+    this.primaryImage = this.images[0];
   }
-
   next();
 });
 
-// Search Indexes
-carSchema.index({ name: 'text', brand: 'text', make: 'text', model: 'text', location: 'text' });
-carSchema.index({ isAvailable: 1, status: 1 });
-carSchema.index({ 'pickupLocation.city': 1 });
+// Compound Search & Filter Indexes
+carSchema.index({ brand: 'text', model: 'text', city: 'text' });
+carSchema.index({ available: 1, category: 1, pricePerDay: 1 });
+carSchema.index({ city: 1, available: 1 });
 
 module.exports = mongoose.model('Car', carSchema);

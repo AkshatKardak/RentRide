@@ -100,26 +100,48 @@ const BrowseCars = () => {
   ];
 
   useEffect(() => {
-    loadCars();
+    const fetchOptions = async () => {
+      try {
+        const optRes = await carService.getFilterOptions();
+        if (optRes.success && optRes.data) {
+          if (optRes.data.brands?.length) setBrands(optRes.data.brands);
+          if (optRes.data.categories?.length) setCategories(optRes.data.categories);
+          if (optRes.data.transmissions?.length) setTransmissions(optRes.data.transmissions);
+          if (optRes.data.fuelTypes?.length) setFuelTypes(optRes.data.fuelTypes);
+        }
+      } catch (e) {
+        console.warn('Could not fetch filter options:', e.message);
+      }
+    };
+    fetchOptions();
   }, []);
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      loadCars();
+    }, 250);
+    return () => clearTimeout(debounceTimer);
+  }, [search, brand, category, transmission, fuelType, priceRange]);
 
   const loadCars = async () => {
     try {
       setLoading(true);
-      const response = await carService.getAllCars();
+      const params = {};
+      if (search.trim()) params.search = search.trim();
+      if (brand !== 'All') params.brand = brand;
+      if (category !== 'All') params.category = category;
+      if (transmission !== 'All') params.transmission = transmission;
+      if (fuelType !== 'All') params.fuelType = fuelType;
+      if (priceRange !== 'All') {
+        const [min, max] = priceRange.split('-').map(Number);
+        params.minPrice = min;
+        params.maxPrice = max;
+      }
+
+      const response = await carService.getAllCars(params);
 
       if (response.success && Array.isArray(response.data)) {
-        // ✅ NO HARDCODED NANO - all cars come from database
-        const allCarsData = response.data;
-        setAllCars(allCarsData);
-        
-        // Extract unique filter options
-        setBrands(['All', ...new Set(allCarsData.map(c => c.brand).filter(Boolean))]);
-        setCategories(['All', ...new Set(allCarsData.map(c => c.category).filter(Boolean))]);
-        setTransmissions(['All', ...new Set(allCarsData.map(c => c.transmission).filter(Boolean))]);
-        setFuelTypes(['All', ...new Set(allCarsData.map(c => c.fuelType).filter(Boolean))]);
-        
-        console.log(`✅ Loaded ${allCarsData.length} cars from database`);
+        setDisplayCars(response.data);
       } else {
         setError('Failed to load cars');
       }
@@ -130,53 +152,6 @@ const BrowseCars = () => {
       setLoading(false);
     }
   };
-
-  const filteredCars = useMemo(() => {
-    let result = [...allCars];
-
-    // Search filter
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(c =>
-        (c.name || '').toLowerCase().includes(q) ||
-        (c.brand || '').toLowerCase().includes(q) ||
-        (c.model || '').toLowerCase().includes(q) ||
-        (c.category || '').toLowerCase().includes(q)
-      );
-    }
-
-    // Brand filter
-    if (brand !== 'All') {
-      result = result.filter(c => c.brand === brand);
-    }
-
-    // Category filter
-    if (category !== 'All') {
-      result = result.filter(c => c.category === category);
-    }
-
-    // Transmission filter
-    if (transmission !== 'All') {
-      result = result.filter(c => c.transmission === transmission);
-    }
-
-    // Fuel Type filter
-    if (fuelType !== 'All') {
-      result = result.filter(c => c.fuelType === fuelType);
-    }
-
-    // Price Range filter
-    if (priceRange !== 'All') {
-      const [min, max] = priceRange.split('-').map(Number);
-      result = result.filter(c => c.pricePerDay >= min && c.pricePerDay <= max);
-    }
-
-    return result;
-  }, [allCars, search, brand, category, transmission, fuelType, priceRange]);
-
-  useEffect(() => {
-    setDisplayCars(filteredCars);
-  }, [filteredCars]);
 
   const handleApplyFilters = (e) => {
     if (e) e.preventDefault();

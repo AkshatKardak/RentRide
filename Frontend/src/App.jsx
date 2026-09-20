@@ -20,12 +20,32 @@ import BookingConfirmation from "./pages/BookingConfirmation";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import ReportDamage from "./pages/ReportDamage";
 import MyDamageReports from "./pages/MyDamageReports";
-import AdminDamageReports from "./pages/AdminDamageReports";
 import DamageReportDetail from "./pages/DamageReportDetail";
 import UserProfile from "./pages/UserProfile";
 import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
 import HelpSupport from './pages/HelpSupport';
+
+// Admin Consolidated Modules
+import AdminLayout from "./admin/AdminLayout";
+import AdminLogin from "./admin/AdminLogin";
+import AdminDashboard from "./admin/AdminDashboard";
+import VehicleManagement from "./admin/VehicleManagement";
+import BookingManagement from "./admin/BookingManagement";
+import UserManagement from "./admin/UserManagement";
+import PaymentRevenue from "./admin/PaymentRevenue";
+import DamageManagement from "./admin/DamageManagement";
+import PricingPromotions from "./admin/PricingPromotions";
+import Analytics from "./admin/Analytics";
+
+// Admin Protected Route Guard
+function AdminRouteGuard({ children }) {
+  const token = localStorage.getItem('adminToken');
+  if (!token) {
+    return <Navigate to="/admin/login" replace />;
+  }
+  return children;
+}
 
 export default function App() {
   const location = useLocation();
@@ -35,30 +55,9 @@ export default function App() {
     setIsLoggedIn(!!localStorage.getItem('token'));
   }, [location.pathname]);
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
   const landingRoutes = ["/", "/signin", "/signup"];
   const isLandingPage = landingRoutes.includes(location.pathname);
-
-  const dashboardRoutes = [
-    "/dashboard",
-    "/browsecars",
-    "/mybookings",
-    "/payment",
-    "/offers",
-    "/aiassistant",
-    "/booking-confirmation",
-    "/payment-success",
-    "/report-damage",
-    "/my-damage-reports",
-    "/admin-damage-reports",
-    "/damage-report",
-    "/profile",
-    "/settings",
-    "/notifications",
-    "/help-support"
-  ];
-  const isDashboardPage = dashboardRoutes.some(route =>
-    location.pathname.startsWith(route)
-  );
 
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors">
@@ -78,28 +77,19 @@ export default function App() {
           },
           success: {
             duration: 3000,
-            iconTheme: {
-              primary: '#10b981',
-              secondary: '#fff',
-            },
-            style: {
-              background: '#10b981',
-            },
+            iconTheme: { primary: '#10b981', secondary: '#fff' },
+            style: { background: '#10b981' },
           },
           error: {
             duration: 4000,
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
-            },
-            style: {
-              background: '#ef4444',
-            },
+            iconTheme: { primary: '#ef4444', secondary: '#fff' },
+            style: { background: '#ef4444' },
           },
         }}
       />
 
-      {isLandingPage && !isLoggedIn && <Navbar />}
+      {/* Show user navbar only on non-admin pages */}
+      {!isAdminRoute && isLandingPage && !isLoggedIn && <Navbar />}
 
       <main>
         <Routes>
@@ -135,7 +125,7 @@ export default function App() {
             <Route path="/report-damage/:bookingId" element={<ReportDamage />} />
             <Route path="/my-damage-reports" element={<MyDamageReports />} />
             <Route path="/damage-report/:id" element={<DamageReportDetail />} />
-            <Route path="/admin-damage-reports" element={<AdminDamageReports />} />
+            <Route path="/admin-damage-reports" element={<Navigate to="/admin/damage" replace />} />
 
             {/* User Profile Routes */}
             <Route path="/profile" element={<UserProfile />} />
@@ -144,12 +134,37 @@ export default function App() {
             <Route path="/help-support" element={<HelpSupport />} />
           </Route>
 
+          {/* =================================================== */}
+          {/* CONSOLIDATED ADMIN PORTAL ROUTES */}
+          {/* =================================================== */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+
+          <Route
+            path="/admin/*"
+            element={
+              <AdminRouteGuard>
+                <AdminLayout />
+              </AdminRouteGuard>
+            }
+          >
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="vehicles" element={<VehicleManagement />} />
+            <Route path="bookings" element={<BookingManagement />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="payments" element={<PaymentRevenue />} />
+            <Route path="damage" element={<DamageManagement />} />
+            <Route path="promotions" element={<PricingPromotions />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+          </Route>
+
           {/* Catch All */}
           <Route path="*" element={<Navigate to={isLoggedIn ? "/dashboard" : "/"} replace />} />
         </Routes>
       </main>
 
-      {isLandingPage && !isLoggedIn && <Footer />}
+      {!isAdminRoute && isLandingPage && !isLoggedIn && <Footer />}
     </div>
   );
 }

@@ -66,6 +66,32 @@ exports.login = async (req, res, next) => {
             return next(new ErrorResponse('Please provide email and password', 400));
         }
 
+        // Dedicated Demo Admin Login Support (admin@rentride.com / password123)
+        if (email.toLowerCase() === 'admin@rentride.com' && password === 'password123') {
+            let adminUser = await User.findOne({ email: 'admin@rentride.com' });
+            if (!adminUser) {
+                adminUser = await User.create({
+                    name: 'Admin User (Demo)',
+                    email: 'admin@rentride.com',
+                    password: 'password123',
+                    role: 'admin',
+                    isVerified: true
+                });
+            }
+            const token = generateToken(adminUser._id);
+            return res.json({
+                success: true,
+                token,
+                user: {
+                    id: adminUser._id,
+                    name: adminUser.name,
+                    email: adminUser.email,
+                    role: 'admin',
+                    isDemo: true
+                }
+            });
+        }
+
         // Find user by email (include password field)
         const user = await User.findOne({ email }).select('+password');
 

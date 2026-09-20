@@ -20,33 +20,8 @@ import SupraImg from "../assets/supra.png";
 import PorscheImg from "../assets/porsche.png";
 import MercedesImg from "../assets/mercedesg63amg.png";
 
-/* =========================
-   DATA
-========================= */
-
-const RECOMMENDED_CARS = [
-  {
-    name: "Porsche 911 Carrera",
-    price: "₹24,900",
-    tag: "PREMIUM",
-    image: PorscheImg,
-    specs: "2023 • Automatic • Petrol",
-  },
-  {
-    name: "Toyota Supra",
-    price: "₹18,500",
-    tag: "SPORTS",
-    image: SupraImg,
-    specs: "2023 • Automatic • Petrol",
-  },
-  {
-    name: "Mercedes G63 AMG",
-    price: "₹32,000",
-    tag: "LUXURY",
-    image: MercedesImg,
-    specs: "2024 • Automatic • SUV",
-  },
-];
+import EChartCard from "../components/common/EChartCard";
+import { carService } from '../services/carService';
 
 /* =========================
    MAIN COMPONENT
@@ -65,6 +40,8 @@ const AppDashboard = () => {
   const [recentActivity, setRecentActivity] = useState([]);
   const [currentRental, setCurrentRental] = useState(null);
   const [pendingItems, setPendingItems] = useState([]);
+  const [recommendedCars, setRecommendedCars] = useState([]);
+  const [spendingChartData, setSpendingChartData] = useState(null);
 
   useEffect(() => {
     fetchDashboardData();
@@ -155,6 +132,45 @@ const AppDashboard = () => {
           name: current.car ? `${current.car.brand} ${current.car.model}` : 'Unknown Car',
           endDate: new Date(current.endDate).toLocaleDateString()
         });
+      }
+
+      // Fetch Real Recommendations from Database
+      try {
+        const featRes = await carService.getFeaturedCars();
+        if (featRes.success && Array.isArray(featRes.data)) {
+          setRecommendedCars(featRes.data.slice(0, 4));
+        }
+      } catch (cErr) {
+        console.warn('Could not fetch recommendations:', cErr.message);
+      }
+
+      // Generate Spending Analytics Chart if bookings exist
+      if (bookings.length > 0) {
+        const validBookings = bookings.filter(b => b.status !== 'cancelled');
+        if (validBookings.length > 0) {
+          const tripLabels = validBookings.slice(0, 6).map((b, i) => b.car?.model || `Trip ${i + 1}`);
+          const tripAmounts = validBookings.slice(0, 6).map(b => b.totalPrice || 0);
+
+          setSpendingChartData({
+            tooltip: { trigger: 'axis', formatter: '{b}: ₹{c}' },
+            grid: { top: 25, right: 15, bottom: 25, left: 55 },
+            xAxis: {
+              type: 'category',
+              data: tripLabels,
+              axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
+            },
+            yAxis: {
+              type: 'value',
+              axisLabel: { formatter: '₹{value}' },
+              splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
+            },
+            series: [{
+              data: tripAmounts,
+              type: 'bar',
+              itemStyle: { color: '#10b981', borderRadius: [6, 6, 0, 0] }
+            }]
+          });
+        }
       }
 
       // Generate Recent Activity
@@ -337,14 +353,23 @@ const AppDashboard = () => {
           {/* MAIN LAYOUT GRID */}
           <div className="grid lg:grid-cols-3 gap-10">
 
-            {/* RECOMMENDED SECTION */}
+            {/* USER ANALYTICS & RECOMMENDED SECTION */}
             <div className="lg:col-span-2 space-y-6">
+              {spendingChartData && (
+                <EChartCard
+                  title="Rental Spending Activity"
+                  subtitle="Trip expenses across your rental history"
+                  options={spendingChartData}
+                  height="250px"
+                />
+              )}
+
               <div className="flex justify-between items-center">
                 <h2
                   className="text-xl font-black uppercase tracking-widest opacity-70"
                   style={{ color: theme.text }}
                 >
-                  For Your Next Trip
+                  Recommended For You
                 </h2>
                 <button
                   onClick={() => navigate("/browsecars")}
@@ -355,9 +380,24 @@ const AppDashboard = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {RECOMMENDED_CARS.slice(0, 2).map((car) => (
-                  <CarCard key={car.name} {...car} theme={theme} />
-                ))}
+                {recommendedCars.length === 0 ? (
+                  <div className="col-span-2 p-8 text-center text-slate-400 text-sm">
+                    No recommendations currently available
+                  </div>
+                ) : (
+                  recommendedCars.slice(0, 2).map((car) => (
+                    <CarCard
+                      key={car._id}
+                      name={car.name || `${car.brand} ${car.model}`}
+                      price={`₹${(car.pricePerDay || 2200).toLocaleString()}`}
+                      tag={car.category?.toUpperCase() || 'VERIFIED'}
+                      image={car.primaryImage || car.images?.[0] || PorscheImg}
+                      specs={`${car.year} • ${car.transmission} • ${car.fuelType}`}
+                      carId={car._id}
+                      theme={theme}
+                    />
+                  ))
+                )}
               </div>
             </div>
 

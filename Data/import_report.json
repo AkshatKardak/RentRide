@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-09-20T13:11:53.147Z",
+  "datasetSource": "Car Sell Dataset.csv",
+  "totalRows": 140904,
+  "validRows": 140904,
+  "duplicateRows": 118407,
+  "invalidRows": 0,
+  "normalizedRecords": 22497,
+  "importedRecords": 0,
+  "updatedRecords": 0,
+  "skippedRecords": 0,
+  "summary": {
+    "categories": [
+      "suv",
+      "sedan",
+      "hatchback",
+      "mpv",
+      "luxury"
+    ],
+    "brands": [
+      "Mahindra",
+      "Skoda",
+      "Maruti Suzuki",
+      "Hyundai",
+      "MG",
+      "Audi",
+      "Toyota",
+      "Honda",
+      "Tata",
+      "Ford",
+      "Chevrolet",
+      "BMW",
+      "Volkswagen",
+      "Jaguar",
+      "Renault",
+      "Kia",
+      "Range Rover",
+      "Nissan"
+    ],
+    "cities": [
+      "Mumbai",
+      "Delhi NCR",
+      "Bengaluru",
+      "Hyderabad",
+      "Chennai",
+      "Pune",
+      "Kolkata",
+      "Ahmedabad",
+      "Jaipur",
+      "Goa",
+      "Chandigarh"
+    ],
+    "priceRangeINR": {
+      "min": 1100,
+      "max": 9650,
+      "average": 2430
+    }
+  }
+}

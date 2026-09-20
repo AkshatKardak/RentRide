@@ -6,7 +6,8 @@ const {
   createCar,
   updateCar,
   deleteCar,
-  getFeaturedCars
+  getFeaturedCars,
+  getFilterOptions
 } = require('../controllers/carController');
 const { protect } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/adminMiddleware');
@@ -14,6 +15,7 @@ const { authorize } = require('../middleware/adminMiddleware');
 // Public routes
 router.get('/', getAllCars);
 router.get('/featured', getFeaturedCars);
+router.get('/filters/options', getFilterOptions);
 router.get('/:id', getCarById);
 
 // Admin routes

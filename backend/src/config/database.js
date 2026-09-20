@@ -8,16 +8,21 @@ const connectDB = async () => {
             return mongoose.connection;
         }
 
+        if (!process.env.MONGODB_URI || process.env.MONGODB_URI.includes('<username>')) {
+            console.warn('⚠️ MONGODB_URI not configured or contains placeholder. Running without active database.');
+            return null;
+        }
+
         const conn = await mongoose.connect(process.env.MONGODB_URI, {
-            serverSelectionTimeoutMS: 5000, // Timeout after 5s
+            serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,
         });
 
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
         return conn;
     } catch (err) {
-        console.error(`MongoDB Connection Error: ${err.message}`);
-        throw err;
+        console.error(`⚠️ MongoDB Connection Notice: ${err.message}. Backend running in offline/resilient mode.`);
+        return null;
     }
 };
 

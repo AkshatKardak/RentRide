@@ -1,0 +1,501 @@
+Brand,Model,Variant,Year,Category,Fuel,Transmission,Seats,PricePerDay,SecurityDeposit,City,TrustScore
+"Mahindra","TUV300","AX5",2017,"suv","cng","manual",7,2300,6000,"Mumbai",89
+"Skoda","Rapid","Style",2018,"sedan","petrol","manual",5,1600,4000,"Delhi NCR",89
+"Maruti Suzuki","Alto","Z",2005,"hatchback","diesel","manual",5,1300,3000,"Bengaluru",89
+"Hyundai","Grand i10","Magna",2013,"hatchback","diesel","manual",5,1150,3000,"Hyderabad",89
+"Mahindra","XUV500","W8",2011,"suv","petrol","manual",7,2300,6000,"Chennai",89
+"Maruti Suzuki","Dzire","Base",2019,"sedan","diesel","manual",5,1600,4000,"Pune",89
+"MG","Hector","Smart",2023,"suv","cng","manual",7,2900,6000,"Kolkata",89
+"Maruti Suzuki","Baleno","L",2017,"hatchback","diesel","manual",5,1300,3000,"Ahmedabad",89
+"Maruti Suzuki","Ignis","L",2022,"hatchback","electric","manual",5,2450,3000,"Jaipur",89
+"Maruti Suzuki","Swift","V",2018,"sedan","petrol","automatic",5,1600,4000,"Goa",89
+"Maruti Suzuki","Ertiga","Z",2023,"mpv","diesel","manual",7,3250,5000,"Chandigarh",89
+"Maruti Suzuki","Alto","V",2022,"hatchback","petrol","automatic",5,1850,3000,"Mumbai",89
+"Audi","A6","Technology",2023,"luxury","petrol","manual",5,5600,15000,"Delhi NCR",89
+"Toyota","Urban Cruiser","E",2021,"suv","cng","manual",7,2400,6000,"Bengaluru",89
+"Honda","City","V",2019,"sedan","petrol","manual",5,2000,4000,"Hyderabad",89
+"Hyundai","Verna","Base",2018,"sedan","diesel","automatic",5,2200,4000,"Chennai",89
+"Maruti Suzuki","Celerio","Base",2023,"hatchback","petrol","manual",5,2350,3000,"Pune",89
+"Honda","Jazz","V",2017,"sedan","diesel","manual",5,1600,4000,"Kolkata",89
+"Honda","Brio","E",2018,"hatchback","petrol","manual",5,1450,3000,"Ahmedabad",89
+"Tata","Harrier","XZA+",2023,"suv","petrol","automatic",7,2700,6000,"Jaipur",89
+"Hyundai","Venue","Magna",2022,"suv","diesel","manual",7,2300,6000,"Goa",89
+"Ford","Aspire","Trend+",2015,"sedan","petrol","manual",5,1600,4000,"Chandigarh",89
+"Maruti Suzuki","Celerio","L",2020,"hatchback","petrol","automatic",5,1700,3000,"Mumbai",89
+"Toyota","Urban Cruiser","G",2022,"suv","petrol","manual",7,3250,6000,"Delhi NCR",89
+"Mahindra","XUV500","AX3",2018,"suv","hybrid","automatic",7,2650,6000,"Bengaluru",89
+"Maruti Suzuki","Dzire","Z",2020,"sedan","diesel","manual",5,2250,4000,"Hyderabad",89
+"Chevrolet","Tavera","LTZ",2009,"mpv","petrol","manual",7,2100,5000,"Chennai",89
+"Toyota","Innova","VX",2015,"mpv","diesel","automatic",7,2100,5000,"Pune",83
+"Tata","Altroz","XT",2020,"hatchback","petrol","manual",5,1450,3000,"Kolkata",89
+"Maruti Suzuki","WagonR","L",2022,"hatchback","cng","manual",5,2550,3000,"Ahmedabad",89
+"Hyundai","Aura","Magna",2022,"sedan","petrol","manual",5,2350,4000,"Jaipur",89
+"Maruti Suzuki","WagonR","Base",2015,"hatchback","petrol","manual",5,1100,3000,"Goa",89
+"Hyundai","Verna","SX",2011,"sedan","petrol","manual",5,1600,4000,"Chandigarh",89
+"Hyundai","Creta","Magna",2015,"suv","petrol","automatic",7,2300,6000,"Mumbai",89
+"Maruti Suzuki","Baleno","L",2018,"hatchback","cng","manual",5,1550,3000,"Delhi NCR",89
+"Ford","Figo","Trend",2015,"sedan","diesel","manual",5,1600,4000,"Bengaluru",89
+"BMW","5 Series","Sport",2020,"luxury","petrol","manual",5,7600,15000,"Hyderabad",89
+"Maruti Suzuki","Dzire","L",2016,"sedan","diesel","automatic",5,1750,4000,"Chennai",89
+"Maruti Suzuki","Baleno","ZX",2022,"hatchback","petrol","manual",5,3050,3000,"Pune",89
+"Maruti Suzuki","Alto","L",2005,"hatchback","petrol","manual",5,1100,3000,"Kolkata",89
+"Tata","Altroz","XE",2023,"hatchback","petrol","manual",5,1100,3000,"Ahmedabad",89
+"Volkswagen","Ameo","Trendline",2020,"sedan","diesel","manual",5,2200,4000,"Jaipur",89
+"Jaguar","XE","Prestige",2021,"luxury","petrol","manual",5,6450,15000,"Goa",89
+"Tata","Nexon","XE",2017,"suv","petrol","automatic",7,2300,6000,"Chandigarh",89
+"Toyota","Urban Cruiser","G+",2021,"suv","diesel","manual",7,2450,6000,"Mumbai",83
+"Honda","Brio","VX",2019,"hatchback","hybrid","manual",5,1750,3000,"Delhi NCR",89
+"Hyundai","Creta","Asta",2020,"suv","electric","automatic",7,4200,6000,"Bengaluru",89
+"Mahindra","TUV300","AX5",2020,"suv","diesel","manual",7,2450,6000,"Hyderabad",89
+"Honda","City","VX",2022,"sedan","petrol","manual",5,1600,4000,"Chennai",89
+"Maruti Suzuki","Celerio","ZX",2023,"hatchback","diesel","manual",5,1850,3000,"Pune",89
+"Volkswagen","Vento","GT",2022,"sedan","hybrid","manual",5,2350,4000,"Kolkata",89
+"Renault","Kwid","RXE",2017,"hatchback","petrol","manual",5,1450,3000,"Ahmedabad",89
+"Ford","Aspire","Ambiente",2018,"sedan","petrol","manual",5,1650,4000,"Jaipur",89
+"Toyota","Urban Cruiser","E",2022,"suv","petrol","manual",7,3250,6000,"Goa",89
+"Hyundai","i20","Magna",2015,"hatchback","petrol","automatic",5,1450,3000,"Chandigarh",89
+"Maruti Suzuki","Swift","L",2018,"sedan","petrol","manual",5,1600,4000,"Mumbai",89
+"Honda","WR-V","S",2018,"suv","petrol","manual",7,2500,6000,"Delhi NCR",89
+"Hyundai","Venue","Asta",2022,"suv","petrol","manual",7,3600,6000,"Bengaluru",89
+"Maruti Suzuki","Ertiga","L",2012,"mpv","petrol","automatic",7,2100,5000,"Hyderabad",89
+"Maruti Suzuki","Baleno","Base",2020,"hatchback","diesel","manual",5,1600,3000,"Chennai",89
+"Maruti Suzuki","Celerio","Base",2017,"hatchback","petrol","manual",5,1100,3000,"Pune",89
+"Honda","Brio","V",2014,"hatchback","diesel","automatic",5,1550,3000,"Kolkata",89
+"Maruti Suzuki","Ignis","V",2023,"hatchback","cng","manual",5,2200,3000,"Ahmedabad",89
+"Ford","Aspire","Titanium+",2015,"sedan","diesel","manual",5,1600,4000,"Jaipur",89
+"Maruti Suzuki","Dzire","L",2022,"sedan","petrol","automatic",5,2150,4000,"Goa",83
+"Maruti Suzuki","Ignis","Z",2019,"hatchback","electric","manual",5,1300,3000,"Chandigarh",83
+"Volkswagen","Vento","GT",2014,"sedan","diesel","manual",5,1600,4000,"Mumbai",89
+"Tata","Tiago","XM",2021,"hatchback","petrol","manual",5,2100,3000,"Delhi NCR",89
+"Maruti Suzuki","Baleno","ZX",2020,"hatchback","petrol","manual",5,1900,3000,"Bengaluru",89
+"Hyundai","Aura","Magna",2021,"sedan","diesel","manual",5,2350,4000,"Hyderabad",89
+"Hyundai","Verna","Era",2021,"sedan","petrol","manual",5,2550,4000,"Chennai",89
+"Honda","Jazz","VX",2015,"sedan","petrol","manual",5,1650,4000,"Pune",89
+"Renault","Kiger","RXZ",2022,"suv","petrol","manual",7,3350,6000,"Kolkata",89
+"Honda","WR-V","ZX",2020,"suv","cng","manual",7,2300,6000,"Ahmedabad",89
+"Maruti Suzuki","Alto","ZX",2021,"hatchback","petrol","manual",5,1100,3000,"Jaipur",83
+"Ford","EcoSport","Trend+",2016,"suv","petrol","manual",7,2300,6000,"Goa",89
+"Kia","Sonet","GTX",2020,"suv","petrol","manual",7,2950,6000,"Chandigarh",89
+"Hyundai","Aura","Asta",2020,"sedan","diesel","manual",5,2600,4000,"Mumbai",89
+"Hyundai","Verna","Base",2013,"sedan","petrol","manual",5,1600,4000,"Delhi NCR",89
+"Tata","Tigor","XZA+",2023,"sedan","petrol","manual",5,2550,4000,"Bengaluru",89
+"Tata","Tigor","XM",2021,"sedan","diesel","manual",5,2850,4000,"Hyderabad",89
+"Maruti Suzuki","Dzire","V",2010,"sedan","diesel","manual",5,1750,4000,"Chennai",89
+"Ford","Aspire","Ambiente",2015,"sedan","diesel","manual",5,1850,4000,"Pune",89
+"Maruti Suzuki","WagonR","Z",2011,"hatchback","petrol","manual",5,1100,3000,"Kolkata",89
+"Hyundai","Verna","Era",2018,"sedan","petrol","manual",5,1600,4000,"Ahmedabad",89
+"Maruti Suzuki","Dzire","V",2017,"sedan","diesel","manual",5,1900,4000,"Jaipur",89
+"Volkswagen","Vento","Comfortline",2013,"sedan","petrol","manual",5,1600,4000,"Goa",89
+"Mahindra","TUV300","W8",2015,"suv","diesel","manual",7,2300,6000,"Chandigarh",89
+"Honda","City","ZX",2012,"sedan","petrol","manual",5,1600,4000,"Mumbai",89
+"Maruti Suzuki","Ertiga","Base",2020,"mpv","cng","manual",7,2500,5000,"Delhi NCR",89
+"Maruti Suzuki","WagonR","Base",2010,"hatchback","petrol","manual",5,1100,3000,"Bengaluru",89
+"Maruti Suzuki","Dzire","L",2013,"sedan","petrol","manual",5,1600,4000,"Hyderabad",89
+"Tata","Harrier","XZA+",2023,"suv","petrol","manual",7,2300,6000,"Chennai",89
+"Maruti Suzuki","S-Presso","Base",2019,"hatchback","petrol","manual",5,1150,3000,"Pune",89
+"Hyundai","Grand i10","Era",2018,"hatchback","petrol","manual",5,1350,3000,"Kolkata",89
+"Mahindra","Bolero","W11",2018,"suv","petrol","automatic",7,2300,6000,"Ahmedabad",89
+"Ford","Endeavour","Titanium+",2009,"suv","diesel","manual",7,2300,6000,"Jaipur",89
+"Renault","Kiger","RXZ",2021,"suv","petrol","automatic",7,2550,6000,"Goa",89
+"Chevrolet","Beat","LS",2012,"hatchback","electric","manual",5,1150,3000,"Chandigarh",89
+"Renault","Kwid","RXL",2017,"hatchback","petrol","manual",5,1250,3000,"Mumbai",83
+"Hyundai","Grand i10","SX",2015,"hatchback","cng","manual",5,1100,3000,"Delhi NCR",89
+"Mahindra","TUV300","AX7",2019,"suv","petrol","automatic",7,2950,6000,"Bengaluru",89
+"Maruti Suzuki","Alto","ZX",2007,"hatchback","petrol","manual",5,1100,3000,"Hyderabad",89
+"Honda","Amaze","ZX",2020,"sedan","diesel","manual",5,2850,4000,"Chennai",89
+"Hyundai","i20","Era",2009,"hatchback","petrol","manual",5,1100,3000,"Pune",83
+"Maruti Suzuki","Dzire","Base",2009,"sedan","diesel","manual",5,1600,4000,"Kolkata",89
+"Mahindra","XUV500","W8(O)",2014,"suv","petrol","manual",7,2300,6000,"Ahmedabad",89
+"Maruti Suzuki","Alto","ZX",2023,"hatchback","petrol","automatic",5,1700,3000,"Jaipur",89
+"Renault","Kwid","RXT",2017,"hatchback","diesel","manual",5,1100,3000,"Goa",89
+"Maruti Suzuki","Alto","Base",2014,"hatchback","petrol","manual",5,1100,3000,"Chandigarh",89
+"Maruti Suzuki","WagonR","Z",2023,"hatchback","diesel","manual",5,1900,3000,"Mumbai",83
+"Maruti Suzuki","Dzire","V",2010,"sedan","diesel","automatic",5,1850,4000,"Delhi NCR",89
+"Maruti Suzuki","S-Presso","Z",2020,"hatchback","petrol","manual",5,1100,3000,"Bengaluru",89
+"MG","Hector","Savvy",2019,"suv","petrol","manual",7,2300,6000,"Hyderabad",89
+"Maruti Suzuki","Ertiga","Z",2013,"mpv","petrol","manual",7,2100,5000,"Chennai",89
+"Hyundai","Grand i10","SX",2020,"hatchback","petrol","manual",5,1650,3000,"Pune",89
+"Honda","City","V",2018,"sedan","petrol","automatic",5,1850,4000,"Kolkata",89
+"Renault","Kwid","RXT",2019,"hatchback","diesel","manual",5,1150,3000,"Ahmedabad",89
+"MG","Hector","Sharp",2021,"suv","cng","manual",7,2900,6000,"Jaipur",89
+"Volkswagen","Taigun","Trendline",2023,"suv","diesel","manual",7,3350,6000,"Goa",89
+"Volkswagen","Ameo","Highline+",2016,"sedan","petrol","manual",5,1600,4000,"Chandigarh",89
+"Toyota","Glanza","V",2023,"hatchback","petrol","manual",5,1400,3000,"Mumbai",89
+"Honda","WR-V","ZX",2017,"suv","petrol","manual",7,2300,6000,"Delhi NCR",89
+"Tata","Altroz","XE",2020,"hatchback","petrol","manual",5,2000,3000,"Bengaluru",89
+"Maruti Suzuki","Swift","Base",2021,"sedan","petrol","automatic",5,3250,4000,"Hyderabad",89
+"Honda","Brio","S",2013,"hatchback","cng","automatic",5,1100,3000,"Chennai",89
+"Maruti Suzuki","Ertiga","Base",2023,"mpv","diesel","manual",7,3250,5000,"Pune",89
+"Honda","WR-V","ZX",2020,"suv","diesel","automatic",7,3300,6000,"Kolkata",89
+"Volkswagen","Vento","GT",2011,"sedan","petrol","manual",5,1600,4000,"Ahmedabad",83
+"Kia","Seltos","HTK",2022,"suv","petrol","manual",7,2300,6000,"Jaipur",89
+"Honda","City","S",2022,"sedan","petrol","manual",5,1850,4000,"Goa",89
+"Toyota","Fortuner","V",2017,"suv","petrol","manual",7,2300,6000,"Chandigarh",89
+"Volkswagen","Vento","Highline+",2022,"sedan","diesel","manual",5,1950,4000,"Mumbai",89
+"Hyundai","Creta","SX",2022,"suv","electric","automatic",7,3500,6000,"Delhi NCR",89
+"Skoda","Rapid","Monte Carlo",2013,"sedan","petrol","manual",5,1600,4000,"Bengaluru",89
+"Mahindra","Thar","W11",2023,"suv","petrol","manual",7,2700,6000,"Hyderabad",89
+"Maruti Suzuki","Ignis","Z",2018,"hatchback","diesel","manual",5,1950,3000,"Chennai",89
+"Hyundai","Verna","Sportz",2006,"sedan","cng","manual",5,1600,4000,"Pune",89
+"Maruti Suzuki","Baleno","ZX",2023,"hatchback","petrol","manual",5,2850,3000,"Kolkata",89
+"Maruti Suzuki","Swift","L",2023,"sedan","petrol","manual",5,1600,4000,"Ahmedabad",89
+"Maruti Suzuki","S-Presso","ZX",2022,"hatchback","petrol","automatic",5,2650,3000,"Jaipur",89
+"Volkswagen","Taigun","Highline+",2022,"suv","hybrid","manual",7,2650,6000,"Goa",89
+"Honda","WR-V","ZX",2019,"suv","diesel","manual",7,3000,6000,"Chandigarh",89
+"Maruti Suzuki","Swift","Z",2019,"sedan","petrol","manual",5,1850,4000,"Mumbai",89
+"Volkswagen","Polo","Highline",2019,"hatchback","diesel","manual",5,1150,3000,"Delhi NCR",89
+"Maruti Suzuki","Baleno","L",2020,"hatchback","petrol","manual",5,1500,3000,"Bengaluru",89
+"Maruti Suzuki","WagonR","V",2005,"hatchback","petrol","manual",5,1100,3000,"Hyderabad",89
+"Toyota","Innova","G+",2016,"mpv","cng","manual",7,2100,5000,"Chennai",89
+"Honda","WR-V","V",2020,"suv","petrol","manual",7,2500,6000,"Pune",89
+"Ford","Endeavour","Titanium",2021,"suv","petrol","manual",7,2350,6000,"Kolkata",89
+"Maruti Suzuki","S-Presso","L",2023,"hatchback","diesel","manual",5,2250,3000,"Ahmedabad",89
+"Jaguar","XE","Portfolio",2017,"luxury","diesel","automatic",5,4800,15000,"Jaipur",89
+"Ford","Aspire","Ambiente",2015,"sedan","cng","manual",5,1600,4000,"Goa",89
+"Audi","Q7","Premium",2018,"luxury","petrol","manual",5,6100,15000,"Chandigarh",89
+"Tata","Harrier","XZA",2023,"suv","petrol","manual",7,3300,6000,"Mumbai",89
+"Maruti Suzuki","Swift","Base",2018,"sedan","diesel","manual",5,1600,4000,"Delhi NCR",89
+"Honda","Amaze","V",2021,"sedan","petrol","manual",5,2500,4000,"Bengaluru",89
+"Skoda","Superb","Monte Carlo",2019,"sedan","hybrid","manual",5,1600,4000,"Hyderabad",89
+"Maruti Suzuki","Ertiga","ZX",2022,"mpv","diesel","manual",7,2500,5000,"Chennai",89
+"Tata","Altroz","XZA+",2023,"hatchback","petrol","manual",5,1500,3000,"Pune",89
+"Maruti Suzuki","WagonR","ZX",2015,"hatchback","petrol","manual",5,1100,3000,"Kolkata",89
+"Hyundai","Venue","Asta",2019,"suv","petrol","manual",7,2350,6000,"Ahmedabad",83
+"Maruti Suzuki","Ignis","Z",2022,"hatchback","cng","manual",5,2300,3000,"Jaipur",89
+"Hyundai","Creta","Sportz",2021,"suv","diesel","manual",7,3350,6000,"Goa",89
+"Maruti Suzuki","Celerio","Base",2015,"hatchback","petrol","manual",5,1100,3000,"Chandigarh",89
+"Maruti Suzuki","Ertiga","Z",2019,"mpv","petrol","manual",7,2150,5000,"Mumbai",89
+"Volkswagen","Ameo","GT",2020,"sedan","petrol","automatic",5,2000,4000,"Delhi NCR",89
+"Maruti Suzuki","Celerio","Z",2018,"hatchback","petrol","manual",5,1800,3000,"Bengaluru",89
+"Maruti Suzuki","Swift","Z",2011,"sedan","cng","manual",5,1600,4000,"Hyderabad",89
+"Mahindra","Bolero","W8(O)",2005,"suv","petrol","manual",7,2300,6000,"Chennai",89
+"Maruti Suzuki","S-Presso","Z",2019,"hatchback","petrol","automatic",5,1400,3000,"Pune",89
+"Honda","Brio","VX",2015,"hatchback","diesel","manual",5,1600,3000,"Kolkata",89
+"Maruti Suzuki","Dzire","Z",2012,"sedan","diesel","manual",5,1600,4000,"Ahmedabad",89
+"Maruti Suzuki","Dzire","L",2017,"sedan","petrol","manual",5,1750,4000,"Jaipur",89
+"Maruti Suzuki","Ertiga","ZX",2016,"mpv","petrol","manual",7,2200,5000,"Goa",89
+"BMW","X3","M Sport",2022,"luxury","petrol","manual",5,6200,15000,"Chandigarh",89
+"Maruti Suzuki","Ignis","Base",2017,"hatchback","petrol","automatic",5,1800,3000,"Mumbai",89
+"Range Rover","Evoque","HSE",2012,"luxury","petrol","manual",5,4800,15000,"Delhi NCR",89
+"Audi","A4","Premium Plus",2010,"luxury","petrol","manual",5,4800,15000,"Bengaluru",89
+"Maruti Suzuki","Baleno","Z",2020,"hatchback","petrol","manual",5,2850,3000,"Hyderabad",89
+"Maruti Suzuki","Dzire","L",2018,"sedan","petrol","manual",5,1900,4000,"Chennai",89
+"Mahindra","Thar","W6",2021,"suv","petrol","manual",7,2700,6000,"Pune",89
+"Maruti Suzuki","S-Presso","ZX",2022,"hatchback","petrol","manual",5,1200,3000,"Kolkata",89
+"Maruti Suzuki","Celerio","Z",2015,"hatchback","diesel","manual",5,1550,3000,"Ahmedabad",89
+"Maruti Suzuki","Baleno","V",2022,"hatchback","petrol","manual",5,2200,3000,"Jaipur",83
+"Toyota","Fortuner","G+",2014,"suv","diesel","automatic",7,2350,6000,"Goa",83
+"Toyota","Glanza","V",2022,"hatchback","petrol","manual",5,1100,3000,"Chandigarh",89
+"Tata","Tiago","XZA+",2020,"hatchback","diesel","manual",5,1300,3000,"Mumbai",89
+"Renault","Triber","RXL",2020,"mpv","petrol","manual",7,2200,5000,"Delhi NCR",89
+"Maruti Suzuki","Dzire","V",2010,"sedan","petrol","manual",5,1600,4000,"Bengaluru",89
+"Maruti Suzuki","Baleno","ZX",2019,"hatchback","cng","manual",5,1350,3000,"Hyderabad",89
+"Toyota","Glanza","ZX",2019,"hatchback","petrol","manual",5,1850,3000,"Chennai",89
+"Hyundai","i10","Era",2011,"hatchback","petrol","manual",5,1100,3000,"Pune",89
+"Hyundai","Aura","Asta",2023,"sedan","diesel","manual",5,1850,4000,"Kolkata",89
+"Toyota","Glanza","V",2020,"hatchback","petrol","automatic",5,2800,3000,"Ahmedabad",89
+"Maruti Suzuki","Ignis","L",2021,"hatchback","petrol","manual",5,1150,3000,"Jaipur",83
+"Renault","Kiger","RXL",2022,"suv","petrol","automatic",7,3900,6000,"Goa",89
+"Honda","Jazz","E",2017,"sedan","petrol","manual",5,1850,4000,"Chandigarh",89
+"Skoda","Slavia","Ambition",2022,"sedan","diesel","manual",5,3150,4000,"Mumbai",89
+"Maruti Suzuki","Dzire","ZX",2014,"sedan","diesel","manual",5,1600,4000,"Delhi NCR",89
+"Hyundai","Grand i10","Magna",2014,"hatchback","diesel","manual",5,1150,3000,"Bengaluru",89
+"Maruti Suzuki","Ertiga","Z",2017,"mpv","diesel","manual",7,2100,5000,"Hyderabad",89
+"Toyota","Etios","ZX",2019,"sedan","diesel","manual",5,2500,4000,"Chennai",89
+"Jaguar","F-Pace","Pure",2019,"luxury","diesel","manual",5,6650,15000,"Pune",89
+"Honda","Brio","V",2012,"hatchback","diesel","manual",5,1100,3000,"Kolkata",89
+"Maruti Suzuki","Baleno","Z",2023,"hatchback","petrol","manual",5,2850,3000,"Ahmedabad",89
+"Hyundai","i20","SX(O)",2014,"hatchback","diesel","manual",5,1200,3000,"Jaipur",89
+"Hyundai","Aura","SX(O)",2023,"sedan","petrol","manual",5,1600,4000,"Goa",89
+"Maruti Suzuki","Ignis","V",2022,"hatchback","petrol","automatic",5,2450,3000,"Chandigarh",89
+"Hyundai","i10","Sportz",2011,"hatchback","petrol","automatic",5,1350,3000,"Mumbai",89
+"Maruti Suzuki","Dzire","V",2015,"sedan","petrol","manual",5,2000,4000,"Delhi NCR",89
+"Renault","Kiger","RXL",2022,"suv","diesel","manual",7,2550,6000,"Bengaluru",83
+"Maruti Suzuki","Ignis","V",2019,"hatchback","electric","manual",5,1400,3000,"Hyderabad",89
+"Maruti Suzuki","Dzire","ZX",2019,"sedan","petrol","manual",5,2500,4000,"Chennai",89
+"Maruti Suzuki","Ertiga","L",2013,"mpv","cng","manual",7,2100,5000,"Pune",89
+"Maruti Suzuki","Alto","Base",2011,"hatchback","cng","manual",5,1100,3000,"Kolkata",89
+"Hyundai","Creta","SX(O)",2022,"suv","petrol","manual",7,2500,6000,"Ahmedabad",89
+"Maruti Suzuki","Celerio","Base",2018,"hatchback","diesel","manual",5,1550,3000,"Jaipur",89
+"Volkswagen","Taigun","Highline+",2021,"suv","diesel","manual",7,2650,6000,"Goa",89
+"MG","ZS EV","Savvy",2022,"luxury","petrol","manual",5,7450,15000,"Chandigarh",89
+"Maruti Suzuki","Dzire","V",2009,"sedan","petrol","manual",5,1600,4000,"Mumbai",89
+"Maruti Suzuki","Ignis","L",2018,"hatchback","petrol","automatic",5,1300,3000,"Delhi NCR",89
+"Maruti Suzuki","S-Presso","V",2019,"hatchback","diesel","manual",5,1600,3000,"Bengaluru",89
+"Hyundai","Creta","SX(O)",2017,"suv","diesel","manual",7,2300,6000,"Hyderabad",89
+"Mahindra","Scorpio","W11",2009,"suv","petrol","manual",7,2300,6000,"Chennai",89
+"Maruti Suzuki","WagonR","Base",2005,"hatchback","petrol","manual",5,1300,3000,"Pune",89
+"Maruti Suzuki","Celerio","Z",2022,"hatchback","petrol","automatic",5,3400,3000,"Kolkata",89
+"Hyundai","Venue","SX",2023,"suv","petrol","manual",7,2350,6000,"Ahmedabad",89
+"Toyota","Urban Cruiser","G",2022,"suv","diesel","manual",7,2300,6000,"Jaipur",89
+"Mahindra","Bolero","W6",2017,"suv","diesel","manual",7,2300,6000,"Goa",83
+"Renault","Kwid","RXL",2019,"hatchback","petrol","manual",5,1100,3000,"Chandigarh",83
+"Maruti Suzuki","Baleno","Base",2017,"hatchback","electric","manual",5,1150,3000,"Mumbai",89
+"Hyundai","i10","Base",2008,"hatchback","diesel","manual",5,1200,3000,"Delhi NCR",89
+"Volkswagen","Polo","Trendline",2012,"hatchback","diesel","manual",5,1100,3000,"Bengaluru",89
+"Maruti Suzuki","WagonR","Base",2013,"hatchback","electric","manual",5,1150,3000,"Hyderabad",83
+"Toyota","Fortuner","V",2016,"suv","diesel","manual",7,2300,6000,"Chennai",89
+"Hyundai","Verna","Asta",2020,"sedan","diesel","automatic",5,3050,4000,"Pune",89
+"Maruti Suzuki","Alto","V",2009,"hatchback","petrol","automatic",5,1400,3000,"Kolkata",89
+"Hyundai","i10","Magna",2009,"hatchback","petrol","manual",5,1100,3000,"Ahmedabad",89
+"Maruti Suzuki","WagonR","ZX",2022,"hatchback","petrol","manual",5,1550,3000,"Jaipur",89
+"Chevrolet","Cruze","LT",2010,"sedan","diesel","manual",5,1600,4000,"Goa",83
+"Renault","Kwid","RXT",2022,"hatchback","petrol","manual",5,1800,3000,"Chandigarh",89
+"Hyundai","i10","Base",2010,"hatchback","petrol","manual",5,1100,3000,"Mumbai",89
+"Maruti Suzuki","Baleno","ZX",2022,"hatchback","diesel","manual",5,2150,3000,"Delhi NCR",89
+"Mahindra","Thar","W11",2015,"suv","diesel","manual",7,2450,6000,"Bengaluru",89
+"Maruti Suzuki","Baleno","L",2020,"hatchback","diesel","manual",5,2400,3000,"Hyderabad",89
+"Toyota","Etios","ZX",2013,"sedan","petrol","automatic",5,1900,4000,"Chennai",89
+"Ford","Figo","Trend+",2010,"sedan","petrol","manual",5,1600,4000,"Pune",89
+"Hyundai","Aura","Magna",2020,"sedan","cng","automatic",5,2100,4000,"Kolkata",89
+"Volkswagen","Vento","Highline",2012,"sedan","diesel","manual",5,1600,4000,"Ahmedabad",89
+"Maruti Suzuki","S-Presso","Z",2021,"hatchback","petrol","automatic",5,3250,3000,"Jaipur",89
+"Honda","WR-V","VX",2022,"suv","electric","manual",7,3550,6000,"Goa",89
+"Toyota","Urban Cruiser","VX",2021,"suv","petrol","manual",7,3350,6000,"Chandigarh",89
+"Maruti Suzuki","Ignis","Z",2020,"hatchback","diesel","manual",5,1250,3000,"Mumbai",89
+"Tata","Tiago","XZ",2023,"hatchback","cng","manual",5,1100,3000,"Delhi NCR",89
+"Maruti Suzuki","S-Presso","L",2020,"hatchback","diesel","manual",5,2350,3000,"Bengaluru",89
+"Mahindra","XUV500","W6",2011,"suv","petrol","manual",7,2300,6000,"Hyderabad",89
+"Hyundai","Aura","Asta",2023,"sedan","petrol","manual",5,2550,4000,"Chennai",89
+"Maruti Suzuki","WagonR","V",2011,"hatchback","diesel","manual",5,1100,3000,"Pune",89
+"BMW","X3","Luxury Line",2016,"luxury","petrol","automatic",5,4800,15000,"Kolkata",89
+"Ford","Figo","Trend",2018,"sedan","petrol","manual",5,1600,4000,"Ahmedabad",89
+"Mahindra","Thar","AX7",2023,"suv","petrol","manual",7,2700,6000,"Jaipur",83
+"Hyundai","i20","Era",2009,"hatchback","diesel","manual",5,1100,3000,"Goa",89
+"Maruti Suzuki","Ertiga","Base",2021,"mpv","petrol","manual",7,2850,5000,"Chandigarh",89
+"Maruti Suzuki","Ignis","Z",2017,"hatchback","petrol","automatic",5,1800,3000,"Mumbai",89
+"Maruti Suzuki","Ignis","ZX",2023,"hatchback","diesel","manual",5,1950,3000,"Delhi NCR",83
+"Renault","Kiger","RXT",2022,"suv","diesel","manual",7,2850,6000,"Bengaluru",89
+"Hyundai","Verna","SX(O)",2008,"sedan","petrol","manual",5,1600,4000,"Hyderabad",89
+"Kia","Carens","HTE",2023,"mpv","petrol","manual",7,2800,5000,"Chennai",89
+"Ford","Aspire","Trend+",2019,"sedan","petrol","manual",5,1700,4000,"Pune",89
+"Mahindra","XUV500","W10",2014,"suv","cng","manual",7,2300,6000,"Kolkata",83
+"Maruti Suzuki","S-Presso","V",2019,"hatchback","petrol","manual",5,1400,3000,"Ahmedabad",89
+"Ford","Figo","Titanium",2012,"sedan","petrol","manual",5,1600,4000,"Jaipur",89
+"Maruti Suzuki","Celerio","L",2016,"hatchback","petrol","manual",5,1100,3000,"Goa",89
+"Toyota","Fortuner","G",2023,"suv","diesel","manual",7,2300,6000,"Chandigarh",83
+"Maruti Suzuki","S-Presso","ZX",2020,"hatchback","petrol","manual",5,1150,3000,"Mumbai",89
+"Maruti Suzuki","WagonR","L",2014,"hatchback","petrol","manual",5,1150,3000,"Delhi NCR",89
+"Maruti Suzuki","Celerio","ZX",2019,"hatchback","diesel","manual",5,1600,3000,"Bengaluru",89
+"Maruti Suzuki","Ignis","V",2022,"hatchback","petrol","manual",5,1250,3000,"Hyderabad",89
+"Tata","Harrier","XT",2022,"suv","cng","manual",7,3050,6000,"Chennai",89
+"Maruti Suzuki","WagonR","ZX",2007,"hatchback","petrol","manual",5,1100,3000,"Pune",89
+"Maruti Suzuki","Ignis","V",2017,"hatchback","petrol","manual",5,1550,3000,"Kolkata",89
+"Maruti Suzuki","Ignis","V",2023,"hatchback","petrol","manual",5,2100,3000,"Ahmedabad",89
+"Maruti Suzuki","Celerio","V",2015,"hatchback","petrol","manual",5,1450,3000,"Jaipur",89
+"Mahindra","Thar","AX7",2019,"suv","petrol","manual",7,2500,6000,"Goa",89
+"Toyota","Etios","G+",2010,"sedan","hybrid","manual",5,1850,4000,"Chandigarh",89
+"Honda","Brio","ZX",2019,"hatchback","petrol","manual",5,1100,3000,"Mumbai",89
+"Maruti Suzuki","Baleno","Base",2019,"hatchback","diesel","manual",5,1750,3000,"Delhi NCR",89
+"Toyota","Fortuner","G+",2012,"suv","petrol","manual",7,2300,6000,"Bengaluru",89
+"Nissan","Terrano","XV Premium",2017,"suv","diesel","manual",7,2300,6000,"Hyderabad",89
+"Maruti Suzuki","WagonR","Base",2015,"hatchback","diesel","manual",5,1100,3000,"Chennai",89
+"Maruti Suzuki","Ertiga","ZX",2022,"mpv","petrol","automatic",7,3200,5000,"Pune",89
+"Maruti Suzuki","WagonR","L",2005,"hatchback","cng","automatic",5,1100,3000,"Kolkata",89
+"MG","Astor","Sharp",2021,"suv","petrol","manual",7,2450,6000,"Ahmedabad",89
+"Maruti Suzuki","Ignis","V",2020,"hatchback","petrol","automatic",5,1300,3000,"Jaipur",89
+"Hyundai","Grand i10","Era",2020,"hatchback","petrol","manual",5,1200,3000,"Goa",89
+"Maruti Suzuki","S-Presso","V",2021,"hatchback","diesel","automatic",5,3550,3000,"Chandigarh",89
+"Volkswagen","Vento","Trendline",2012,"sedan","petrol","manual",5,1600,4000,"Mumbai",89
+"Honda","WR-V","S",2020,"suv","cng","manual",7,2450,6000,"Delhi NCR",89
+"Hyundai","i20","SX(O)",2019,"hatchback","petrol","manual",5,1200,3000,"Bengaluru",89
+"Maruti Suzuki","WagonR","V",2015,"hatchback","diesel","manual",5,1100,3000,"Hyderabad",89
+"Honda","City","S",2006,"sedan","diesel","manual",5,1600,4000,"Chennai",89
+"Hyundai","Grand i10","SX(O)",2022,"hatchback","petrol","manual",5,2650,3000,"Pune",89
+"Honda","Jazz","E",2014,"sedan","petrol","manual",5,1600,4000,"Kolkata",89
+"Toyota","Urban Cruiser","G+",2022,"suv","petrol","automatic",7,3650,6000,"Ahmedabad",89
+"Ford","Endeavour","Ambiente",2017,"suv","diesel","manual",7,2300,6000,"Jaipur",89
+"Maruti Suzuki","WagonR","Z",2009,"hatchback","diesel","manual",5,1250,3000,"Goa",83
+"Ford","Endeavour","Trend+",2009,"suv","petrol","automatic",7,2300,6000,"Chandigarh",89
+"Maruti Suzuki","Dzire","V",2019,"sedan","diesel","manual",5,1600,4000,"Mumbai",89
+"Maruti Suzuki","Ertiga","ZX",2020,"mpv","diesel","manual",7,2600,5000,"Delhi NCR",89
+"Maruti Suzuki","Ertiga","ZX",2017,"mpv","cng","manual",7,2100,5000,"Bengaluru",89
+"Maruti Suzuki","WagonR","ZX",2023,"hatchback","diesel","manual",5,1400,3000,"Hyderabad",89
+"Maruti Suzuki","Ignis","ZX",2022,"hatchback","cng","manual",5,2200,3000,"Chennai",89
+"Tata","Nexon","XZA+",2018,"suv","diesel","manual",7,2600,6000,"Pune",89
+"Maruti Suzuki","Ignis","Base",2021,"hatchback","petrol","manual",5,2650,3000,"Kolkata",89
+"Honda","Jazz","VX",2018,"sedan","petrol","manual",5,1700,4000,"Ahmedabad",83
+"Hyundai","Aura","Sportz",2023,"sedan","petrol","manual",5,2200,4000,"Jaipur",89
+"Toyota","Fortuner","G+",2014,"suv","diesel","manual",7,2300,6000,"Goa",89
+"Renault","Duster","RXL",2022,"suv","petrol","manual",7,2650,6000,"Chandigarh",89
+"Maruti Suzuki","S-Presso","Z",2020,"hatchback","diesel","manual",5,1650,3000,"Mumbai",89
+"Toyota","Fortuner","V",2012,"suv","petrol","manual",7,2300,6000,"Delhi NCR",89
+"Mahindra","Scorpio","W8",2005,"suv","cng","automatic",7,2500,6000,"Bengaluru",89
+"Tata","Tigor","XZA+",2020,"sedan","petrol","manual",5,1650,4000,"Hyderabad",89
+"Honda","City","ZX",2005,"sedan","cng","manual",5,1600,4000,"Chennai",89
+"Hyundai","Verna","Magna",2013,"sedan","petrol","manual",5,1600,4000,"Pune",89
+"Tata","Tiago","XM",2023,"hatchback","petrol","manual",5,2000,3000,"Kolkata",89
+"Maruti Suzuki","WagonR","L",2005,"hatchback","petrol","manual",5,1100,3000,"Ahmedabad",89
+"Hyundai","Verna","Magna",2010,"sedan","petrol","manual",5,1600,4000,"Jaipur",89
+"Toyota","Urban Cruiser","G+",2021,"suv","petrol","manual",7,2900,6000,"Goa",89
+"Hyundai","Creta","SX(O)",2020,"suv","petrol","manual",7,2300,6000,"Chandigarh",89
+"Maruti Suzuki","Swift","Base",2020,"sedan","petrol","manual",5,1600,4000,"Mumbai",89
+"Jaguar","F-Pace","Portfolio",2023,"luxury","diesel","automatic",5,6250,15000,"Delhi NCR",83
+"Maruti Suzuki","Ertiga","ZX",2016,"mpv","diesel","manual",7,2100,5000,"Bengaluru",89
+"Maruti Suzuki","Celerio","L",2015,"hatchback","diesel","automatic",5,2000,3000,"Hyderabad",89
+"Kia","Carens","HTX+",2023,"mpv","cng","manual",7,2950,5000,"Chennai",89
+"Maruti Suzuki","Dzire","ZX",2011,"sedan","diesel","manual",5,1650,4000,"Pune",89
+"Volkswagen","Vento","Highline",2022,"sedan","diesel","manual",5,2500,4000,"Kolkata",89
+"Hyundai","Venue","Era",2019,"suv","petrol","automatic",7,3050,6000,"Ahmedabad",89
+"Maruti Suzuki","Celerio","Base",2020,"hatchback","cng","manual",5,1650,3000,"Jaipur",89
+"Maruti Suzuki","S-Presso","Z",2021,"hatchback","petrol","manual",5,1800,3000,"Goa",89
+"Maruti Suzuki","Celerio","ZX",2016,"hatchback","diesel","automatic",5,2100,3000,"Chandigarh",89
+"Hyundai","Aura","SX",2020,"sedan","petrol","manual",5,1600,4000,"Mumbai",89
+"Mahindra","XUV500","W10",2018,"suv","cng","manual",7,2300,6000,"Delhi NCR",89
+"Maruti Suzuki","Swift","L",2011,"sedan","petrol","automatic",5,1600,4000,"Bengaluru",89
+"Hyundai","Venue","Era",2021,"suv","diesel","manual",7,2850,6000,"Hyderabad",89
+"Maruti Suzuki","Dzire","Base",2015,"sedan","diesel","manual",5,1950,4000,"Chennai",89
+"Honda","WR-V","VX",2019,"suv","diesel","manual",7,2300,6000,"Pune",89
+"Hyundai","Grand i10","Sportz",2022,"hatchback","petrol","manual",5,1900,3000,"Kolkata",89
+"Maruti Suzuki","WagonR","V",2018,"hatchback","petrol","manual",5,1750,3000,"Ahmedabad",89
+"Honda","Jazz","V",2016,"sedan","petrol","manual",5,1600,4000,"Jaipur",89
+"Toyota","Etios","E",2010,"sedan","petrol","manual",5,1700,4000,"Goa",89
+"Tata","Tiago","XM",2017,"hatchback","diesel","manual",5,1950,3000,"Chandigarh",89
+"Maruti Suzuki","Ignis","ZX",2023,"hatchback","petrol","manual",5,2850,3000,"Mumbai",89
+"Maruti Suzuki","Swift","L",2019,"sedan","cng","manual",5,1900,4000,"Delhi NCR",89
+"Mahindra","Scorpio","W6",2006,"suv","diesel","manual",7,2300,6000,"Bengaluru",89
+"Hyundai","i10","Base",2013,"hatchback","diesel","manual",5,1100,3000,"Hyderabad",89
+"Tata","Tigor","XZA",2018,"sedan","petrol","manual",5,1600,4000,"Chennai",89
+"Hyundai","Aura","Base",2021,"sedan","diesel","manual",5,2050,4000,"Pune",89
+"Maruti Suzuki","Ertiga","L",2018,"mpv","petrol","manual",7,2250,5000,"Kolkata",89
+"Renault","Duster","RXZ",2014,"suv","diesel","manual",7,2300,6000,"Ahmedabad",89
+"Ford","Figo","Titanium+",2014,"sedan","diesel","manual",5,1600,4000,"Jaipur",89
+"Hyundai","i10","SX",2009,"hatchback","diesel","manual",5,1500,3000,"Goa",89
+"Hyundai","i10","Asta",2010,"hatchback","petrol","manual",5,1200,3000,"Chandigarh",89
+"Maruti Suzuki","Alto","L",2006,"hatchback","petrol","manual",5,1100,3000,"Mumbai",89
+"Toyota","Etios","ZX",2018,"sedan","petrol","manual",5,2100,4000,"Delhi NCR",89
+"Maruti Suzuki","WagonR","V",2006,"hatchback","diesel","manual",5,1100,3000,"Bengaluru",89
+"Ford","Figo","Trend+",2013,"sedan","petrol","manual",5,1600,4000,"Hyderabad",89
+"Maruti Suzuki","WagonR","Base",2013,"hatchback","diesel","manual",5,1450,3000,"Chennai",89
+"Maruti Suzuki","Baleno","Z",2017,"hatchback","diesel","manual",5,1100,3000,"Pune",89
+"Toyota","Urban Cruiser","V",2021,"suv","petrol","manual",7,2550,6000,"Kolkata",89
+"Hyundai","Creta","Asta",2021,"suv","petrol","manual",7,2550,6000,"Ahmedabad",89
+"Maruti Suzuki","S-Presso","L",2020,"hatchback","petrol","manual",5,1800,3000,"Jaipur",89
+"Honda","WR-V","E",2020,"suv","petrol","manual",7,2450,6000,"Goa",89
+"Maruti Suzuki","Swift","Z",2008,"sedan","petrol","automatic",5,1750,4000,"Chandigarh",89
+"Maruti Suzuki","Ertiga","Z",2018,"mpv","diesel","manual",7,2100,5000,"Mumbai",89
+"Toyota","Fortuner","V",2013,"suv","diesel","manual",7,2300,6000,"Delhi NCR",89
+"Maruti Suzuki","Ignis","Z",2021,"hatchback","diesel","manual",5,1800,3000,"Bengaluru",89
+"Hyundai","Venue","Sportz",2023,"suv","petrol","manual",7,2850,6000,"Hyderabad",89
+"Maruti Suzuki","Swift","Base",2011,"sedan","diesel","manual",5,1600,4000,"Chennai",83
+"Toyota","Innova","G+",2005,"mpv","cng","manual",7,2100,5000,"Pune",89
+"Tata","Harrier","XE",2019,"suv","cng","manual",7,2300,6000,"Kolkata",89
+"Maruti Suzuki","S-Presso","L",2019,"hatchback","diesel","manual",5,1650,3000,"Ahmedabad",89
+"Maruti Suzuki","Dzire","V",2015,"sedan","diesel","manual",5,1750,4000,"Jaipur",89
+"Maruti Suzuki","WagonR","Z",2017,"hatchback","diesel","automatic",5,2150,3000,"Goa",89
+"Maruti Suzuki","S-Presso","Base",2023,"hatchback","petrol","manual",5,1800,3000,"Chandigarh",89
+"Ford","EcoSport","Sports",2015,"suv","petrol","manual",7,2300,6000,"Mumbai",89
+"Honda","City","V",2005,"sedan","petrol","manual",5,1600,4000,"Delhi NCR",89
+"Ford","Endeavour","Titanium+",2014,"suv","diesel","manual",7,2300,6000,"Bengaluru",89
+"Hyundai","i10","Asta",2013,"hatchback","diesel","manual",5,1100,3000,"Hyderabad",89
+"Hyundai","i10","Sportz",2008,"hatchback","petrol","automatic",5,1350,3000,"Chennai",89
+"Tata","Tigor","XM",2021,"sedan","cng","automatic",5,1900,4000,"Pune",89
+"Maruti Suzuki","Ignis","Base",2023,"hatchback","petrol","manual",5,1650,3000,"Kolkata",89
+"Mahindra","Scorpio","W4",2017,"suv","petrol","manual",7,2300,6000,"Ahmedabad",89
+"Maruti Suzuki","Dzire","Z",2021,"sedan","petrol","manual",5,3000,4000,"Jaipur",89
+"Hyundai","Venue","Sportz",2023,"suv","diesel","manual",7,2400,6000,"Goa",89
+"Volkswagen","Taigun","Highline",2023,"suv","cng","automatic",7,3350,6000,"Chandigarh",89
+"Maruti Suzuki","S-Presso","ZX",2020,"hatchback","diesel","manual",5,1200,3000,"Mumbai",89
+"Hyundai","Grand i10","SX",2019,"hatchback","petrol","manual",5,1700,3000,"Delhi NCR",89
+"Maruti Suzuki","Swift","L",2022,"sedan","petrol","manual",5,1900,4000,"Bengaluru",89
+"Hyundai","Venue","Magna",2021,"suv","petrol","manual",7,2350,6000,"Hyderabad",89
+"Maruti Suzuki","Baleno","ZX",2016,"hatchback","petrol","manual",5,1400,3000,"Chennai",89
+"Hyundai","Verna","Asta",2021,"sedan","petrol","automatic",5,3050,4000,"Pune",89
+"Mahindra","TUV300","AX5",2018,"suv","petrol","automatic",7,2850,6000,"Kolkata",89
+"Hyundai","Grand i10","Era",2019,"hatchback","petrol","automatic",5,1950,3000,"Ahmedabad",89
+"Maruti Suzuki","Celerio","ZX",2020,"hatchback","cng","automatic",5,2150,3000,"Jaipur",89
+"Maruti Suzuki","Baleno","ZX",2020,"hatchback","diesel","manual",5,2000,3000,"Goa",89
+"Jaguar","F-Pace","Pure",2017,"luxury","cng","manual",5,4800,15000,"Chandigarh",89
+"Hyundai","Grand i10","Base",2013,"hatchback","petrol","manual",5,1100,3000,"Mumbai",89
+"Maruti Suzuki","Baleno","Base",2017,"hatchback","petrol","manual",5,1150,3000,"Delhi NCR",89
+"Nissan","Terrano","XV Premium (O)",2015,"suv","cng","manual",7,2300,6000,"Bengaluru",89
+"Tata","Harrier","XM",2020,"suv","diesel","manual",7,2750,6000,"Hyderabad",89
+"Maruti Suzuki","Alto","V",2010,"hatchback","diesel","manual",5,1100,3000,"Chennai",89
+"Maruti Suzuki","Baleno","Base",2018,"hatchback","petrol","manual",5,1100,3000,"Pune",83
+"Maruti Suzuki","Alto","L",2005,"hatchback","diesel","manual",5,1100,3000,"Kolkata",89
+"Hyundai","Aura","SX",2023,"sedan","diesel","manual",5,1700,4000,"Ahmedabad",89
+"Mahindra","Scorpio","AX5",2012,"suv","petrol","manual",7,2300,6000,"Jaipur",89
+"Maruti Suzuki","Ignis","Base",2019,"hatchback","petrol","manual",5,1300,3000,"Goa",89
+"Honda","Amaze","VX",2015,"sedan","petrol","manual",5,1750,4000,"Chandigarh",89
+"Ford","Aspire","Trend",2018,"sedan","petrol","manual",5,1600,4000,"Mumbai",83
+"Ford","Aspire","Titanium+",2017,"sedan","petrol","manual",5,1600,4000,"Delhi NCR",89
+"Maruti Suzuki","Alto","V",2010,"hatchback","petrol","manual",5,1100,3000,"Bengaluru",89
+"Honda","City","S",2005,"sedan","hybrid","manual",5,1600,4000,"Hyderabad",89
+"Maruti Suzuki","Dzire","ZX",2021,"sedan","petrol","automatic",5,2450,4000,"Chennai",89
+"Ford","Figo","Sports",2013,"sedan","petrol","manual",5,1600,4000,"Pune",89
+"Maruti Suzuki","Ertiga","L",2019,"mpv","petrol","manual",7,2100,5000,"Kolkata",83
+"Honda","WR-V","S",2022,"suv","diesel","manual",7,2900,6000,"Ahmedabad",89
+"Hyundai","i20","Base",2013,"hatchback","electric","manual",5,1200,3000,"Jaipur",89
+"Hyundai","Grand i10","SX(O)",2014,"hatchback","diesel","manual",5,1700,3000,"Goa",89
+"Mahindra","TUV300","AX7",2019,"suv","diesel","automatic",7,2350,6000,"Chandigarh",89
+"Maruti Suzuki","Ignis","ZX",2019,"hatchback","diesel","manual",5,2000,3000,"Mumbai",89
+"Maruti Suzuki","Ignis","V",2021,"hatchback","petrol","manual",5,1450,3000,"Delhi NCR",89
+"Ford","Aspire","Ambiente",2016,"sedan","petrol","manual",5,1600,4000,"Bengaluru",89
+"Toyota","Glanza","E",2022,"hatchback","diesel","manual",5,2150,3000,"Hyderabad",89
+"Honda","Amaze","ZX",2022,"sedan","petrol","automatic",5,2750,4000,"Chennai",89
+"BMW","5 Series","Sport",2005,"luxury","petrol","manual",5,4800,15000,"Pune",89
+"Maruti Suzuki","WagonR","Z",2007,"hatchback","cng","manual",5,1100,3000,"Kolkata",89
+"Ford","Figo","Titanium+",2014,"sedan","petrol","manual",5,1600,4000,"Ahmedabad",89
+"Nissan","Sunny","XE",2016,"sedan","cng","manual",5,1600,4000,"Jaipur",89
+"Maruti Suzuki","Celerio","Z",2020,"hatchback","petrol","manual",5,1950,3000,"Goa",89
+"Maruti Suzuki","Swift","V",2019,"sedan","diesel","manual",5,1700,4000,"Chandigarh",83
+"Chevrolet","Beat","LTZ",2017,"hatchback","diesel","automatic",5,1450,3000,"Mumbai",83
+"Tata","Altroz","XT",2022,"hatchback","cng","automatic",5,1450,3000,"Delhi NCR",89
+"Maruti Suzuki","S-Presso","Z",2019,"hatchback","cng","manual",5,1100,3000,"Bengaluru",83
+"Honda","Brio","VX",2019,"hatchback","petrol","manual",5,1100,3000,"Hyderabad",89
+"Maruti Suzuki","Baleno","L",2017,"hatchback","cng","manual",5,1350,3000,"Chennai",89
+"Jaguar","XE","Prestige",2016,"luxury","petrol","manual",5,4800,15000,"Pune",89
+"Honda","WR-V","S",2021,"suv","diesel","automatic",7,2550,6000,"Kolkata",83
+"Tata","Tiago","XE",2021,"hatchback","diesel","manual",5,2300,3000,"Ahmedabad",89
+"Mahindra","TUV300","W8(O)",2017,"suv","petrol","manual",7,2300,6000,"Jaipur",89
+"Honda","City","VX",2021,"sedan","petrol","manual",5,1600,4000,"Goa",83
+"Toyota","Innova","V",2020,"mpv","petrol","automatic",7,2200,5000,"Chandigarh",83
+"Skoda","Kushaq","Ambition",2022,"suv","diesel","manual",7,3250,6000,"Mumbai",89
+"Mahindra","Thar","AX3",2010,"suv","electric","automatic",7,2300,6000,"Delhi NCR",89
+"Skoda","Octavia","Active",2005,"sedan","diesel","manual",5,1600,4000,"Bengaluru",89
+"Tata","Nexon","XZA+",2020,"suv","diesel","manual",7,2450,6000,"Hyderabad",89
+"Hyundai","Venue","Magna",2023,"suv","cng","manual",7,2300,6000,"Chennai",89
+"Honda","City","S",2012,"sedan","petrol","manual",5,1600,4000,"Pune",89
+"Maruti Suzuki","Dzire","V",2013,"sedan","diesel","manual",5,1600,4000,"Kolkata",89
+"Hyundai","i10","Magna",2009,"hatchback","cng","manual",5,1100,3000,"Ahmedabad",89
+"Renault","Duster","RXL",2015,"suv","petrol","manual",7,2300,6000,"Jaipur",89
+"Maruti Suzuki","Baleno","Z",2019,"hatchback","petrol","automatic",5,1850,3000,"Goa",89
+"Toyota","Etios","E",2018,"sedan","petrol","manual",5,2050,4000,"Chandigarh",89
+"Hyundai","Venue","Sportz",2022,"suv","petrol","manual",7,2800,6000,"Mumbai",89
+"Maruti Suzuki","Ignis","Base",2017,"hatchback","diesel","manual",5,1100,3000,"Delhi NCR",89
+"Maruti Suzuki","Dzire","Z",2011,"sedan","petrol","manual",5,1600,4000,"Bengaluru",83
+"Ford","Figo","Titanium",2014,"sedan","diesel","manual",5,1600,4000,"Hyderabad",83
+"Kia","Sonet","HTK+",2021,"suv","cng","automatic",7,3650,6000,"Chennai",89
+"Toyota","Innova","ZX",2023,"mpv","petrol","manual",7,2650,5000,"Pune",89
+"Toyota","Glanza","G",2020,"hatchback","petrol","manual",5,1400,3000,"Kolkata",89
+"Honda","Brio","S",2014,"hatchback","petrol","automatic",5,1800,3000,"Ahmedabad",89
+"Toyota","Fortuner","E",2018,"suv","electric","manual",7,2800,6000,"Jaipur",89
+"Hyundai","i10","SX",2013,"hatchback","petrol","manual",5,1100,3000,"Goa",89
+"Maruti Suzuki","S-Presso","L",2020,"hatchback","electric","manual",5,1550,3000,"Chandigarh",89
+"Maruti Suzuki","S-Presso","Base",2019,"hatchback","cng","automatic",5,1850,3000,"Mumbai",83
+"Honda","Brio","V",2013,"hatchback","diesel","manual",5,1250,3000,"Delhi NCR",89
+"Honda","Jazz","V",2015,"sedan","petrol","manual",5,1600,4000,"Bengaluru",89
+"Mahindra","Thar","W8",2011,"suv","petrol","manual",7,2300,6000,"Hyderabad",89
+"Mahindra","Thar","W8",2016,"suv","petrol","automatic",7,2850,6000,"Chennai",89
+"Hyundai","i10","SX(O)",2012,"hatchback","petrol","manual",5,1100,3000,"Pune",89
+"Maruti Suzuki","Swift","L",2017,"sedan","petrol","automatic",5,1600,4000,"Kolkata",89
+"Maruti Suzuki","Baleno","Base",2021,"hatchback","petrol","manual",5,1800,3000,"Ahmedabad",89
+"MG","Astor","Savvy",2021,"suv","diesel","manual",7,3650,6000,"Jaipur",89
+"Tata","Altroz","XZ",2022,"hatchback","petrol","manual",5,1350,3000,"Goa",89
+"Honda","Amaze","VX",2013,"sedan","petrol","manual",5,1600,4000,"Chandigarh",89
+"Maruti Suzuki","Dzire","V",2017,"sedan","petrol","manual",5,1600,4000,"Mumbai",89
+"Nissan","Sunny","XV Premium",2020,"sedan","petrol","manual",5,2100,4000,"Delhi NCR",89
+"Maruti Suzuki","Swift","V",2014,"sedan","petrol","automatic",5,1600,4000,"Bengaluru",89
+"Maruti Suzuki","Swift","L",2012,"sedan","cng","manual",5,1600,4000,"Hyderabad",89
+"Honda","City","E",2023,"sedan","diesel","automatic",5,3000,4000,"Chennai",89
+"Hyundai","i10","Sportz",2010,"hatchback","petrol","manual",5,1100,3000,"Pune",83
+"Honda","City","S",2020,"sedan","diesel","manual",5,2250,4000,"Kolkata",89
+"Hyundai","i10","SX",2013,"hatchback","diesel","manual",5,1100,3000,"Ahmedabad",89
+"Hyundai","Creta","Era",2021,"suv","cng","automatic",7,2550,6000,"Jaipur",89
+"Maruti Suzuki","Ertiga","Z",2015,"mpv","petrol","automatic",7,2300,5000,"Goa",89
+"Hyundai","Aura","Magna",2020,"sedan","petrol","manual",5,2450,4000,"Chandigarh",89
+"Maruti Suzuki","Celerio","ZX",2017,"hatchback","diesel","manual",5,1350,3000,"Mumbai",89
+"Maruti Suzuki","Ignis","Base",2022,"hatchback","diesel","automatic",5,3050,3000,"Delhi NCR",89
+"Hyundai","Venue","Era",2021,"suv","petrol","manual",7,3600,6000,"Bengaluru",89
+"Hyundai","Grand i10","Magna",2023,"hatchback","diesel","manual",5,1600,3000,"Hyderabad",89
+"Nissan","Micra","XV Premium",2015,"hatchback","petrol","manual",5,1100,3000,"Chennai",89

@@ -132,7 +132,8 @@ bookingSchema.pre('validate', function(next) {
 });
 
 bookingSchema.index({ user: 1, createdAt: -1 });
-bookingSchema.index({ car: 1, startDate: 1, endDate: 1 });
+bookingSchema.index({ car: 1, status: 1, startDate: 1, endDate: 1 });
+bookingSchema.index({ holdExpiresAt: 1 }, { expireAfterSeconds: 0, sparse: true });
 bookingSchema.index({ status: 1 });
 
 module.exports = mongoose.model('Booking', bookingSchema);

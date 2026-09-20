@@ -33,6 +33,13 @@ exports.createBooking = async (req, res) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
+    // Cleanly expire past holds before checking conflicts
+    const now = new Date();
+    await Booking.updateMany(
+      { car: carId, status: 'held', holdExpiresAt: { $lt: now } },
+      { $set: { status: 'expired' } }
+    );
+
     const conflictingBooking = await Booking.findOne({
       car: carId,
       status: { $in: ['approved', 'confirmed', 'active', 'held'] },
