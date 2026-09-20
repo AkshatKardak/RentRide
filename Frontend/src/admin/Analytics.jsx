@@ -33,31 +33,37 @@ export default function Analytics() {
       // 1. Revenue Over Time
       if (revRes.status === 'fulfilled' && revRes.value.data?.success) {
         const revData = revRes.value.data.data || [];
-        const xLabels = revData.map(d => d.date || d._id || 'Period');
-        const yValues = revData.map(d => d.revenue || d.amount || 0);
+        if (revData.length > 0) {
+          const xLabels = revData.map(d => d.date || d._id || 'Period');
+          const yValues = revData.map(d => d.revenue || d.amount || 0);
 
-        setRevenueTimeChart({
-          tooltip: { trigger: 'axis', formatter: '{b}: ₹{c}' },
-          grid: { top: 25, right: 20, bottom: 30, left: 55 },
-          xAxis: {
-            type: 'category',
-            data: xLabels.length > 0 ? xLabels : ['Jan', 'Feb', 'Mar', 'Apr'],
-            axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
-          },
-          yAxis: {
-            type: 'value',
-            axisLabel: { formatter: '₹{value}' },
-            splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
-          },
-          series: [{
-            data: yValues.length > 0 ? yValues : [15000, 32000, 48000, 72000],
-            type: 'bar',
-            itemStyle: {
-              color: '#10b981',
-              borderRadius: [6, 6, 0, 0]
-            }
-          }]
-        });
+          setRevenueTimeChart({
+            tooltip: { trigger: 'axis', formatter: '{b}: ₹{c}' },
+            grid: { top: 25, right: 20, bottom: 30, left: 55 },
+            xAxis: {
+              type: 'category',
+              data: xLabels,
+              axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
+            },
+            yAxis: {
+              type: 'value',
+              axisLabel: { formatter: '₹{value}' },
+              splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
+            },
+            series: [{
+              data: yValues,
+              type: 'bar',
+              itemStyle: {
+                color: '#10b981',
+                borderRadius: [6, 6, 0, 0]
+              }
+            }]
+          });
+        } else {
+          setRevenueTimeChart(null);
+        }
+      } else {
+        setRevenueTimeChart(null);
       }
 
       // 2. Vehicle Category Distribution
@@ -66,74 +72,81 @@ export default function Analytics() {
         const pieData = catStats.map(c => ({
           name: (c._id || 'Other').toUpperCase(),
           value: c.count || 0
-        }));
+        })).filter(p => p.value > 0);
 
-        setCategoryChart({
-          tooltip: { trigger: 'item' },
-          legend: { bottom: '0', textStyle: { color: isDarkMode ? '#94a3b8' : '#64748b' } },
-          series: [{
-            type: 'pie',
-            radius: ['40%', '70%'],
-            itemStyle: { borderRadius: 6, borderColor: isDarkMode ? '#0f172a' : '#fff', borderWidth: 2 },
-            data: pieData.length > 0 ? pieData : [
-              { name: 'SUV', value: 8 },
-              { name: 'SEDAN', value: 6 },
-              { name: 'HATCHBACK', value: 4 },
-              { name: 'LUXURY', value: 2 }
-            ]
-          }]
-        });
+        if (pieData.length > 0) {
+          setCategoryChart({
+            tooltip: { trigger: 'item' },
+            legend: { bottom: '0', textStyle: { color: isDarkMode ? '#94a3b8' : '#64748b' } },
+            series: [{
+              type: 'pie',
+              radius: ['40%', '70%'],
+              itemStyle: { borderRadius: 6, borderColor: isDarkMode ? '#0f172a' : '#fff', borderWidth: 2 },
+              data: pieData
+            }]
+          });
+        } else {
+          setCategoryChart(null);
+        }
 
         // 3. Fuel Distribution
         const fuelStats = vehRes.value.data.data?.fuelStats || [];
         const fuelPieData = fuelStats.map(f => ({
           name: (f._id || 'Petrol').toUpperCase(),
           value: f.count || 0
-        }));
+        })).filter(f => f.value > 0);
 
-        setFuelChart({
-          tooltip: { trigger: 'item' },
-          legend: { bottom: '0', textStyle: { color: isDarkMode ? '#94a3b8' : '#64748b' } },
-          series: [{
-            type: 'pie',
-            radius: '65%',
-            data: fuelPieData.length > 0 ? fuelPieData : [
-              { name: 'PETROL', value: 12 },
-              { name: 'DIESEL', value: 6 },
-              { name: 'CNG', value: 3 },
-              { name: 'ELECTRIC', value: 2 }
-            ]
-          }]
-        });
+        if (fuelPieData.length > 0) {
+          setFuelChart({
+            tooltip: { trigger: 'item' },
+            legend: { bottom: '0', textStyle: { color: isDarkMode ? '#94a3b8' : '#64748b' } },
+            series: [{
+              type: 'pie',
+              radius: '65%',
+              data: fuelPieData
+            }]
+          });
+        } else {
+          setFuelChart(null);
+        }
+      } else {
+        setCategoryChart(null);
+        setFuelChart(null);
       }
 
       // 4. Bookings by City
       if (locRes.status === 'fulfilled' && locRes.value.data?.success) {
         const locData = locRes.value.data.data || [];
-        const cities = locData.map(l => l.city || l._id || 'City');
-        const counts = locData.map(l => l.count || l.total || 0);
+        if (locData.length > 0) {
+          const cities = locData.map(l => l.city || l._id || 'City');
+          const counts = locData.map(l => l.count || l.total || 0);
 
-        setCityChart({
-          tooltip: { trigger: 'axis' },
-          grid: { top: 25, right: 20, bottom: 30, left: 45 },
-          xAxis: {
-            type: 'category',
-            data: cities.length > 0 ? cities : ['Mumbai', 'Delhi NCR', 'Bengaluru', 'Goa', 'Pune'],
-            axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
-          },
-          yAxis: {
-            type: 'value',
-            splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
-          },
-          series: [{
-            data: counts.length > 0 ? counts : [24, 18, 15, 12, 9],
-            type: 'bar',
-            itemStyle: {
-              color: '#3b82f6',
-              borderRadius: [6, 6, 0, 0]
-            }
-          }]
-        });
+          setCityChart({
+            tooltip: { trigger: 'axis' },
+            grid: { top: 25, right: 20, bottom: 30, left: 45 },
+            xAxis: {
+              type: 'category',
+              data: cities,
+              axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
+            },
+            yAxis: {
+              type: 'value',
+              splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
+            },
+            series: [{
+              data: counts,
+              type: 'bar',
+              itemStyle: {
+                color: '#3b82f6',
+                borderRadius: [6, 6, 0, 0]
+              }
+            }]
+          });
+        } else {
+          setCityChart(null);
+        }
+      } else {
+        setCityChart(null);
       }
 
     } catch (err) {

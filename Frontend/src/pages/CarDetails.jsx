@@ -117,8 +117,8 @@ const CarDetails = () => {
           startDate: new Date().toISOString(),
           endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
           days: 2,
-          pickupLocation: car.location || 'Mumbai Hub',
-          dropoffLocation: car.location || 'Mumbai Hub',
+          pickupLocation: car.address || car.city || 'Central Hub',
+          dropoffLocation: car.address || car.city || 'Central Hub',
           totalPrice: car.pricePerDay * 2
         }
       }
@@ -237,8 +237,8 @@ const CarDetails = () => {
                 className="flex items-center gap-6 mt-4 text-sm font-medium border-b pb-6"
                 style={{ color: theme.textSecondary, borderColor: theme.border }}
               >
-                <span className="flex items-center gap-1.5"><MapPin size={18} className="text-green-500"/> {car.city || car.location || 'Mumbai'}</span>
-                <span className="flex items-center gap-1.5"><Star size={18} className="text-yellow-400 fill-yellow-400"/> {car.rating || '4.8'} ({car.totalReviews || 12} verified trips)</span>
+                <span className="flex items-center gap-1.5"><MapPin size={18} className="text-green-500"/> {car.city || 'Central Hub'}</span>
+                <span className="flex items-center gap-1.5"><Star size={18} className="text-yellow-400 fill-yellow-400"/> {car.rating ? `${car.rating} (${car.totalReviews || 0} verified trips)` : 'Verified Fleet'}</span>
               </div>
             </div>
 
@@ -258,14 +258,14 @@ const CarDetails = () => {
                   </div>
                 </div>
                 <span className="text-2xl font-black text-emerald-500">
-                  {car.trustScore || 88}<span className="text-xs text-slate-400 font-normal">/100</span>
+                  {car.trustScore ? `${car.trustScore}` : 'N/A'}<span className="text-xs text-slate-400 font-normal">{car.trustScore ? '/100' : ''}</span>
                 </span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t text-[11px]" style={{ borderColor: theme.border }}>
                 <div className="p-2 rounded-xl bg-slate-500/5">
                   <p className="text-slate-400">Maintenance</p>
-                  <p className="font-bold text-emerald-500">{car.maintenance?.healthScore || 90}% Health</p>
+                  <p className="font-bold text-emerald-500">{car.maintenance?.healthScore ? `${car.maintenance.healthScore}% Health` : 'Active'}</p>
                 </div>
                 <div className="p-2 rounded-xl bg-slate-500/5">
                   <p className="text-slate-400">Accident History</p>

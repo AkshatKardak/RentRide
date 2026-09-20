@@ -286,7 +286,7 @@ export default function VehicleManagement() {
                           {car.category || 'Sedan'}
                         </span>
                       </td>
-                      <td className="py-3 px-4">{car.city || car.location}</td>
+                      <td className="py-3 px-4">{car.city || 'N/A'}</td>
                       <td className="py-3 px-4 font-bold">
                         {isEditingThis ? (
                           <div className="flex items-center gap-1">

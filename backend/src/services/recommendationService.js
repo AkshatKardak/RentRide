@@ -81,7 +81,7 @@ function extractUserPreferences(bookings = []) {
   bookings.forEach(booking => {
     const car = booking.car;
     if (car) {
-      const make = car.make || car.brand;
+      const make = car.brand;
       if (make) preferences.preferredMakes[make] = (preferences.preferredMakes[make] || 0) + 1;
 
       const bodyType = car.bodyType || car.category;
@@ -90,7 +90,7 @@ function extractUserPreferences(bookings = []) {
       const fuel = car.fuelType;
       if (fuel) preferences.preferredFuelTypes[fuel.toLowerCase()] = (preferences.preferredFuelTypes[fuel.toLowerCase()] || 0) + 1;
 
-      const price = car.pricePerDay || car.rentalPrice?.perDay || booking.totalPrice || 3000;
+      const price = car.pricePerDay || booking.totalPrice || 3000;
       preferences.priceRange.min = Math.min(preferences.priceRange.min, price);
       preferences.priceRange.max = Math.max(preferences.priceRange.max, price);
     }
@@ -109,10 +109,10 @@ function extractUserPreferences(bookings = []) {
 function calculateRelevanceScore(car, preferences, user) {
   let score = 50; // Base score
 
-  const make = car.make || car.brand;
+  const make = car.brand;
   const bodyType = (car.bodyType || car.category || '').toLowerCase();
   const fuelType = (car.fuelType || '').toLowerCase();
-  const price = car.pricePerDay || car.rentalPrice?.perDay || 0;
+  const price = car.pricePerDay || 0;
 
   // Make preference (0-20 points)
   if (make && preferences.preferredMakes[make]) {
@@ -137,15 +137,15 @@ function calculateRelevanceScore(car, preferences, user) {
   }
 
   // Rating bonus (0-10 points)
-  const rating = car.averageRating || car.rating || 0;
+  const rating = car.rating || 0;
   if (rating >= 4.7) {
     score += 10;
   } else if (rating >= 4.2) {
     score += 6;
   }
 
-  // AI Maintenance Health score bonus (0-10 points)
-  const health = car.dna?.maintenance?.overallHealthScore;
+  // Telemetry & Maintenance Health score bonus (0-10 points)
+  const health = car.maintenance?.healthScore;
   if (health && health >= 85) {
     score += 10;
   } else if (health && health >= 70) {
@@ -160,7 +160,7 @@ function calculateRelevanceScore(car, preferences, user) {
  */
 function getMatchReasons(car, preferences) {
   const reasons = [];
-  const make = car.make || car.brand;
+  const make = car.brand;
   const bodyType = car.bodyType || car.category;
 
   if (make && preferences.preferredMakes[make]) {
@@ -171,12 +171,12 @@ function getMatchReasons(car, preferences) {
     reasons.push(`Matches your favorite ${bodyType} driving profile`);
   }
 
-  const rating = car.averageRating || car.rating || 0;
+  const rating = car.rating || 0;
   if (rating >= 4.5) {
     reasons.push('Highly rated by the RentRide community (4.5+ ★)');
   }
 
-  const health = car.dna?.maintenance?.overallHealthScore;
+  const health = car.maintenance?.healthScore;
   if (health && health >= 80) {
     reasons.push('Certified high AI Predictive Maintenance score');
   }
@@ -202,7 +202,7 @@ async function optimizePricing(carId, basePriceInput) {
     if (carId && mongoose.Types.ObjectId.isValid(carId)) {
       car = await Car.findById(carId);
     }
-    const basePrice = basePriceInput || car?.pricePerDay || car?.rentalPrice?.perDay || 2500;
+    const basePrice = basePriceInput || car?.pricePerDay || 2500;
 
     // Get demand factors
     const demandFactors = await getDemandFactors(carId);
@@ -261,10 +261,10 @@ async function getDemandFactors(carId) {
   }
 
   // Check city inventory availability
-  if (car) {
-    const city = car.pickupLocation?.city || car.location || 'Mumbai';
+  if (car && car.city) {
+    const city = car.city;
     const similarAvailable = await Car.countDocuments({
-      location: new RegExp(city, 'i'),
+      city: new RegExp(city, 'i'),
       available: true
     });
 

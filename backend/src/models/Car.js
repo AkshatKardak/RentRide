@@ -114,21 +114,21 @@ const carSchema = new mongoose.Schema({
   // Location
   city: {
     type: String,
-    required: true,
-    default: 'Mumbai',
+    required: [true, 'Please provide vehicle city'],
+    trim: true,
     index: true
   },
   state: {
     type: String,
-    default: 'Maharashtra'
+    trim: true
   },
   address: {
     type: String,
-    default: 'Central Hub'
+    trim: true
   },
   coordinates: {
-    lat: { type: Number, default: 19.0760 },
-    lng: { type: Number, default: 72.8777 }
+    lat: { type: Number, default: null },
+    lng: { type: Number, default: null }
   },
 
   // Availability & Status
@@ -147,7 +147,7 @@ const carSchema = new mongoose.Schema({
   // Ratings
   rating: {
     type: Number,
-    default: 4.8,
+    default: null,
     min: 0,
     max: 5
   },
@@ -159,21 +159,22 @@ const carSchema = new mongoose.Schema({
   // Vehicle Trust & Verification
   trustScore: {
     type: Number,
-    default: 88,
+    default: null,
     min: 0,
     max: 100
   },
   trustBreakdown: {
-    type: mongoose.Schema.Types.Mixed
+    type: mongoose.Schema.Types.Mixed,
+    default: null
   },
 
   // Telemetry & Maintenance Health
   maintenance: {
-    healthScore: { type: Number, default: 90 },
-    reliabilityBadge: { type: String, default: 'EXCELLENT' },
+    healthScore: { type: Number, default: null },
+    reliabilityBadge: { type: String, default: null },
     predictedFailures: { type: Array, default: [] },
     recommendedActions: { type: Array, default: [] },
-    lastServiceDate: { type: Date }
+    lastServiceDate: { type: Date, default: null }
   },
 
   // Damage & Inspection History
@@ -213,39 +214,6 @@ const carSchema = new mongoose.Schema({
 // Computed Full Vehicle Name Virtual
 carSchema.virtual('name').get(function() {
   return `${this.brand} ${this.model} ${this.variant || ''}`.trim();
-});
-
-// Backward-compatibility Aliases
-carSchema.virtual('make').get(function() { return this.brand; });
-carSchema.virtual('make').set(function(v) { this.brand = v; });
-
-carSchema.virtual('isAvailable').get(function() { return this.available; });
-carSchema.virtual('isAvailable').set(function(v) { this.available = v; });
-
-carSchema.virtual('averageRating').get(function() { return this.rating; });
-carSchema.virtual('averageRating').set(function(v) { this.rating = v; });
-
-carSchema.virtual('location').get(function() { return this.city; });
-carSchema.virtual('location').set(function(v) { this.city = v; });
-
-carSchema.virtual('rentalPrice').get(function() {
-  return { perDay: this.pricePerDay, currency: this.currency };
-});
-
-carSchema.virtual('pickupLocation').get(function() {
-  return {
-    city: this.city,
-    state: this.state,
-    address: this.address,
-    coordinates: this.coordinates
-  };
-});
-
-carSchema.virtual('dna').get(function() {
-  return {
-    passport: this.vehiclePassport,
-    maintenance: this.maintenance
-  };
 });
 
 // Normalize fields before save

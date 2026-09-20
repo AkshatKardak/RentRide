@@ -55,7 +55,7 @@ class PricingService {
    * @returns {Object} { pricePerDay, securityDeposit, calculationBreakdown }
    */
   calculateRentalPrice(vehicle = {}) {
-    const brand = (vehicle.brand || vehicle.make || '').toLowerCase().trim();
+    const brand = (vehicle.brand || '').toLowerCase().trim();
     const category = (vehicle.category || vehicle.carType || vehicle.bodyType || 'sedan').toLowerCase().trim();
     const transmission = (vehicle.transmission || 'manual').toLowerCase().trim();
     const fuelType = (vehicle.fuelType || vehicle.fuel || 'petrol').toLowerCase().trim();

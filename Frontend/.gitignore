@@ -9,6 +9,10 @@ Frontend/.env
 *service-account*.json
 firebase-adminsdk*.json
 
-
 # Dependencies
 node_modules/
+
+# Production build artifacts
+dist/
+build/
+.vercel

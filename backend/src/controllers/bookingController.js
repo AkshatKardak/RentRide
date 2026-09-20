@@ -58,7 +58,7 @@ exports.createBooking = async (req, res) => {
     // Calculate base pricing
     const diffTime = Math.abs(end - start);
     const days = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
-    const perDayRate = car.pricePerDay || car.rentalPrice?.perDay || 2500;
+    const perDayRate = car.pricePerDay;
     const basePrice = perDayRate * days;
 
     // Calculate Add-ons price
@@ -97,8 +97,8 @@ exports.createBooking = async (req, res) => {
       car: carId,
       startDate: start,
       endDate: end,
-      pickupLocation: pickupLocation || { city: car.location || 'Mumbai', address: `${car.location || 'City'} Hub` },
-      dropoffLocation: dropoffLocation || { city: car.location || 'Mumbai', address: `${car.location || 'City'} Hub` },
+      pickupLocation: pickupLocation || { city: car.city || 'Hub Location', address: car.address || `${car.city || 'Central'} Hub` },
+      dropoffLocation: dropoffLocation || { city: car.city || 'Hub Location', address: car.address || `${car.city || 'Central'} Hub` },
       addOns,
       promotion: promotion ? promotion._id : null,
       promotionCode: promotionCode || null,

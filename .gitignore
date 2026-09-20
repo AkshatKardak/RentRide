@@ -1,1 +1,28 @@
+# Dependencies
 node_modules/
+
+# Production build artifacts
+dist/
+build/
+Frontend/dist/
+Frontend/build/
+backend/dist/
+backend/build/
+
+# Deployment & Cache
+.vercel
+.cache
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+.env.*
+Frontend/.env*
+backend/.env*
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

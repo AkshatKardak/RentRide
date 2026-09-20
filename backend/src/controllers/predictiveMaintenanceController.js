@@ -29,11 +29,11 @@ exports.getFleetMaintenanceReport = async (req, res) => {
         const score = await predictiveMaintenance.calculateMaintenanceScore(car);
         return {
           carId: car._id,
-          name: car.name || `${car.make || car.brand} ${car.model}`,
-          brand: car.brand || car.make,
+          name: car.name || `${car.brand} ${car.model}`,
+          brand: car.brand,
           model: car.model,
           year: car.year,
-          mileage: car.totalMileage || car.mileage,
+          mileage: car.mileage || 0,
           healthScore: score.overallHealthScore,
           reliabilityBadge: score.reliabilityBadge,
           urgentFailures: score.predictedFailures.filter(f => f.severity === 'HIGH'),

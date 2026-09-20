@@ -9,11 +9,11 @@ const mongoose = require('mongoose');
 async function getFleetOverview() {
   const totalCars = await Car.countDocuments();
   const availableCars = await Car.countDocuments({
-    $or: [{ available: true }, { isAvailable: true }],
+    available: true,
     status: { $ne: 'inactive' }
   });
   const bookedCars = await Car.countDocuments({
-    $or: [{ available: false }, { isAvailable: false }, { status: 'booked' }]
+    $or: [{ available: false }, { status: 'booked' }]
   });
   const maintenanceCars = await Car.countDocuments({ status: 'maintenance' });
 
@@ -134,10 +134,10 @@ async function getUtilizationHeatmap() {
     },
     {
       $project: {
-        make: { $ifNull: ['$make', '$brand'] },
+        brand: { $ifNull: ['$brand', '$make'] },
         model: 1,
         bodyType: { $ifNull: ['$bodyType', '$category'] },
-        city: { $ifNull: ['$pickupLocation.city', '$location'] },
+        city: { $ifNull: ['$city', '$pickupLocation.city'] },
         totalBookings: { $size: '$bookings' },
         totalRevenue: {
           $sum: {
@@ -148,7 +148,7 @@ async function getUtilizationHeatmap() {
             }
           }
         },
-        healthScore: { $ifNull: ['$dna.maintenance.overallHealthScore', 90] },
+        healthScore: { $ifNull: ['$maintenance.healthScore', null] },
         utilizationDays: {
           $sum: {
             $map: {
@@ -271,26 +271,26 @@ async function getMaintenanceAlerts() {
 
   if (cars.length === 0) {
     // If none flagged, query cars with highest mileage
-    const highMileageCars = await Car.find().sort({ totalMileage: -1 }).limit(3).populate('owner', 'name email phone');
+    const highMileageCars = await Car.find().sort({ mileage: -1 }).limit(3).populate('owner', 'name email phone');
     return highMileageCars.map(car => ({
       carId: car._id,
-      make: car.make || car.brand,
+      brand: car.brand,
       model: car.model,
-      healthScore: car.dna?.maintenance?.overallHealthScore || 72,
+      healthScore: car.maintenance?.healthScore || null,
       owner: car.owner,
-      recommendedActions: car.dna?.maintenance?.recommendedActions || ['Periodic general inspection advised'],
+      recommendedActions: car.maintenance?.recommendedActions || ['Periodic general inspection advised'],
       urgency: 'MEDIUM'
     }));
   }
 
   return cars.map(car => ({
     carId: car._id,
-    make: car.make || car.brand,
+    brand: car.brand,
     model: car.model,
-    healthScore: car.dna?.maintenance?.overallHealthScore || 50,
+    healthScore: car.maintenance?.healthScore || null,
     owner: car.owner,
-    recommendedActions: car.dna?.maintenance?.recommendedActions || ['Immediate workshop diagnostic required'],
-    urgency: (car.dna?.maintenance?.overallHealthScore || 50) < 50 ? 'HIGH' : 'MEDIUM'
+    recommendedActions: car.maintenance?.recommendedActions || ['Immediate workshop diagnostic required'],
+    urgency: (car.maintenance?.healthScore || 50) < 50 ? 'HIGH' : 'MEDIUM'
   }));
 }
 

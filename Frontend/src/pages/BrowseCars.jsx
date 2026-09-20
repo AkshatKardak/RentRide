@@ -181,8 +181,8 @@ const BrowseCars = () => {
           startDate: new Date().toISOString(),
           endDate: new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString(),
           days: days,
-          pickupLocation: car.location || 'Pune',
-          dropoffLocation: car.location || 'Pune',
+          pickupLocation: car.address || car.city || 'Hub Location',
+          dropoffLocation: car.address || car.city || 'Hub Location',
           totalPrice: baseFare
         }
       }

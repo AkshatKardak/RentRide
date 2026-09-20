@@ -152,10 +152,18 @@ npm install
 ```
 
 ### 2. Import & Normalize Dataset
-Populates MongoDB with realistic rental rates and deduplicated vehicles from `Data/Car Sell Dataset.csv`:
+Populates MongoDB with realistic rental rates and deduplicated vehicles from `data/indian_cars.csv`:
 ```bash
 cd backend
 npm run import:cars
+```
+
+Dataset structure:
+```
+data/
+├── indian_cars.csv        # Raw Indian automotive market dataset
+├── normalized_cars.csv    # Deduplicated & price-normalized fleet catalog
+└── import_report.json     # Pipeline execution metrics & statistics
 ```
 
 ### 3. Run Applications Locally
@@ -175,8 +183,9 @@ npm run dev
 
 ## 🚢 Deployment Architecture
 
-- **Frontend (Vercel):** Single build output hosting both user routes and integrated `/admin/*` routes.
-- **Backend (Render):** Standard Node.js Express service running on Node 24 runtime with MongoDB Atlas connectivity.
+- **Frontend (Vercel):** Single unified build output hosting both renter pages and integrated `/admin/*` routes.
+- **Backend (Render):** Standard Node.js Express service running on Node 24 LTS runtime with health checks.
+- **Database (MongoDB Atlas):** Cloud MongoDB cluster housing persistent vehicle inventories, bookings, and user profiles.
 
 ---
 

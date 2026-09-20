@@ -19,11 +19,11 @@ const Cards = ({ item }) => {
   };
 
   const carName = item.name || `${item.brand || ''} ${item.model || 'Vehicle'}`.trim();
-  const price = item.pricePerDay || item.rentalPrice?.perDay || 2200;
+  const price = item.pricePerDay || 2200;
   const imageUrl = item.primaryImage || item.images?.[0] || item.img || heroCarImg;
-  const trustScore = item.trustScore || 88;
-  const rating = item.rating || item.averageRating || 4.8;
-  const city = item.city || item.location || 'Mumbai';
+  const trustScore = item.trustScore;
+  const rating = item.rating;
+  const city = item.city;
 
   return (
     <motion.div
@@ -41,12 +41,22 @@ const Cards = ({ item }) => {
       >
         {/* Top Badges */}
         <div className="flex items-center justify-between z-10 w-full mb-3">
-          <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-            <ShieldCheck size={12} /> {trustScore}/100 Trust
-          </span>
-          <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-400">
-            <Star size={12} className="fill-amber-400" /> {rating}
-          </span>
+          {trustScore ? (
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+              <ShieldCheck size={12} /> {trustScore}/100 Trust
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20">
+              <ShieldCheck size={12} /> Verified
+            </span>
+          )}
+          {rating ? (
+            <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-400">
+              <Star size={12} className="fill-amber-400" /> {rating}
+            </span>
+          ) : (
+            <span className="text-xs text-slate-400 font-medium">New Fleet</span>
+          )}
         </div>
 
         {/* Image */}
@@ -67,8 +77,7 @@ const Cards = ({ item }) => {
               </h3>
               <p className="text-xs flex items-center gap-1 text-slate-400 mt-0.5">
                 <MapPin size={12} className="text-emerald-500" />
-                <span>{city}</span>
-                <span>•</span>
+                {city && <span>{city} • </span>}
                 <span className="capitalize">{item.category || 'Sedan'}</span>
                 <span>•</span>
                 <span className="capitalize">{item.fuelType || 'Petrol'}</span>

@@ -15,11 +15,6 @@ import {
 import { bookingService } from '../services/bookingService';
 import damageService from '../services/damageService';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
-
-import SupraImg from "../assets/supra.png";
-import PorscheImg from "../assets/porsche.png";
-import MercedesImg from "../assets/mercedesg63amg.png";
-
 import EChartCard from "../components/common/EChartCard";
 import { carService } from '../services/carService';
 

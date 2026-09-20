@@ -41,8 +41,8 @@ class TrustScoreService {
     else if (odometerLogs >= 1) odometerPoints = 13;
 
     // 5. Owner Reliability & Rating (10 points max)
-    const avgRating = vehicle.rating || vehicle.averageRating || 4.8;
-    const ratingPoints = Math.round((Math.min(5, Math.max(0, avgRating)) / 5) * 10);
+    const avgRating = vehicle.rating !== undefined && vehicle.rating !== null ? vehicle.rating : null;
+    const ratingPoints = avgRating !== null ? Math.round((Math.min(5, Math.max(0, avgRating)) / 5) * 10) : 8;
 
     // Total Score (0 - 100)
     const trustScore = Math.min(100, Math.max(20, (

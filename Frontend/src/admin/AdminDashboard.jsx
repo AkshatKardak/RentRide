@@ -14,6 +14,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import axios from 'axios';
+import * as echarts from 'echarts';
 import { useTheme } from '../context/ThemeContext';
 import EChartCard from '../components/common/EChartCard';
 
@@ -70,58 +71,68 @@ export default function AdminDashboard() {
       // Configure Revenue Chart
       if (revenueRes.status === 'fulfilled' && revenueRes.value.data?.success) {
         const revData = revenueRes.value.data.data || [];
-        const dates = revData.map(d => d.date || d._id || 'Day');
-        const amounts = revData.map(d => d.revenue || d.amount || 0);
+        if (revData.length > 0) {
+          const dates = revData.map(d => d.date || d._id || 'Day');
+          const amounts = revData.map(d => d.revenue || d.amount || 0);
 
-        setRevenueChartData({
-          tooltip: {
-            trigger: 'axis',
-            formatter: '{b}: ₹{c}'
-          },
-          grid: { top: 30, right: 20, bottom: 30, left: 50 },
-          xAxis: {
-            type: 'category',
-            data: dates.length > 0 ? dates : ['W1', 'W2', 'W3', 'W4'],
-            axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
-          },
-          yAxis: {
-            type: 'value',
-            axisLabel: { formatter: '₹{value}' },
-            splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
-          },
-          series: [{
-            data: amounts.length > 0 ? amounts : [0, 0, 0, 0],
-            type: 'line',
-            smooth: true,
-            areaStyle: {
-              color: new (require('echarts').graphic.LinearGradient)(0, 0, 0, 1, [
-                { offset: 0, color: 'rgba(16, 185, 129, 0.4)' },
-                { offset: 1, color: 'rgba(16, 185, 129, 0.02)' }
-              ])
+          setRevenueChartData({
+            tooltip: {
+              trigger: 'axis',
+              formatter: '{b}: ₹{c}'
             },
-            itemStyle: { color: '#10b981' }
-          }]
-        });
+            grid: { top: 30, right: 20, bottom: 30, left: 50 },
+            xAxis: {
+              type: 'category',
+              data: dates,
+              axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
+            },
+            yAxis: {
+              type: 'value',
+              axisLabel: { formatter: '₹{value}' },
+              splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
+            },
+            series: [{
+              data: amounts,
+              type: 'line',
+              smooth: true,
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: 'rgba(16, 185, 129, 0.4)' },
+                  { offset: 1, color: 'rgba(16, 185, 129, 0.02)' }
+                ])
+              },
+              itemStyle: { color: '#10b981' }
+            }]
+          });
+        } else {
+          setRevenueChartData(null);
+        }
+      } else {
+        setRevenueChartData(null);
       }
 
       // Configure Fleet Utilization Donut Chart
-      const rentedCount = Math.max(0, stats.totalCars - stats.availableCars);
-      setUtilizationChartData({
-        tooltip: { trigger: 'item' },
-        legend: { bottom: '0', textStyle: { color: isDarkMode ? '#94a3b8' : '#64748b' } },
-        series: [{
-          type: 'pie',
-          radius: ['45%', '70%'],
-          avoidLabelOverlap: false,
-          itemStyle: { borderRadius: 8, borderColor: isDarkMode ? '#0f172a' : '#fff', borderWidth: 2 },
-          label: { show: false },
-          data: [
-            { value: stats.availableCars || 1, name: 'Available', itemStyle: { color: '#10b981' } },
-            { value: rentedCount || 0, name: 'Rented', itemStyle: { color: '#3b82f6' } },
-            { value: stats.totalCars > 0 ? Math.max(0, stats.totalCars - stats.availableCars - rentedCount) : 0, name: 'Maintenance', itemStyle: { color: '#f59e0b' } }
-          ]
-        }]
-      });
+      if (stats.totalCars > 0) {
+        const rentedCount = Math.max(0, stats.totalCars - stats.availableCars);
+        setUtilizationChartData({
+          tooltip: { trigger: 'item' },
+          legend: { bottom: '0', textStyle: { color: isDarkMode ? '#94a3b8' : '#64748b' } },
+          series: [{
+            type: 'pie',
+            radius: ['45%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: { borderRadius: 8, borderColor: isDarkMode ? '#0f172a' : '#fff', borderWidth: 2 },
+            label: { show: false },
+            data: [
+              { value: stats.availableCars, name: 'Available', itemStyle: { color: '#10b981' } },
+              { value: rentedCount, name: 'Rented', itemStyle: { color: '#3b82f6' } },
+              { value: Math.max(0, stats.totalCars - stats.availableCars - rentedCount), name: 'Maintenance', itemStyle: { color: '#f59e0b' } }
+            ].filter(d => d.value > 0)
+          }]
+        });
+      } else {
+        setUtilizationChartData(null);
+      }
 
     } catch (err) {
       console.error('Error fetching admin dashboard:', err);

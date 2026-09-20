@@ -120,10 +120,10 @@ async function runImporter() {
 
   // 1. Locate Dataset File
   const possiblePaths = [
-    path.join(__dirname, '../../../Data/Car Sell Dataset.csv'),
-    path.join(__dirname, '../../../data/Car Sell Dataset.csv'),
     path.join(__dirname, '../../../data/indian_cars.csv'),
-    path.join(__dirname, '../../../Data/indian_cars.csv')
+    path.join(__dirname, '../../../Data/indian_cars.csv'),
+    path.join(__dirname, '../../../Data/Car Sell Dataset.csv'),
+    path.join(__dirname, '../../../data/Car Sell Dataset.csv')
   ];
 
   let datasetPath = null;
@@ -135,7 +135,7 @@ async function runImporter() {
   }
 
   if (!datasetPath) {
-    console.error('❌ Could not find dataset in Data/Car Sell Dataset.csv or data/indian_cars.csv');
+    console.error('❌ Could not find dataset in data/indian_cars.csv');
     process.exit(1);
   }
 
@@ -265,12 +265,11 @@ async function runImporter() {
       valuation: rawPrice,
       city,
       state,
-      location: city,
       address: `${city} Central Hub`,
       available: true,
       status: 'active',
-      rating: 4.8,
-      totalReviews: 12,
+      rating: null,
+      totalReviews: 0,
       trustScore: trust.trustScore,
       trustBreakdown: trust.breakdown,
       images: brandImages,

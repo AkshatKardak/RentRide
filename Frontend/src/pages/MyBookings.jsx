@@ -79,7 +79,7 @@ const MyBookings = () => {
           carName: b.car ? `${b.car.brand} ${b.car.model}` : 'Unknown Car',
           status: b.status.charAt(0).toUpperCase() + b.status.slice(1),
           paymentStatus: b.paymentStatus.charAt(0).toUpperCase() + b.paymentStatus.slice(1),
-          pickup: b.car?.location || 'Store Location',
+          pickup: b.car?.city || b.pickupLocation?.city || 'Store Location',
           dropoff: 'Store Location',
           start: new Date(b.startDate).toLocaleDateString() + ' ' + new Date(b.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           end: new Date(b.endDate).toLocaleDateString() + ' ' + new Date(b.endDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),

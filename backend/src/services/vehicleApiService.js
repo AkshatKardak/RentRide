@@ -332,8 +332,6 @@ async function syncVehiclesFromAPI() {
                 drivetrain: profile.specs.drive_type || 'FWD',
                 specs: profile.specs,
                 pricePerDay: 2500 + Math.floor(Math.random() * 4000),
-                rentalPrice: { perDay: 2500 + Math.floor(Math.random() * 4000), currency: 'INR' },
-                isAvailable: true,
                 available: true,
                 isApproved: true,
                 status: 'active',

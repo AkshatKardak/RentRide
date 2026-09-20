@@ -19,7 +19,7 @@ class AIService {
   async searchCarsNLP(userQuery, filters = {}) {
     try {
       const availableCars = await Car.find({ 
-        isAvailable: true,
+        available: true,
         ...filters 
       }).limit(50);
 
@@ -41,7 +41,7 @@ class AIService {
         fuel: car.fuelType,
         pricePerDay: car.pricePerDay,
         features: car.features || [],
-        rating: car.averageRating || 0
+        rating: car.rating || 0
       }));
 
       const prompt = `You are a car rental expert helping customers find the perfect car in India.
@@ -177,7 +177,7 @@ JSON Format:
 
         // Search similar cars
         const similarCars = await Car.find({
-          isAvailable: true,
+          available: true,
           $or: [
             { type: new RegExp(bodyType, 'i') },
             { seats: { $gte: seats - 2, $lte: seats + 2 } }
@@ -195,7 +195,7 @@ JSON Format:
         
         // SMART FALLBACK: Use Groq to analyze image description
         // In production, you'd ask user to describe the car
-        const allCars = await Car.find({ isAvailable: true }).limit(10);
+        const allCars = await Car.find({ available: true }).limit(10);
         
         return {
           analysis: {
@@ -216,7 +216,7 @@ JSON Format:
       console.error('Image recognition error:', error);
       
       // Ultimate fallback
-      const cars = await Car.find({ isAvailable: true }).limit(10);
+      const cars = await Car.find({ available: true }).limit(10);
       return {
         analysis: { identification: 'Browse all cars', bodyType: 'All', estimatedSeats: 5 },
         similarCars: cars,
