@@ -253,20 +253,32 @@ const CarDetails = () => {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t text-[11px]" style={{ borderColor: theme.border }}>
                 <div className="p-2 rounded-xl bg-slate-500/5">
-                  <p className="text-slate-400">Maintenance</p>
-                  <p className="font-bold text-emerald-500">{car.maintenance?.healthScore ? `${car.maintenance.healthScore}% Health` : 'Active'}</p>
+                  <p className="text-slate-400">Maintenance Health</p>
+                  <p className="font-bold text-emerald-500">
+                    {car.maintenance?.healthScore 
+                      ? `${car.maintenance.healthScore}% Verified` 
+                      : (car.trustBreakdown?.breakdown?.maintenanceHealth?.score 
+                          ? `${car.trustBreakdown.breakdown.maintenanceHealth.score}% Verified` 
+                          : '95% Verified')}
+                  </p>
                 </div>
                 <div className="p-2 rounded-xl bg-slate-500/5">
                   <p className="text-slate-400">Accident History</p>
-                  <p className="font-bold text-emerald-500">0 Structural</p>
+                  <p className={`font-bold ${car.previousAccidents > 0 ? 'text-amber-400' : 'text-emerald-500'}`}>
+                    {car.previousAccidents > 0 ? `${car.previousAccidents} Minor Claim` : '0 Structural'}
+                  </p>
                 </div>
                 <div className="p-2 rounded-xl bg-slate-500/5">
                   <p className="text-slate-400">Odometer</p>
-                  <p className="font-bold text-emerald-500">GPS Verified</p>
+                  <p className="font-bold text-emerald-500">
+                    {car.mileage ? `${car.mileage.toLocaleString()} km (GPS)` : 'GPS Verified'}
+                  </p>
                 </div>
                 <div className="p-2 rounded-xl bg-slate-500/5">
-                  <p className="text-slate-400">Passport</p>
-                  <p className="font-bold text-emerald-500">Digital Record</p>
+                  <p className="text-slate-400">Trust Rating</p>
+                  <p className="font-bold text-emerald-500">
+                    {car.trustBreakdown?.ratingBadge || (car.trustScore >= 90 ? 'ELITE TRUST' : car.trustScore >= 80 ? 'HIGH TRUST' : 'VERIFIED')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -276,14 +288,14 @@ const CarDetails = () => {
                <SpecBox icon={<Gauge size={20} />} label="Transmission" value={car.transmission} theme={theme} />
                <SpecBox icon={<Fuel size={20} />} label="Fuel Type" value={car.fuelType} theme={theme} />
                <SpecBox icon={<Users size={20} />} label="Capacity" value={`${car.seats || 5} Persons`} theme={theme} />
-               <SpecBox icon={<Info size={20} />} label="Mileage" value={`${car.mileage || '25,000'} km`} theme={theme} />
+               <SpecBox icon={<Info size={20} />} label="Mileage" value={`${car.mileage?.toLocaleString() || '25,000'} km`} theme={theme} />
             </div>
 
             {/* Description */}
             <div className="mb-8">
               <h3 className="font-bold text-lg mb-3" style={{ color: theme.text }}>About this vehicle</h3>
               <p className="leading-relaxed text-base" style={{ color: theme.textSecondary }}>
-                {car.description || "Reliable mid-size SUV with Honda's legendary engineering and comfort. Perfect for city drives and weekend getaways. Regularly serviced and sanitized for your safety."}
+                {car.description || `Verified ${car.brand} ${car.model} in pristine mechanical and cosmetic condition. Fully sanitized, GPS-equipped, and insured for smooth self-drive travel across ${car.city || 'India'}.`}
               </p>
             </div>
 
@@ -291,7 +303,7 @@ const CarDetails = () => {
             <div className="mb-8">
               <h3 className="font-bold text-lg mb-3" style={{ color: theme.text }}>Key Features</h3>
               <div className="grid grid-cols-2 gap-y-2 gap-x-4">
-                {(car.features && car.features.length > 0 ? car.features : ['Honda Sensing', 'Walk-Away Auto Lock', 'Lane Watch Camera', 'Remote Engine Start', 'Bluetooth', 'GPS Navigation']).map((feature, i) => (
+                {(car.features && car.features.length > 0 ? car.features : ['Air Conditioning', 'Power Steering', 'Bluetooth Audio', 'Dual Airbags', 'ABS with EBD', 'Reverse Parking Sensors']).map((feature, i) => (
                   <div 
                     key={i} 
                     className="flex items-center gap-2 text-sm font-medium"

@@ -1,0 +1,440 @@
+{
+  "audi a4": {
+    "path": "/assets/cars/audi-a4.jpg",
+    "sizeBytes": 257381,
+    "brand": "Audi",
+    "model": "A4"
+  },
+  "audi a6": {
+    "path": "/assets/cars/audi-a6.jpg",
+    "sizeBytes": 235598,
+    "brand": "Audi",
+    "model": "A6"
+  },
+  "audi q7": {
+    "path": "/assets/cars/audi-q7.jpg",
+    "sizeBytes": 255488,
+    "brand": "Audi",
+    "model": "Q7"
+  },
+  "bmw 5 series": {
+    "path": "/assets/cars/bmw-5-series.jpg",
+    "sizeBytes": 228353,
+    "brand": "BMW",
+    "model": "5 Series"
+  },
+  "bmw x3": {
+    "path": "/assets/cars/bmw-x3.jpg",
+    "sizeBytes": 250348,
+    "brand": "BMW",
+    "model": "X3"
+  },
+  "chevrolet beat": {
+    "path": "/assets/cars/chevrolet-beat.jpg",
+    "sizeBytes": 288687,
+    "brand": "Chevrolet",
+    "model": "Beat"
+  },
+  "chevrolet cruze": {
+    "path": "/assets/cars/chevrolet-cruze.jpg",
+    "sizeBytes": 188290,
+    "brand": "Chevrolet",
+    "model": "Cruze"
+  },
+  "chevrolet tavera": {
+    "path": "/assets/cars/chevrolet-tavera.jpg",
+    "sizeBytes": 205047,
+    "brand": "Chevrolet",
+    "model": "Tavera"
+  },
+  "ford aspire": {
+    "path": "/assets/cars/ford-aspire.jpg",
+    "sizeBytes": 292371,
+    "brand": "Ford",
+    "model": "Aspire"
+  },
+  "ford ecosport": {
+    "path": "/assets/cars/ford-ecosport.jpg",
+    "sizeBytes": 281312,
+    "brand": "Ford",
+    "model": "EcoSport"
+  },
+  "ford endeavour": {
+    "path": "/assets/cars/ford-endeavour.jpg",
+    "sizeBytes": 321745,
+    "brand": "Ford",
+    "model": "Endeavour"
+  },
+  "ford figo": {
+    "path": "/assets/cars/ford-figo.jpg",
+    "sizeBytes": 292371,
+    "brand": "Ford",
+    "model": "Figo"
+  },
+  "honda amaze": {
+    "path": "/assets/cars/honda-amaze.jpg",
+    "sizeBytes": 1715550,
+    "brand": "Honda",
+    "model": "Amaze"
+  },
+  "honda brio": {
+    "path": "/assets/cars/honda-brio.jpg",
+    "sizeBytes": 239893,
+    "brand": "Honda",
+    "model": "Brio"
+  },
+  "honda city": {
+    "path": "/assets/cars/honda-city.jpg",
+    "sizeBytes": 254213,
+    "brand": "Honda",
+    "model": "City"
+  },
+  "honda jazz": {
+    "path": "/assets/cars/honda-jazz.jpg",
+    "sizeBytes": 188381,
+    "brand": "Honda",
+    "model": "Jazz"
+  },
+  "honda wr-v": {
+    "path": "/assets/cars/honda-wr-v.jpg",
+    "sizeBytes": 241741,
+    "brand": "Honda",
+    "model": "WR-V"
+  },
+  "hyundai aura": {
+    "path": "/assets/cars/hyundai-aura.jpg",
+    "sizeBytes": 260084,
+    "brand": "Hyundai",
+    "model": "Aura"
+  },
+  "hyundai creta": {
+    "path": "/assets/cars/hyundai-creta.jpg",
+    "sizeBytes": 1426435,
+    "brand": "Hyundai",
+    "model": "Creta"
+  },
+  "hyundai grand i10": {
+    "path": "/assets/cars/hyundai-grand-i10.jpg",
+    "sizeBytes": 292020,
+    "brand": "Hyundai",
+    "model": "Grand i10"
+  },
+  "hyundai venue": {
+    "path": "/assets/cars/hyundai-venue.jpg",
+    "sizeBytes": 177481,
+    "brand": "Hyundai",
+    "model": "Venue"
+  },
+  "hyundai verna": {
+    "path": "/assets/cars/hyundai-verna.jpg",
+    "sizeBytes": 217031,
+    "brand": "Hyundai",
+    "model": "Verna"
+  },
+  "hyundai i10": {
+    "path": "/assets/cars/hyundai-i10.jpg",
+    "sizeBytes": 292020,
+    "brand": "Hyundai",
+    "model": "i10"
+  },
+  "hyundai i20": {
+    "path": "/assets/cars/hyundai-i20.jpg",
+    "sizeBytes": 222875,
+    "brand": "Hyundai",
+    "model": "i20"
+  },
+  "jaguar f-pace": {
+    "path": "/assets/cars/jaguar-f-pace.jpg",
+    "sizeBytes": 172769,
+    "brand": "Jaguar",
+    "model": "F-Pace"
+  },
+  "jaguar xe": {
+    "path": "/assets/cars/jaguar-xe.jpg",
+    "sizeBytes": 297935,
+    "brand": "Jaguar",
+    "model": "XE"
+  },
+  "kia carens": {
+    "path": "/assets/cars/kia-carens.jpg",
+    "sizeBytes": 234899,
+    "brand": "Kia",
+    "model": "Carens"
+  },
+  "kia seltos": {
+    "path": "/assets/cars/kia-seltos.jpg",
+    "sizeBytes": 286129,
+    "brand": "Kia",
+    "model": "Seltos"
+  },
+  "kia sonet": {
+    "path": "/assets/cars/kia-sonet.jpg",
+    "sizeBytes": 225823,
+    "brand": "Kia",
+    "model": "Sonet"
+  },
+  "mg astor": {
+    "path": "/assets/cars/mg-astor.jpg",
+    "sizeBytes": 301386,
+    "brand": "MG",
+    "model": "Astor"
+  },
+  "mg hector": {
+    "path": "/assets/cars/mg-hector.jpg",
+    "sizeBytes": 204249,
+    "brand": "MG",
+    "model": "Hector"
+  },
+  "mg zs ev": {
+    "path": "/assets/cars/mg-zs-ev.jpg",
+    "sizeBytes": 278158,
+    "brand": "MG",
+    "model": "ZS EV"
+  },
+  "mahindra bolero": {
+    "path": "/assets/cars/mahindra-bolero.jpg",
+    "sizeBytes": 290577,
+    "brand": "Mahindra",
+    "model": "Bolero"
+  },
+  "mahindra scorpio": {
+    "path": "/assets/cars/mahindra-scorpio.jpg",
+    "sizeBytes": 344860,
+    "brand": "Mahindra",
+    "model": "Scorpio"
+  },
+  "mahindra tuv300": {
+    "path": "/assets/cars/mahindra-tuv300.jpg",
+    "sizeBytes": 423770,
+    "brand": "Mahindra",
+    "model": "TUV300"
+  },
+  "mahindra thar": {
+    "path": "/assets/cars/mahindra-thar.jpg",
+    "sizeBytes": 470676,
+    "brand": "Mahindra",
+    "model": "Thar"
+  },
+  "mahindra xuv500": {
+    "path": "/assets/cars/mahindra-xuv500.jpg",
+    "sizeBytes": 326614,
+    "brand": "Mahindra",
+    "model": "XUV500"
+  },
+  "maruti suzuki alto": {
+    "path": "/assets/cars/maruti-suzuki-alto.jpg",
+    "sizeBytes": 300563,
+    "brand": "Maruti Suzuki",
+    "model": "Alto"
+  },
+  "maruti suzuki baleno": {
+    "path": "/assets/cars/maruti-suzuki-baleno.jpg",
+    "sizeBytes": 286653,
+    "brand": "Maruti Suzuki",
+    "model": "Baleno"
+  },
+  "maruti suzuki celerio": {
+    "path": "/assets/cars/maruti-suzuki-celerio.jpg",
+    "sizeBytes": 1391022,
+    "brand": "Maruti Suzuki",
+    "model": "Celerio"
+  },
+  "maruti suzuki dzire": {
+    "path": "/assets/cars/maruti-suzuki-dzire.jpg",
+    "sizeBytes": 205399,
+    "brand": "Maruti Suzuki",
+    "model": "Dzire"
+  },
+  "maruti suzuki ertiga": {
+    "path": "/assets/cars/maruti-suzuki-ertiga.jpg",
+    "sizeBytes": 210779,
+    "brand": "Maruti Suzuki",
+    "model": "Ertiga"
+  },
+  "maruti suzuki ignis": {
+    "path": "/assets/cars/maruti-suzuki-ignis.jpg",
+    "sizeBytes": 246517,
+    "brand": "Maruti Suzuki",
+    "model": "Ignis"
+  },
+  "maruti suzuki s-presso": {
+    "path": "/assets/cars/maruti-suzuki-s-presso.jpg",
+    "sizeBytes": 321278,
+    "brand": "Maruti Suzuki",
+    "model": "S-Presso"
+  },
+  "maruti suzuki swift": {
+    "path": "/assets/cars/maruti-suzuki-swift.jpg",
+    "sizeBytes": 282035,
+    "brand": "Maruti Suzuki",
+    "model": "Swift"
+  },
+  "maruti suzuki wagonr": {
+    "path": "/assets/cars/maruti-suzuki-wagonr.jpg",
+    "sizeBytes": 274948,
+    "brand": "Maruti Suzuki",
+    "model": "WagonR"
+  },
+  "nissan micra": {
+    "path": "/assets/cars/nissan-micra.jpg",
+    "sizeBytes": 259675,
+    "brand": "Nissan",
+    "model": "Micra"
+  },
+  "nissan sunny": {
+    "path": "/assets/cars/nissan-sunny.jpg",
+    "sizeBytes": 166703,
+    "brand": "Nissan",
+    "model": "Sunny"
+  },
+  "nissan terrano": {
+    "path": "/assets/cars/nissan-terrano.jpg",
+    "sizeBytes": 327217,
+    "brand": "Nissan",
+    "model": "Terrano"
+  },
+  "range rover evoque": {
+    "path": "/assets/cars/range-rover-evoque.jpg",
+    "sizeBytes": 194285,
+    "brand": "Range Rover",
+    "model": "Evoque"
+  },
+  "renault duster": {
+    "path": "/assets/cars/renault-duster.jpg",
+    "sizeBytes": 327217,
+    "brand": "Renault",
+    "model": "Duster"
+  },
+  "renault kiger": {
+    "path": "/assets/cars/renault-kiger.jpg",
+    "sizeBytes": 276622,
+    "brand": "Renault",
+    "model": "Kiger"
+  },
+  "renault kwid": {
+    "path": "/assets/cars/renault-kwid.jpg",
+    "sizeBytes": 1370650,
+    "brand": "Renault",
+    "model": "Kwid"
+  },
+  "renault triber": {
+    "path": "/assets/cars/renault-triber.jpg",
+    "sizeBytes": 314172,
+    "brand": "Renault",
+    "model": "Triber"
+  },
+  "skoda kushaq": {
+    "path": "/assets/cars/skoda-kushaq.jpg",
+    "sizeBytes": 1375421,
+    "brand": "Skoda",
+    "model": "Kushaq"
+  },
+  "skoda octavia": {
+    "path": "/assets/cars/skoda-octavia.jpg",
+    "sizeBytes": 194075,
+    "brand": "Skoda",
+    "model": "Octavia"
+  },
+  "skoda rapid": {
+    "path": "/assets/cars/skoda-rapid.jpg",
+    "sizeBytes": 193049,
+    "brand": "Skoda",
+    "model": "Rapid"
+  },
+  "skoda slavia": {
+    "path": "/assets/cars/skoda-slavia.jpg",
+    "sizeBytes": 1234618,
+    "brand": "Skoda",
+    "model": "Slavia"
+  },
+  "skoda superb": {
+    "path": "/assets/cars/skoda-superb.jpg",
+    "sizeBytes": 239719,
+    "brand": "Skoda",
+    "model": "Superb"
+  },
+  "tata altroz": {
+    "path": "/assets/cars/tata-altroz.jpg",
+    "sizeBytes": 236705,
+    "brand": "Tata",
+    "model": "Altroz"
+  },
+  "tata harrier": {
+    "path": "/assets/cars/tata-harrier.jpg",
+    "sizeBytes": 219545,
+    "brand": "Tata",
+    "model": "Harrier"
+  },
+  "tata nexon": {
+    "path": "/assets/cars/tata-nexon.jpg",
+    "sizeBytes": 289595,
+    "brand": "Tata",
+    "model": "Nexon"
+  },
+  "tata tiago": {
+    "path": "/assets/cars/tata-tiago.jpg",
+    "sizeBytes": 326006,
+    "brand": "Tata",
+    "model": "Tiago"
+  },
+  "tata tigor": {
+    "path": "/assets/cars/tata-tigor.jpg",
+    "sizeBytes": 187219,
+    "brand": "Tata",
+    "model": "Tigor"
+  },
+  "toyota etios": {
+    "path": "/assets/cars/toyota-etios.jpg",
+    "sizeBytes": 217878,
+    "brand": "Toyota",
+    "model": "Etios"
+  },
+  "toyota fortuner": {
+    "path": "/assets/cars/toyota-fortuner.jpg",
+    "sizeBytes": 221619,
+    "brand": "Toyota",
+    "model": "Fortuner"
+  },
+  "toyota glanza": {
+    "path": "/assets/cars/toyota-glanza.jpg",
+    "sizeBytes": 286653,
+    "brand": "Toyota",
+    "model": "Glanza"
+  },
+  "toyota innova": {
+    "path": "/assets/cars/toyota-innova.jpg",
+    "sizeBytes": 216419,
+    "brand": "Toyota",
+    "model": "Innova"
+  },
+  "toyota urban cruiser": {
+    "path": "/assets/cars/toyota-urban-cruiser.jpg",
+    "sizeBytes": 230081,
+    "brand": "Toyota",
+    "model": "Urban Cruiser"
+  },
+  "volkswagen ameo": {
+    "path": "/assets/cars/volkswagen-ameo.jpg",
+    "sizeBytes": 243059,
+    "brand": "Volkswagen",
+    "model": "Ameo"
+  },
+  "volkswagen polo": {
+    "path": "/assets/cars/volkswagen-polo.jpg",
+    "sizeBytes": 259594,
+    "brand": "Volkswagen",
+    "model": "Polo"
+  },
+  "volkswagen taigun": {
+    "path": "/assets/cars/volkswagen-taigun.jpg",
+    "sizeBytes": 300236,
+    "brand": "Volkswagen",
+    "model": "Taigun"
+  },
+  "volkswagen vento": {
+    "path": "/assets/cars/volkswagen-vento.jpg",
+    "sizeBytes": 207525,
+    "brand": "Volkswagen",
+    "model": "Vento"
+  }
+}
