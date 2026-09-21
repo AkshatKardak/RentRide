@@ -57,7 +57,7 @@ export default function DamageManagement() {
       </div>
 
       <div className={`rounded-2xl border overflow-hidden ${
-        isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-100 shadow-sm'
+        isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
       }`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -137,7 +137,7 @@ export default function DamageManagement() {
       {selectedReport && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className={`w-full max-w-2xl p-6 rounded-3xl border shadow-2xl space-y-4 ${
-            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'
+            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
           }`}>
             <div className="flex items-center justify-between border-b pb-3 border-inherit">
               <h3 className="font-bold text-lg">Damage Inspection Review</h3>

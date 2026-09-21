@@ -70,13 +70,15 @@ export default function UserManagement() {
             placeholder="Search by name or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-transparent text-xs border rounded-xl border-inherit focus:outline-none focus:border-emerald-500"
+            className={`w-full pl-10 pr-4 py-2 text-xs border rounded-xl focus:outline-none focus:border-emerald-500 transition-colors ${
+              isDarkMode ? 'bg-slate-800/80 border-slate-700 text-white placeholder-slate-500' : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+            }`}
           />
         </div>
       </div>
 
       <div className={`rounded-2xl border overflow-hidden ${
-        isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-100 shadow-sm'
+        isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
       }`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">

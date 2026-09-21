@@ -40,7 +40,7 @@ export default function PaymentRevenue() {
       </div>
 
       <div className={`rounded-2xl border overflow-hidden ${
-        isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-100 shadow-sm'
+        isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
       }`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">

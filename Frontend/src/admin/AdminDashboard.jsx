@@ -115,14 +115,45 @@ export default function AdminDashboard() {
       if (stats.totalCars > 0) {
         const rentedCount = Math.max(0, stats.totalCars - stats.availableCars);
         setUtilizationChartData({
-          tooltip: { trigger: 'item' },
-          legend: { bottom: '0', textStyle: { color: isDarkMode ? '#94a3b8' : '#64748b' } },
+          tooltip: {
+            trigger: 'item',
+            backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
+            borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+            borderWidth: 1,
+            padding: [8, 12],
+            textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12, fontWeight: 600 },
+            formatter: '{b}: <b style="color:#10b981">{c}</b> ({d}%)'
+          },
+          legend: {
+            type: 'scroll',
+            orient: 'horizontal',
+            bottom: 6,
+            left: 'center',
+            itemWidth: 10,
+            itemHeight: 10,
+            itemGap: 16,
+            icon: 'circle',
+            textStyle: { color: isDarkMode ? '#94a3b8' : '#475569', fontSize: 11, fontWeight: 600 }
+          },
           series: [{
+            name: 'Status',
             type: 'pie',
-            radius: ['45%', '70%'],
-            avoidLabelOverlap: false,
+            center: ['50%', '42%'],
+            radius: ['40%', '64%'],
+            avoidLabelOverlap: true,
             itemStyle: { borderRadius: 8, borderColor: isDarkMode ? '#0f172a' : '#fff', borderWidth: 2 },
             label: { show: false },
+            emphasis: {
+              scale: true,
+              scaleSize: 6,
+              label: {
+                show: true,
+                formatter: '{b}\n{c} ({d}%)',
+                fontSize: 13,
+                fontWeight: 'bold',
+                color: isDarkMode ? '#f8fafc' : '#0f172a'
+              }
+            },
             data: [
               { value: stats.availableCars, name: 'Available', itemStyle: { color: '#10b981' } },
               { value: rentedCount, name: 'Rented', itemStyle: { color: '#3b82f6' } },
@@ -204,7 +235,7 @@ export default function AdminDashboard() {
             <div
               key={idx}
               className={`p-5 rounded-2xl border transition-all ${
-                isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-100 shadow-sm'
+                isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -231,30 +262,19 @@ export default function AdminDashboard() {
         <div className="lg:col-span-2">
           <EChartCard
             title="Revenue Performance"
-            subtitle="30-day cumulative rental income trend"
-            options={revenueChartData || {
-              xAxis: { type: 'category', data: ['W1', 'W2', 'W3', 'W4'] },
-              yAxis: { type: 'value' },
-              series: [{ data: [12000, 28000, 45000, 68000], type: 'line', smooth: true, itemStyle: { color: '#10b981' } }]
-            }}
+            subtitle="Real-time rental income trend from database"
+            options={revenueChartData}
             loading={loading}
+            emptyMessage="No revenue transactions logged yet"
           />
         </div>
         <div>
           <EChartCard
             title="Fleet Availability"
-            subtitle="Current status distribution"
-            options={utilizationChartData || {
-              series: [{
-                type: 'pie',
-                radius: ['45%', '70%'],
-                data: [
-                  { value: stats.availableCars || 10, name: 'Available', itemStyle: { color: '#10b981' } },
-                  { value: 5, name: 'Rented', itemStyle: { color: '#3b82f6' } }
-                ]
-              }]
-            }}
+            subtitle="Current active vehicle status distribution"
+            options={utilizationChartData}
             loading={loading}
+            emptyMessage="No fleet vehicles registered"
           />
         </div>
       </div>
@@ -263,7 +283,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Bookings */}
         <div className={`p-5 rounded-2xl border ${
-          isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-100 shadow-sm'
+          isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
         }`}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-base">Recent Rentals</h3>
@@ -299,7 +319,7 @@ export default function AdminDashboard() {
 
         {/* Maintenance Warnings */}
         <div className={`p-5 rounded-2xl border ${
-          isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-100 shadow-sm'
+          isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
         }`}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-base flex items-center gap-2">

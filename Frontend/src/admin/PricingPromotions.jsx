@@ -93,7 +93,7 @@ export default function PricingPromotions() {
       </div>
 
       <div className={`rounded-2xl border overflow-hidden ${
-        isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-100 shadow-sm'
+        isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
       }`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -151,7 +151,7 @@ export default function PricingPromotions() {
       {showAddModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className={`w-full max-w-md p-6 rounded-3xl border shadow-2xl space-y-4 ${
-            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'
+            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
           }`}>
             <h3 className="font-bold text-lg">New Promotion Code</h3>
             <form onSubmit={handleCreatePromo} className="space-y-3 text-xs">

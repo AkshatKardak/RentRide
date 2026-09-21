@@ -71,7 +71,9 @@ export default function BookingManagement() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-2 text-xs font-semibold rounded-xl border bg-transparent border-inherit focus:outline-none self-start md:self-auto"
+          className={`px-3 py-2 text-xs font-semibold rounded-xl border focus:outline-none focus:border-emerald-500 self-start md:self-auto transition-colors ${
+            isDarkMode ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-white border-slate-300 text-slate-800 shadow-sm'
+          }`}
         >
           <option value="All">All Statuses</option>
           <option value="pending">Pending</option>
@@ -83,7 +85,7 @@ export default function BookingManagement() {
       </div>
 
       <div className={`rounded-2xl border overflow-hidden ${
-        isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-100 shadow-sm'
+        isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
       }`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -154,7 +156,9 @@ export default function BookingManagement() {
                       <select
                         value={b.status}
                         onChange={(e) => handleUpdateStatus(b._id, e.target.value)}
-                        className="px-2 py-1 bg-transparent border rounded text-[10px] font-bold border-inherit focus:outline-none"
+                        className={`px-2 py-1 rounded-lg text-[10px] font-bold border focus:outline-none focus:border-emerald-500 transition-colors ${
+                          isDarkMode ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-300 text-slate-800'
+                        }`}
                       >
                         <option value="pending">Pending</option>
                         <option value="approved">Approved</option>

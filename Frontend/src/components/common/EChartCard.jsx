@@ -72,7 +72,7 @@ export default function EChartCard({
 
   return (
     <div className={`p-5 rounded-2xl border transition-all duration-200 ${
-      isDarkMode ? 'bg-slate-900/70 border-slate-800' : 'bg-white border-slate-100 shadow-sm'
+      isDarkMode ? 'bg-slate-900 border-slate-800/90 shadow-lg shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
     }`}>
       {(title || subtitle) && (
         <div className="mb-4">

@@ -47,15 +47,6 @@ export default function AdminLogin() {
       }
     } catch (err) {
       console.error('Admin login error:', err);
-      // Fallback for offline dev or demo bypass
-      if (email.trim().toLowerCase() === 'admin@rentride.com' && password === 'password123') {
-        const demoUser = { id: 'demo-admin-id', name: 'Admin User (Demo)', email: 'admin@rentride.com', role: 'admin' };
-        localStorage.setItem('adminToken', 'dummy-token-12345');
-        localStorage.setItem('adminUser', JSON.stringify(demoUser));
-        toast.success('Logged in with Demo Admin Account');
-        navigate('/admin/dashboard', { replace: true });
-        return;
-      }
       setError(err.response?.data?.message || 'Unable to connect to auth service. Check your connection.');
     } finally {
       setLoading(false);
@@ -70,12 +61,16 @@ export default function AdminLogin() {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="flex justify-center">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-emerald-500/20">
-            R
+          <div className="w-14 h-14 rounded-2xl p-2 flex items-center justify-center bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 shadow-xl shadow-emerald-500/10">
+            <img 
+              src="/tab.png" 
+              alt="RentRide Logo" 
+              className="w-full h-full object-contain filter drop-shadow" 
+            />
           </div>
         </div>
         <h2 className="mt-4 text-center text-3xl font-black tracking-tight text-white">
-          RentRide Admin Portal
+          Rent<span className="text-emerald-500">Ride</span> Admin Portal
         </h2>
         <p className="mt-1 text-center text-sm text-slate-400">
           Executive control & fleet analytics management

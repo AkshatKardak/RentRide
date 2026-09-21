@@ -38,21 +38,37 @@ export default function Analytics() {
           const yValues = revData.map(d => d.revenue || d.amount || 0);
 
           setRevenueTimeChart({
-            tooltip: { trigger: 'axis', formatter: '{b}: ₹{c}' },
-            grid: { top: 25, right: 20, bottom: 30, left: 55 },
+            tooltip: {
+              trigger: 'axis',
+              backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
+              borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+              borderWidth: 1,
+              textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12 },
+              formatter: '{b}: <b style="color:#10b981">₹{c}</b>'
+            },
+            grid: { top: 25, right: 20, bottom: 35, left: 60 },
             xAxis: {
               type: 'category',
               data: xLabels,
-              axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
+              axisLabel: {
+                color: isDarkMode ? '#94a3b8' : '#64748b',
+                fontSize: 11
+              },
+              axisLine: { lineStyle: { color: isDarkMode ? '#334155' : '#e2e8f0' } }
             },
             yAxis: {
               type: 'value',
-              axisLabel: { formatter: '₹{value}' },
-              splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
+              axisLabel: {
+                color: isDarkMode ? '#94a3b8' : '#64748b',
+                formatter: '₹{value}',
+                fontSize: 11
+              },
+              splitLine: { lineStyle: { color: isDarkMode ? 'rgba(51, 65, 85, 0.4)' : 'rgba(226, 232, 240, 0.8)' } }
             },
             series: [{
               data: yValues,
               type: 'bar',
+              barWidth: '40%',
               itemStyle: {
                 color: '#10b981',
                 borderRadius: [6, 6, 0, 0]
@@ -76,12 +92,62 @@ export default function Analytics() {
 
         if (pieData.length > 0) {
           setCategoryChart({
-            tooltip: { trigger: 'item' },
-            legend: { bottom: '0', textStyle: { color: isDarkMode ? '#94a3b8' : '#64748b' } },
+            color: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316', '#14b8a6'],
+            tooltip: {
+              trigger: 'item',
+              backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
+              borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+              borderWidth: 1,
+              padding: [8, 12],
+              textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12, fontWeight: 600 },
+              formatter: '{b}: <b style="color:#10b981">{c}</b> ({d}%)'
+            },
+            legend: {
+              type: 'scroll',
+              orient: 'horizontal',
+              bottom: 6,
+              left: 'center',
+              itemWidth: 10,
+              itemHeight: 10,
+              itemGap: 16,
+              icon: 'circle',
+              textStyle: {
+                color: isDarkMode ? '#94a3b8' : '#475569',
+                fontSize: 11,
+                fontWeight: 600
+              },
+              pageIconColor: '#10b981',
+              pageIconInactiveColor: isDarkMode ? '#475569' : '#cbd5e1',
+              pageTextStyle: { color: isDarkMode ? '#94a3b8' : '#475569' }
+            },
             series: [{
+              name: 'Category',
               type: 'pie',
-              radius: ['40%', '70%'],
-              itemStyle: { borderRadius: 6, borderColor: isDarkMode ? '#0f172a' : '#fff', borderWidth: 2 },
+              center: ['50%', '42%'],
+              radius: ['40%', '64%'],
+              avoidLabelOverlap: true,
+              itemStyle: {
+                borderRadius: 8,
+                borderColor: isDarkMode ? '#0f172a' : '#ffffff',
+                borderWidth: 2
+              },
+              label: {
+                show: false
+              },
+              labelLine: {
+                show: false
+              },
+              emphasis: {
+                scale: true,
+                scaleSize: 6,
+                label: {
+                  show: true,
+                  formatter: '{b}\n{c} ({d}%)',
+                  fontSize: 13,
+                  fontWeight: 'bold',
+                  color: isDarkMode ? '#f8fafc' : '#0f172a'
+                }
+              },
               data: pieData
             }]
           });
@@ -98,11 +164,62 @@ export default function Analytics() {
 
         if (fuelPieData.length > 0) {
           setFuelChart({
-            tooltip: { trigger: 'item' },
-            legend: { bottom: '0', textStyle: { color: isDarkMode ? '#94a3b8' : '#64748b' } },
+            color: ['#10b981', '#3b82f6', '#f59e0b', '#06b6d4', '#8b5cf6'],
+            tooltip: {
+              trigger: 'item',
+              backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
+              borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+              borderWidth: 1,
+              padding: [8, 12],
+              textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12, fontWeight: 600 },
+              formatter: '{b}: <b style="color:#10b981">{c}</b> ({d}%)'
+            },
+            legend: {
+              type: 'scroll',
+              orient: 'horizontal',
+              bottom: 6,
+              left: 'center',
+              itemWidth: 10,
+              itemHeight: 10,
+              itemGap: 16,
+              icon: 'circle',
+              textStyle: {
+                color: isDarkMode ? '#94a3b8' : '#475569',
+                fontSize: 11,
+                fontWeight: 600
+              },
+              pageIconColor: '#10b981',
+              pageIconInactiveColor: isDarkMode ? '#475569' : '#cbd5e1',
+              pageTextStyle: { color: isDarkMode ? '#94a3b8' : '#475569' }
+            },
             series: [{
+              name: 'Fuel Type',
               type: 'pie',
-              radius: '65%',
+              center: ['50%', '42%'],
+              radius: ['40%', '64%'],
+              avoidLabelOverlap: true,
+              itemStyle: {
+                borderRadius: 8,
+                borderColor: isDarkMode ? '#0f172a' : '#ffffff',
+                borderWidth: 2
+              },
+              label: {
+                show: false
+              },
+              labelLine: {
+                show: false
+              },
+              emphasis: {
+                scale: true,
+                scaleSize: 6,
+                label: {
+                  show: true,
+                  formatter: '{b}\n{c} ({d}%)',
+                  fontSize: 13,
+                  fontWeight: 'bold',
+                  color: isDarkMode ? '#f8fafc' : '#0f172a'
+                }
+              },
               data: fuelPieData
             }]
           });
@@ -122,20 +239,35 @@ export default function Analytics() {
           const counts = locData.map(l => l.count || l.total || 0);
 
           setCityChart({
-            tooltip: { trigger: 'axis' },
-            grid: { top: 25, right: 20, bottom: 30, left: 45 },
+            tooltip: {
+              trigger: 'axis',
+              backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
+              borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+              borderWidth: 1,
+              textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12 }
+            },
+            grid: { top: 25, right: 20, bottom: 35, left: 50 },
             xAxis: {
               type: 'category',
               data: cities,
-              axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
+              axisLabel: {
+                color: isDarkMode ? '#94a3b8' : '#64748b',
+                fontSize: 11
+              },
+              axisLine: { lineStyle: { color: isDarkMode ? '#334155' : '#e2e8f0' } }
             },
             yAxis: {
               type: 'value',
-              splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
+              axisLabel: {
+                color: isDarkMode ? '#94a3b8' : '#64748b',
+                fontSize: 11
+              },
+              splitLine: { lineStyle: { color: isDarkMode ? 'rgba(51, 65, 85, 0.4)' : 'rgba(226, 232, 240, 0.8)' } }
             },
             series: [{
               data: counts,
               type: 'bar',
+              barWidth: '40%',
               itemStyle: {
                 color: '#3b82f6',
                 borderRadius: [6, 6, 0, 0]

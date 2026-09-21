@@ -57,31 +57,39 @@ export default function AdminLayout() {
       {/* Sidebar */}
       <aside className={`fixed top-0 left-0 bottom-0 z-50 w-64 border-r transition-transform duration-200 lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } ${isDarkMode ? 'bg-slate-900/95 border-slate-800' : 'bg-white border-slate-200'}`}>
+      } ${isDarkMode ? 'bg-slate-900 border-slate-800 shadow-2xl shadow-black/40' : 'bg-white border-slate-200 shadow-sm'}`}>
         <div className="flex flex-col h-full">
           {/* Brand Header */}
-          <div className="p-6 border-b flex items-center justify-between border-inherit">
-            <Link to="/admin/dashboard" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-emerald-500/20">
-                R
+          <div className={`p-5 border-b flex items-center justify-between ${
+            isDarkMode ? 'border-slate-800/80' : 'border-slate-200'
+          }`}>
+            <Link to="/admin/dashboard" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl p-1.5 flex items-center justify-center bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 shadow-md shadow-emerald-500/10 transition-transform group-hover:scale-105">
+                <img 
+                  src="/tab.png" 
+                  alt="RentRide Logo" 
+                  className="w-full h-full object-contain filter drop-shadow-sm" 
+                />
               </div>
               <div>
-                <span className="font-black text-lg tracking-tight">RentRide</span>
-                <span className="block text-[10px] uppercase font-bold tracking-widest text-emerald-500">
+                <span className="font-black text-lg tracking-tight flex items-center">
+                  Rent<span className="text-emerald-500">Ride</span>
+                </span>
+                <span className="block text-[10px] uppercase font-extrabold tracking-widest text-emerald-500">
                   Fleet Control
                 </span>
               </div>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-1 rounded-lg lg:hidden hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400"
+              className="p-1.5 rounded-lg lg:hidden hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path || (item.path !== '/admin/dashboard' && location.pathname.startsWith(item.path));
@@ -90,15 +98,17 @@ export default function AdminLayout() {
                   key={item.path}
                   to={item.path}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
                     isActive
-                      ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                      ? isDarkMode
+                        ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm shadow-emerald-500/10'
+                        : 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
                       : isDarkMode
-                      ? 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      ? 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 border border-transparent'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent'
                   }`}
                 >
-                  <Icon size={18} />
+                  <Icon size={17} className={isActive ? (isDarkMode ? 'text-emerald-400' : 'text-white') : 'text-slate-400'} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -106,24 +116,24 @@ export default function AdminLayout() {
           </nav>
 
           {/* User & Logout */}
-          <div className="p-4 border-t border-inherit">
-            <div className={`p-3 rounded-xl mb-3 flex items-center gap-3 ${
-              isDarkMode ? 'bg-slate-800/60' : 'bg-slate-100'
+          <div className={`p-4 border-t ${isDarkMode ? 'border-slate-800/80' : 'border-slate-200'}`}>
+            <div className={`p-3 rounded-xl mb-3 flex items-center gap-3 border ${
+              isDarkMode ? 'bg-slate-800/60 border-slate-700/50' : 'bg-slate-100/90 border-slate-200/80'
             }`}>
-              <div className="w-9 h-9 rounded-full bg-emerald-500/20 text-emerald-500 font-bold flex items-center justify-center text-sm">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-500 font-black flex items-center justify-center text-xs">
                 AD
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold truncate">{adminUser.name || 'Admin User'}</p>
+                <p className="text-xs font-bold truncate">{adminUser.name || 'Administrator'}</p>
                 <p className="text-[10px] text-slate-400 truncate">{adminUser.email || 'admin@rentride.com'}</p>
               </div>
             </div>
 
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors border border-rose-500/20 hover:border-rose-500/40"
             >
-              <LogOut size={16} />
+              <LogOut size={15} />
               <span>Log Out</span>
             </button>
           </div>

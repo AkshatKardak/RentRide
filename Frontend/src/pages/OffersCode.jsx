@@ -20,68 +20,19 @@ const OffersCode = () => {
       setLoading(true);
       const response = await promotionService.getAllPromotions();
 
-      if (response.success && response.data.length > 0) {
+      if (response.success && Array.isArray(response.data)) {
         setPromotions(response.data);
       } else {
-        setPromotions(getFallbackPromotions());
-        toast.error('Using fallback promotions. Database might be empty.');
+        setPromotions([]);
       }
     } catch (error) {
-      console.error('Error loading promotions:', error);
-      setPromotions(getFallbackPromotions());
-      toast.error('Failed to load promotions from server. Using fallback data.');
+      console.error('Error loading promotions from database:', error);
+      setPromotions([]);
+      toast.error('Unable to load promotions from server.');
     } finally {
       setLoading(false);
     }
   };
-
-  const getFallbackPromotions = () => [
-    {
-      code: 'WELCOME50',
-      name: 'Welcome Bonus',
-      description: 'Flat ₹50 off on your first booking',
-      type: 'fixed',
-      value: 50,
-      maxDiscount: 50,
-      minBookingAmount: 500,
-    },
-    {
-      code: 'WEEKEND20',
-      name: 'Weekend Special',
-      description: '20% off on weekend bookings',
-      type: 'percentage',
-      value: 20,
-      maxDiscount: 500,
-      minBookingAmount: 1000,
-    },
-    {
-      code: 'LUXURY1000',
-      name: 'Luxury Special',
-      description: 'Flat ₹1000 off on luxury car rentals',
-      type: 'fixed',
-      value: 1000,
-      maxDiscount: 1000,
-      minBookingAmount: 5000,
-    },
-    {
-      code: 'LONGTERM30',
-      name: 'Long Term Deal',
-      description: '30% off on bookings above 7 days',
-      type: 'percentage',
-      value: 30,
-      maxDiscount: 2000,
-      minBookingAmount: 10000,
-    },
-    {
-      code: 'FLASH500',
-      name: 'Flash Sale',
-      description: 'Limited time ₹500 instant discount',
-      type: 'fixed',
-      value: 500,
-      maxDiscount: 500,
-      minBookingAmount: 3000,
-    },
-  ];
 
   const handleCopyCode = (code) => {
     navigator.clipboard.writeText(code);
@@ -158,17 +109,33 @@ const OffersCode = () => {
             </p>
           </div>
 
-          {/* Promotions Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {promotions.map((promo) => (
-              <div
-                key={promo.code || Math.random()}
-                className="rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 hover:border-green-500"
-                style={{
-                  backgroundColor: theme.cardBg,
-                  borderColor: theme.border
-                }}
-              >
+          {/* Promotions Content */}
+          {promotions.length === 0 ? (
+            <div 
+              className="text-center py-16 px-6 rounded-2xl border max-w-lg mx-auto"
+              style={{ backgroundColor: theme.cardBg, borderColor: theme.border }}
+            >
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto mb-4">
+                <FiTag className="text-2xl" />
+              </div>
+              <h3 className="text-lg font-bold mb-1" style={{ color: theme.text }}>
+                No Active Offers Currently
+              </h3>
+              <p className="text-sm" style={{ color: theme.textSecondary }}>
+                All seasonal discounts and promo codes will be listed here as soon as they become active.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {promotions.map((promo) => (
+                <div
+                  key={promo.code || promo._id}
+                  className="rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 hover:border-emerald-500"
+                  style={{
+                    backgroundColor: theme.cardBg,
+                    borderColor: theme.border
+                  }}
+                >
                 {/* Card Header - GREEN GRADIENT */}
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-white">
                   <div className="flex items-center justify-between mb-2">
@@ -254,27 +221,9 @@ const OffersCode = () => {
               </div>
             ))}
           </div>
-
-          {/* No Promotions Message */}
-          {promotions.length === 0 && (
-            <div className="text-center py-12">
-              <FiTag
-                className="text-6xl mx-auto mb-4"
-                style={{ color: theme.textSecondary }}
-              />
-              <h3
-                className="text-2xl font-semibold mb-2"
-                style={{ color: theme.text }}
-              >
-                No active promotions available
-              </h3>
-              <p style={{ color: theme.textSecondary }}>
-                Check back later for new offers!
-              </p>
-            </div>
-          )}
-        </div>
+        )}
       </div>
+    </div>
     </>
   );
 };
