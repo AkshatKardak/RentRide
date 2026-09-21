@@ -20,7 +20,7 @@ import {
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '../context/ThemeContext';
-import heroCarImg from '../assets/herocar.png';
+import { getCarImageUrl, heroCarImg } from '../utils/carImageMap';
 
 export default function VehicleManagement() {
   const { isDarkMode } = useTheme();
@@ -326,7 +326,7 @@ export default function VehicleManagement() {
                           title="Click to view/edit image & provenance"
                         >
                           <img
-                            src={car.primaryImage || car.images?.[0] || heroCarImg}
+                            src={getCarImageUrl(car)}
                             alt={car.model}
                             onError={(e) => {
                               e.currentTarget.onerror = null;

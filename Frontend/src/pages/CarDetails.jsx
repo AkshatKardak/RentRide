@@ -16,8 +16,8 @@ import DashboardNavbar from '../components/layout/DashboardNavbar';
 import { carService } from '../services/carService';
 import { useTheme } from '../context/ThemeContext';
 
-// Safe fallback image
-import HeroCarImg from '../assets/herocar.png';
+// Safe fallback & multi-tier image resolver
+import { getCarImageUrl, heroCarImg as HeroCarImg } from '../utils/carImageMap';
 
 const CarDetails = () => {
   const { id } = useParams();
@@ -119,7 +119,7 @@ const CarDetails = () => {
             >
               <div className="absolute inset-0 bg-green-500/5 rounded-[32px] transform scale-0 group-hover:scale-100 transition-transform duration-500 rounded-full" />
               <img 
-                src={selectedImage || car.primaryImage || car.images?.[0] || HeroCarImg} 
+                src={selectedImage || getCarImageUrl(car)} 
                 alt={car.name || `${car.brand} ${car.model}`} 
                 onError={(e) => {
                   e.currentTarget.onerror = null;

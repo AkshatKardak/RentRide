@@ -14,8 +14,8 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
-// Safe fallback image
-import heroCarImg from '../assets/herocar.png';
+// Multi-tier vehicle image resolver & fallback
+import { getCarImageUrl, heroCarImg } from '../utils/carImageMap';
 
 const BookingConfirmation = () => {
   const location = useLocation();
@@ -86,7 +86,7 @@ const BookingConfirmation = () => {
   const totalAmount = baseFare + taxesFees + deposit;
 
   // Vehicle image with safe fallback
-  const carImageSrc = car?.primaryImage || car?.images?.[0] || heroCarImg;
+  const carImageSrc = getCarImageUrl(car);
 
   return (
     <div 

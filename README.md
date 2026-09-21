@@ -113,7 +113,8 @@ The platform uses a single unified frontend (React + Vite) for both customers an
 
 ## 🔑 Demo Credentials
 
-### Administrator Portal (`/admin/login`)
+### Administrator Portal
+- **Admin URL:** [http://localhost:5173/admin/login](http://localhost:5173/admin/login) (Local) • [https://rentrideadmin.vercel.app](https://rentrideadmin.vercel.app) (Live)
 - **Email:** `admin@rentride.com`
 - **Password:** `password123`
 - *(Includes a 1-Click "Fill Demo Credentials" button on the login screen)*
