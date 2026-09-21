@@ -15,7 +15,9 @@ export const carService = {
 
       return {
         success: true,
-        data: response.data.data || response.data || []
+        data: response.data.data || response.data || [],
+        total: response.data.total ?? (response.data.data || response.data || []).length,
+        count: response.data.count
       };
     } catch (error) {
       console.error('Get all cars error:', error);

@@ -16,7 +16,8 @@ import {
   MapPin, 
   CheckCircle2,
   Car as CarIcon,
-  RotateCcw
+  RotateCcw,
+  ChevronDown
 } from 'lucide-react';
 import { carService } from '../services/carService';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
@@ -30,7 +31,10 @@ const BrowseCars = () => {
   
   const [displayCars, setDisplayCars] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
+  const [limit, setLimit] = useState(60);
+  const [totalCount, setTotalCount] = useState(0);
 
   // Filter states
   const [search, setSearch] = useState('');
@@ -86,16 +90,22 @@ const BrowseCars = () => {
   }, []);
 
   useEffect(() => {
+    setLimit(60);
     const debounceTimer = setTimeout(() => {
-      loadCars();
+      loadCars(60, false);
     }, 200);
     return () => clearTimeout(debounceTimer);
   }, [search, brand, category, transmission, fuelType, priceRange, sortBy]);
 
-  const loadCars = async () => {
+  const loadCars = async (targetLimit = limit, append = false) => {
     try {
-      setLoading(true);
-      const params = { limit: 50 };
+      if (append) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
+
+      const params = { limit: targetLimit };
       if (search.trim()) params.search = search.trim();
       if (brand !== 'All') params.brand = brand;
       if (category !== 'All') params.category = category.toLowerCase();
@@ -125,6 +135,7 @@ const BrowseCars = () => {
 
       if (response.success && Array.isArray(response.data)) {
         setDisplayCars(response.data);
+        setTotalCount(response.total ?? response.data.length);
       } else {
         setError('Failed to load cars');
       }
@@ -133,7 +144,14 @@ const BrowseCars = () => {
       setError('Failed to load cars. Please check if backend is running.');
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
+  };
+
+  const handleLoadMore = () => {
+    const nextLimit = limit + 60;
+    setLimit(nextLimit);
+    loadCars(nextLimit, true);
   };
 
   const handleClearAll = () => {
@@ -144,6 +162,7 @@ const BrowseCars = () => {
     setPriceRange('All');
     setFuelType('All');
     setSortBy('featured');
+    setLimit(60);
   };
 
   const activeFiltersCount = [brand, category, transmission, priceRange, fuelType].filter(f => f !== 'All').length;
@@ -189,7 +208,7 @@ const BrowseCars = () => {
                 Browse <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-500">Cars</span>
               </h1>
               <p className="text-sm md:text-base mt-2" style={{ color: theme.textSecondary }}>
-                Choose from our verified fleet of <span className="font-bold text-emerald-400">{displayCars.length}</span> vehicles with transparent pricing and model-accurate photography.
+                Choose from our verified fleet of <span className="font-bold text-emerald-400">{totalCount || displayCars.length}</span> vehicles with transparent pricing and model-accurate photography.
               </p>
             </div>
 
@@ -437,7 +456,7 @@ const BrowseCars = () => {
               <AlertCircle size={40} className="mx-auto text-rose-400 mb-3" />
               <p className="text-lg font-bold mb-4 text-rose-400">{error}</p>
               <button
-                onClick={loadCars}
+                onClick={() => loadCars(limit, false)}
                 className="px-6 py-2.5 bg-emerald-500 text-slate-950 font-bold text-sm rounded-xl hover:bg-emerald-400 transition"
               >
                 Retry
@@ -460,18 +479,45 @@ const BrowseCars = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-              {displayCars.map((car, index) => (
-                <CarCard
-                  key={car._id || index}
-                  car={car}
-                  index={index}
-                  theme={theme}
-                  onBook={() => handleBookCar(car)}
-                  onDetails={() => handleViewDetails(car._id)}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+                {displayCars.map((car, index) => (
+                  <CarCard
+                    key={car._id || index}
+                    car={car}
+                    index={index}
+                    theme={theme}
+                    onBook={() => handleBookCar(car)}
+                    onDetails={() => handleViewDetails(car._id)}
+                  />
+                ))}
+              </div>
+
+              {/* Load More Vehicles Button */}
+              {displayCars.length < totalCount && (
+                <div className="flex flex-col items-center justify-center pt-4 pb-16">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                    className="px-8 py-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-700 hover:border-emerald-500/50 text-slate-200 hover:text-white font-extrabold text-sm rounded-2xl shadow-xl transition-all duration-300 flex items-center gap-3 hover:shadow-emerald-500/10 group disabled:opacity-50"
+                  >
+                    {loadingMore ? (
+                      <>
+                        <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
+                        <span>Loading more vehicles...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Load More Vehicles</span>
+                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-semibold">
+                          Showing {displayCars.length} of {totalCount}
+                        </span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </main>
       </div>
@@ -500,7 +546,7 @@ const CarCard = ({ car, index, theme, onBook, onDetails }) => {
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: Math.min(index * 0.05, 0.4), duration: 0.35 }}
+      transition={{ delay: Math.min(index * 0.03, 0.3), duration: 0.35 }}
       className="group h-full flex flex-col"
       whileHover={{ y: -6 }}
     >
@@ -608,7 +654,7 @@ const CarCard = ({ car, index, theme, onBook, onDetails }) => {
           <div className="flex items-center gap-2">
             <button
               onClick={onDetails}
-              className="px-3 py-2 text-xs font-bold text-slate-300 hover:text-white border border-slate-700 hover:border-emerald-500/60 rounded-xl transition-all duration-200 bg-slate-800/60 hover:bg-slate-800"
+              className="px-3 py-2 text-xs font-bold text-slate-300 hover:text-white border border-slate-700 hover:border-emerald-500/60 rounded-xl transition-all duration-200 bg-slate-800/60 hover:bg-slate-850"
             >
               Details
             </button>
