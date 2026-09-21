@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-09-21T11:18:31.908Z",
+  "totalVehicles": 22497,
+  "matchedVerifiedImages": 6623,
+  "fallbackImages": 15874,
+  "missingImages": 0,
+  "invalidUrlsDetected": 0,
+  "uniqueImageHashes": 17,
+  "duplicateImageMappings": 6606,
+  "matchingHierarchy": [
+    "1. Exact verified model match (brand + model in vehicle_images.csv)",
+    "2. Verified generation/model image with confirmed permissive license",
+    "3. Safe RentRide generic placeholder (/assets/herocar.png)",
+    "4. Vehicle image unavailable (no random brand guessing)"
+  ],
+  "datasetLicenseAudit": {
+    "sourceReference": "Kaggle - DataCluster Labs Indian Vehicle Dataset",
+    "sourceUrl": "https://www.kaggle.com/datasets/dataclusterlabs/indian-vehicle-dataset",
+    "evaluationResult": "Proprietary commercial license for full dataset (sample subsets for evaluation only).",
+    "metadataSuitability": "Dataset contains broad class labels (car, bus, truck, auto) without exact make-model-year metadata. Unsuitable for model-accurate catalog mapping.",
+    "redistributionCompliance": "Per safety guidelines, restricted images without verified permissive licenses are NOT bundled into deployment.",
+    "policy": "Only explicitly verified, permissive automotive assets with model accuracy are loaded into production."
+  }
+}

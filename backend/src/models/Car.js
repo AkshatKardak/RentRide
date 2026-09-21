@@ -105,10 +105,26 @@ const carSchema = new mongoose.Schema({
 
   // Media
   images: [{
-    type: String
+    type: String,
+    trim: true,
+    maxlength: 1024
   }],
   primaryImage: {
-    type: String
+    type: String,
+    trim: true,
+    maxlength: 1024
+  },
+  imageMetadata: {
+    imageSource: { type: String, default: null },
+    sourceUrl: { type: String, default: null },
+    license: { type: String, default: null },
+    licenseStatus: { type: String, default: 'unknown' },
+    verificationStatus: { 
+      type: String, 
+      enum: ['verified', 'unverified', 'rejected', 'missing', 'fallback'], 
+      default: 'missing' 
+    },
+    verifiedAt: { type: Date, default: null }
   },
 
   // Location

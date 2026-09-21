@@ -6,54 +6,8 @@ import { Search, Loader2, Users, Fuel, Gauge, AlertCircle, SlidersHorizontal, X 
 import { carService } from '../services/carService';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 
-// Import all car images from assets
+// Safe fallback image
 import heroCarImg from '../assets/herocar.png';
-import porscheImg from '../assets/porsche.png';
-import mercedesImg from '../assets/mercedesg63amg.png';
-import kiaImg from '../assets/Kia.png';
-import skodaImg from '../assets/skoda.png';
-import audiImg from '../assets/AudiElectric.png';
-import supraImg from '../assets/supra.png';
-import lamboImg from '../assets/lambo.png';
-import bugattiImg from '../assets/Bugatti.png';
-import rollsImg from '../assets/rolls royce.png';
-import nanoImg from '../assets/Nano.png';
-import HondaImg from '../assets/Honda.png';
-
-const getImageForCar = (car) => {
-  if (!car) return heroCarImg;
-
-  if (car.images && car.images.length > 0) {
-    const tag = String(car.images[0]).toLowerCase();
-    if (tag.includes('nano') || tag.includes('tata')) return nanoImg;
-    if (tag.includes('porsche')) return porscheImg;
-    if (tag.includes('mercedes')) return mercedesImg;
-    if (tag.includes('kia')) return kiaImg;
-    if (tag.includes('skoda')) return skodaImg;
-    if (tag.includes('audi')) return audiImg;
-    if (tag.includes('honda')) return HondaImg;
-    if (tag.includes('supra') || tag.includes('toyota')) return supraImg;
-    if (tag.includes('lambo')) return lamboImg;
-    if (tag.includes('bugatti')) return bugattiImg;
-    if (tag.includes('rolls')) return rollsImg;
-  }
-
-  const text = `${car.brand || ''} ${car.model || ''}`.toLowerCase();
-
-  if (text.includes('nano') || (text.includes('tata') && text.includes('nano'))) return nanoImg;
-  if (text.includes('porsche') || text.includes('911')) return porscheImg;
-  if (text.includes('mercedes') || text.includes('g63') || text.includes('g-wagon') || text.includes('amg')) return mercedesImg;
-  if (text.includes('kia') || text.includes('carens')) return kiaImg;
-  if (text.includes('skoda') || text.includes('kylaq')) return skodaImg;
-  if (text.includes('audi') || text.includes('e-tron')) return audiImg;
-  if (text.includes('supra') || text.includes('toyota')) return supraImg;
-  if (text.includes('honda') || text.includes('zxcvt')) return HondaImg;
-  if (text.includes('lambo')) return lamboImg;
-  if (text.includes('bugatti')) return bugattiImg;
-  if (text.includes('rolls')) return rollsImg;
-
-  return heroCarImg;
-};
 
 const BrowseCars = () => {
   const navigate = useNavigate();
@@ -482,7 +436,8 @@ const FilterTag = ({ label, onRemove }) => (
 );
 
 const CarCard = ({ car, index, theme, onBook, onDetails }) => {
-  const imageSrc = getImageForCar(car);
+  const imageSrc = car.primaryImage || car.images?.[0] || heroCarImg;
+  const isVerifiedImage = car.imageMetadata?.verificationStatus === 'verified';
 
   return (
     <motion.div
@@ -511,13 +466,23 @@ const CarCard = ({ car, index, theme, onBook, onDetails }) => {
         <div className="relative w-full flex justify-center mb-4">
           <motion.img
             src={imageSrc}
-            alt={car.name}
+            alt={car.name || `${car.brand} ${car.model}`}
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = heroCarImg;
+            }}
             className="w-64 h-40 object-contain relative z-10"
             whileHover={{ scale: 1.1, rotate: 2 }}
             transition={{ duration: 0.4 }}
           />
           <div className="absolute inset-0 bg-green-500 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300 animate-pulse" />
         </div>
+
+        {isVerifiedImage && (
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 -mt-2">
+            Verified Model Photo
+          </span>
+        )}
 
         <div className="text-center space-y-2 w-full">
           <h3 className="font-bold text-xl text-green-500 transition-colors duration-300">

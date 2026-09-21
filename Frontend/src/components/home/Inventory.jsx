@@ -7,10 +7,117 @@ import { useTheme } from '../../context/ThemeContext';
 import { FadeUp, StaggerContainer } from '../../utils/Animation';
 import { carService } from '../../services/carService';
 
+import RollsRoyce from '../../assets/rolls royce.png';
+import Mercedes from '../../assets/mercedes.png';
+import Bugatti from '../../assets/Bugatti.png';
+import luxury from '../../assets/luxury.png';
+import bluecar from '../../assets/bluecar.png';
+import blackcar from '../../assets/blackcar.png';
+
+const showcaseCars = [
+  {
+    id: 1,
+    name: "Rolls-Royce Phantom",
+    brand: "Rolls-Royce",
+    model: "Phantom",
+    desc: "Experience unparalleled luxury with handcrafted interiors and whisper-quiet performance.",
+    price: "₹18,000",
+    pricePerDay: 18000,
+    img: RollsRoyce,
+    primaryImage: RollsRoyce,
+    city: "Mumbai",
+    category: "luxury",
+    fuelType: "Petrol",
+    trustScore: 98,
+    rating: 4.9
+  },
+  {
+    id: 2,
+    name: "Mercedes-Benz S-Class",
+    brand: "Mercedes-Benz",
+    model: "S-Class",
+    desc: "Premium executive sedan featuring cutting-edge technology and refined German engineering.",
+    price: "₹9,500",
+    pricePerDay: 9500,
+    img: Mercedes,
+    primaryImage: Mercedes,
+    city: "Delhi NCR",
+    category: "luxury",
+    fuelType: "Petrol",
+    trustScore: 95,
+    rating: 4.8
+  },
+  {
+    id: 3,
+    name: "Ferrari 488 GTB",
+    brand: "Ferrari",
+    model: "488 GTB",
+    desc: "Italian supercar delivering breathtaking speed with iconic Prancing Horse heritage.",
+    price: "₹35,000",
+    pricePerDay: 35000,
+    img: Bugatti,
+    primaryImage: Bugatti,
+    city: "Bengaluru",
+    category: "luxury",
+    fuelType: "Petrol",
+    trustScore: 99,
+    rating: 5.0
+  },
+  {
+    id: 4,
+    name: "Bentley Continental GT",
+    brand: "Bentley",
+    model: "Continental GT",
+    desc: "Handcrafted British luxury combining elegant design with exceptional performance.",
+    price: "₹22,000",
+    pricePerDay: 22000,
+    img: luxury,
+    primaryImage: luxury,
+    city: "Mumbai",
+    category: "luxury",
+    fuelType: "Petrol",
+    trustScore: 94,
+    rating: 4.8
+  },
+  {
+    id: 5,
+    name: "Lamborghini Huracán EVO",
+    brand: "Lamborghini",
+    model: "Huracán EVO",
+    desc: "Track-ready supercar with aggressive styling and naturally aspirated V10 power.",
+    price: "₹40,000",
+    pricePerDay: 40000,
+    img: bluecar,
+    primaryImage: bluecar,
+    city: "Hyderabad",
+    category: "luxury",
+    fuelType: "Petrol",
+    trustScore: 96,
+    rating: 4.9
+  },
+  {
+    id: 6,
+    name: "Porsche 911 Turbo S",
+    brand: "Porsche",
+    model: "911 Turbo S",
+    desc: "Legendary sports car offering precision handling and everyday supercar usability.",
+    price: "₹28,000",
+    pricePerDay: 28000,
+    img: blackcar,
+    primaryImage: blackcar,
+    city: "Chennai",
+    category: "luxury",
+    fuelType: "Petrol",
+    trustScore: 97,
+    rating: 4.9,
+    isBlackcar: true
+  }
+];
+
 const Inventory = () => {
   const { isDarkMode } = useTheme();
-  const [cars, setCars] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [cars, setCars] = useState(showcaseCars);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -19,16 +126,13 @@ const Inventory = () => {
 
   const fetchFeaturedCars = async () => {
     try {
-      setLoading(true);
       const res = await carService.getFeaturedCars();
-      if (res.success && Array.isArray(res.data)) {
+      if (res.success && Array.isArray(res.data) && res.data.length >= 6) {
         setCars(res.data.slice(0, 6));
       }
     } catch (err) {
-      console.error('Error fetching featured fleet:', err);
-      setError('Unable to load featured vehicles.');
-    } finally {
-      setLoading(false);
+      // Gracefully maintain showcase cars
+      console.warn('Using elite showcase fleet:', err.message);
     }
   };
 

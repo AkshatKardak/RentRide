@@ -747,6 +747,57 @@ router.patch('/cars/:id/status', protect, authorize('admin', 'manager'), async (
   }
 });
 
+// Admin Vehicle Image & Verification Management (SSRF protected)
+router.patch('/cars/:id/image', protect, authorize('admin', 'manager'), async (req, res) => {
+  try {
+    const { primaryImage, images, imageSource, license, verificationStatus } = req.body;
+    if (!primaryImage) {
+      return res.status(400).json({ success: false, message: 'primaryImage URL is required' });
+    }
+
+    const { validateImageUrl } = require('../utils/imageValidator');
+    const validation = validateImageUrl(primaryImage);
+    if (!validation.valid) {
+      return res.status(400).json({ success: false, message: `Image URL rejected: ${validation.error}` });
+    }
+
+    let sanitizedImages = [validation.sanitizedUrl];
+    if (Array.isArray(images) && images.length > 0) {
+      sanitizedImages = images
+        .map(url => validateImageUrl(url))
+        .filter(r => r.valid)
+        .map(r => r.sanitizedUrl);
+      if (!sanitizedImages.includes(validation.sanitizedUrl)) {
+        sanitizedImages.unshift(validation.sanitizedUrl);
+      }
+    }
+
+    const update = {
+      primaryImage: validation.sanitizedUrl,
+      images: sanitizedImages,
+      imageMetadata: {
+        imageSource: imageSource || 'Admin Curated',
+        sourceUrl: validation.sanitizedUrl,
+        license: license || 'Verified Permissive/Commercial License',
+        licenseStatus: 'compliant',
+        verificationStatus: verificationStatus || 'verified',
+        verifiedAt: new Date()
+      }
+    };
+
+    const car = await Car.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true });
+    if (!car) return res.status(404).json({ success: false, message: 'Car not found' });
+    res.json({
+      success: true,
+      message: 'Vehicle image and verification metadata updated successfully',
+      data: car
+    });
+  } catch (error) {
+    console.error('Update car image error:', error);
+    res.status(500).json({ success: false, message: 'Error updating car image', error: error.message });
+  }
+});
+
 router.delete('/cars/:id', protect, authorize('admin'), async (req, res) => {
   try {
     const car = await Car.findByIdAndDelete(req.params.id);

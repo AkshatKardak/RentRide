@@ -73,7 +73,9 @@ class TrustScoreService {
         ? `Clean vehicle history with zero reported structural accidents (+${accidentPoints}/20).`
         : `${accidentCount} minor incident(s) logged in history (+${accidentPoints}/20).`,
       `Odometer integrity verified via sequential timestamped readings (+${odometerPoints}/15).`,
-      `Driver satisfaction rating of ${avgRating.toFixed(1)}/5 stars (+${ratingPoints}/10).`
+      avgRating !== null 
+        ? `Driver satisfaction rating of ${Number(avgRating).toFixed(1)}/5 stars (+${ratingPoints}/10).`
+        : `Baseline owner reputation score (+${ratingPoints}/10).`
     ];
 
     return {

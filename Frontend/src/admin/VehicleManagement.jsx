@@ -13,11 +13,14 @@ import {
   Gauge,
   MapPin,
   Save,
-  X
+  X,
+  Image as ImageIcon,
+  ExternalLink
 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '../context/ThemeContext';
+import heroCarImg from '../assets/herocar.png';
 
 export default function VehicleManagement() {
   const { isDarkMode } = useTheme();
@@ -31,6 +34,53 @@ export default function VehicleManagement() {
   // Edit price modal / inline
   const [editingCar, setEditingCar] = useState(null);
   const [newPrice, setNewPrice] = useState('');
+
+  // Image Management Modal
+  const [imageModalCar, setImageModalCar] = useState(null);
+  const [imageForm, setImageForm] = useState({
+    primaryImage: '',
+    imageSource: '',
+    license: '',
+    verificationStatus: 'verified'
+  });
+  const [savingImage, setSavingImage] = useState(false);
+
+  const handleOpenImageModal = (car) => {
+    setImageModalCar(car);
+    setImageForm({
+      primaryImage: car.primaryImage || car.images?.[0] || '',
+      imageSource: car.imageMetadata?.imageSource || 'Unsplash Verified Indian Fleet Photography',
+      license: car.imageMetadata?.license || 'Unsplash Permissive License',
+      verificationStatus: car.imageMetadata?.verificationStatus || 'verified'
+    });
+  };
+
+  const handleSaveImage = async (e) => {
+    e.preventDefault();
+    if (!imageModalCar) return;
+    try {
+      setSavingImage(true);
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+      const res = await axios.patch(
+        `${baseUrl}/admin/cars/${imageModalCar._id}/image`,
+        imageForm,
+        { headers }
+      );
+
+      if (res.data?.success) {
+        toast.success('Vehicle image updated and verified');
+        setCars(prev => prev.map(c => c._id === imageModalCar._id ? res.data.data : c));
+        setImageModalCar(null);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update vehicle image');
+    } finally {
+      setSavingImage(false);
+    }
+  };
 
   // Add Car Modal
   const [showAddModal, setShowAddModal] = useState(false);
@@ -245,21 +295,22 @@ export default function VehicleManagement() {
                 <th className="py-3.5 px-4">Price/Day</th>
                 <th className="py-3.5 px-4">Rating</th>
                 <th className="py-3.5 px-4">Trust</th>
-                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4">Image Status</th>
+                <th className="py-3.5 px-4">Availability</th>
                 <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-inherit">
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="py-12 text-center text-slate-400">
+                  <td colSpan={11} className="py-12 text-center text-slate-400">
                     <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                     Loading vehicle inventory...
                   </td>
                 </tr>
               ) : cars.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="py-12 text-center text-slate-400">
+                  <td colSpan={11} className="py-12 text-center text-slate-400">
                     No vehicles found matching criteria
                   </td>
                 </tr>
@@ -269,11 +320,24 @@ export default function VehicleManagement() {
                   return (
                     <tr key={car._id} className="hover:bg-slate-500/5 transition-colors">
                       <td className="py-3 px-4 font-bold flex items-center gap-2">
-                        <img
-                          src={car.primaryImage || car.images?.[0] || 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80'}
-                          alt={car.model}
-                          className="w-10 h-7 object-cover rounded-md"
-                        />
+                        <div
+                          className="relative group cursor-pointer"
+                          onClick={() => handleOpenImageModal(car)}
+                          title="Click to view/edit image & provenance"
+                        >
+                          <img
+                            src={car.primaryImage || car.images?.[0] || heroCarImg}
+                            alt={car.model}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = heroCarImg;
+                            }}
+                            className="w-10 h-7 object-cover rounded-md border border-slate-200 dark:border-slate-800 group-hover:opacity-75 transition-opacity"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 rounded-md transition-opacity">
+                            <ImageIcon size={12} className="text-white" />
+                          </div>
+                        </div>
                         <div>
                           <p className="font-bold">{car.brand} {car.model}</p>
                           <p className="text-[10px] text-slate-400 uppercase font-mono">{car.fuelType} • {car.transmission}</p>
@@ -321,13 +385,34 @@ export default function VehicleManagement() {
                           </div>
                         )}
                       </td>
-                      <td className="py-3 px-4 font-bold">{car.rating || 4.8}★</td>
+                      <td className="py-3 px-4 font-bold">
+                        {car.rating ? `${car.rating}★` : <span className="text-slate-400 font-mono">—</span>}
+                      </td>
                       <td className="py-3 px-4">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          (car.trustScore || 85) >= 80 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
-                        }`}>
-                          {car.trustScore || 85}/100
-                        </span>
+                        {car.trustScore ? (
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            car.trustScore >= 80 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
+                          }`}>
+                            {car.trustScore}/100
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 font-mono">—</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        {car.imageMetadata?.verificationStatus === 'verified' ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                            <CheckCircle2 size={10} /> Verified
+                          </span>
+                        ) : car.imageMetadata?.verificationStatus === 'fallback' ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                            Fallback
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20">
+                            Unverified
+                          </span>
+                        )}
                       </td>
                       <td className="py-3 px-4">
                         <button
@@ -342,12 +427,22 @@ export default function VehicleManagement() {
                         </button>
                       </td>
                       <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={() => handleDeleteCar(car._id)}
-                          className="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => handleOpenImageModal(car)}
+                            title="Manage Vehicle Image & Provenance"
+                            className="p-1.5 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors"
+                          >
+                            <ImageIcon size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteCar(car._id)}
+                            title="Delete Vehicle"
+                            className="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -357,6 +452,115 @@ export default function VehicleManagement() {
           </table>
         </div>
       </div>
+
+      {/* Edit Image & Provenance Modal */}
+      {imageModalCar && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className={`w-full max-w-lg p-6 rounded-3xl border shadow-2xl ${
+            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'
+          }`}>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-bold text-lg">Vehicle Image & Provenance</h3>
+                <p className="text-xs text-slate-400">{imageModalCar.brand} {imageModalCar.model} ({imageModalCar.year})</p>
+              </div>
+              <button 
+                onClick={() => setImageModalCar(null)} 
+                className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Current Image Preview */}
+            <div className="mb-4 p-4 rounded-2xl bg-slate-500/5 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center">
+              <img
+                src={imageForm.primaryImage || heroCarImg}
+                alt="Preview"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = heroCarImg;
+                }}
+                className="max-h-36 max-w-full object-contain drop-shadow"
+              />
+              <p className="text-[10px] text-slate-400 mt-2">Live Preview</p>
+            </div>
+
+            <form onSubmit={handleSaveImage} className="space-y-4 text-xs">
+              <div>
+                <label className="font-bold block mb-1">Image URL (HTTPS or relative asset)</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="https://images.unsplash.com/photo-... or /assets/herocar.png"
+                  value={imageForm.primaryImage}
+                  onChange={(e) => setImageForm({ ...imageForm, primaryImage: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                />
+                <p className="text-[10px] text-slate-400 mt-1">
+                  Protected against SSRF. Allowed hosts: Unsplash, Cloudinary, ImgBB, Wikimedia, Pexels.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold block mb-1">Image Source / Provenance</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Unsplash Verified Indian Fleet Photography"
+                    value={imageForm.imageSource}
+                    onChange={(e) => setImageForm({ ...imageForm, imageSource: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold block mb-1">License</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Unsplash Permissive License"
+                    value={imageForm.license}
+                    onChange={(e) => setImageForm({ ...imageForm, license: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold block mb-1">Verification Status</label>
+                <select
+                  value={imageForm.verificationStatus}
+                  onChange={(e) => setImageForm({ ...imageForm, verificationStatus: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none"
+                >
+                  <option value="verified">Verified (Exact Model Match & Licensed)</option>
+                  <option value="unverified">Unverified (Pending Review)</option>
+                  <option value="fallback">Fallback (Generic Catalog Illustration)</option>
+                  <option value="rejected">Rejected (Does not match vehicle)</option>
+                </select>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={savingImage}
+                  className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                >
+                  {savingImage ? 'Validating & Saving...' : 'Save & Verify Image'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImageModalCar(null)}
+                  className="px-4 py-2.5 border rounded-xl hover:bg-slate-500/10 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Add Car Modal */}
       {showAddModal && (

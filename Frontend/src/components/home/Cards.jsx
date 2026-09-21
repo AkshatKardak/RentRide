@@ -39,6 +39,10 @@ const Cards = ({ item }) => {
           borderColor: theme.border,
         }}
       >
+        {/* Corner Accents */}
+        <div className='absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+        <div className='absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+
         {/* Top Badges */}
         <div className="flex items-center justify-between z-10 w-full mb-3">
           {trustScore ? (
@@ -59,13 +63,20 @@ const Cards = ({ item }) => {
           )}
         </div>
 
-        {/* Image */}
+        {/* Image with Glow Effect */}
         <div className='relative h-44 flex items-center justify-center my-2'>
-          <img
+          <motion.img
             src={imageUrl}
             alt={carName}
-            className='max-h-full max-w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300'
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = heroCarImg;
+            }}
+            className='max-h-full max-w-full object-contain drop-shadow-md relative z-10'
+            whileHover={{ scale: 1.1, rotate: 2 }}
+            transition={{ duration: 0.4 }}
           />
+          <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
 
         {/* Details */}
@@ -78,23 +89,41 @@ const Cards = ({ item }) => {
               <p className="text-xs flex items-center gap-1 text-slate-400 mt-0.5">
                 <MapPin size={12} className="text-emerald-500" />
                 {city && <span>{city} • </span>}
-                <span className="capitalize">{item.category || 'Sedan'}</span>
+                <span className="capitalize">{item.category || 'Luxury'}</span>
                 <span>•</span>
                 <span className="capitalize">{item.fuelType || 'Petrol'}</span>
               </p>
+              {item.desc && (
+                <p className="text-xs text-slate-400 line-clamp-2 mt-1">
+                  {item.desc}
+                </p>
+              )}
             </div>
           </div>
 
-          <div className='flex justify-between items-center pt-3 border-t border-slate-100 dark:border-slate-800'>
+          {/* Progress Bar */}
+          <div 
+            className='w-full h-1 rounded-full overflow-hidden my-1'
+            style={{ backgroundColor: isDarkMode ? '#334155' : '#f8f9fa' }}
+          >
+            <motion.div 
+              className='h-full bg-emerald-500'
+              initial={{ width: 0 }}
+              whileInView={{ width: '80%' }}
+              transition={{ duration: 1, delay: 0.3 }}
+            />
+          </div>
+
+          <div className='flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800'>
             <div>
               <span className='font-black text-xl text-emerald-500'>
-                ₹{price.toLocaleString()}
+                ₹{typeof price === 'number' ? price.toLocaleString() : price}
               </span>
               <span className='text-[10px] text-slate-400 block -mt-1'>per day</span>
             </div>
 
             <Link
-              to={`/car/${item._id || item.id}`}
+              to={typeof item._id === 'string' && item._id.length === 24 ? `/car/${item._id}` : '/browsecars'}
               className='px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all'
             >
               Rent Now

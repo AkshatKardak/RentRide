@@ -16,70 +16,15 @@ import DashboardNavbar from '../components/layout/DashboardNavbar';
 import { carService } from '../services/carService';
 import { useTheme } from '../context/ThemeContext';
 
-// Import all car images
-import PorscheImg from '../assets/porsche.png';
-import LamboImg from '../assets/lambo.png';
-import BugattiImg from '../assets/Bugatti.png';
-import MercedesImg from '../assets/mercedes.png';
-import G63Img from '../assets/mercedesg63amg.png';
-import KiaImg from '../assets/Kia.png';
-import SkodaImg from '../assets/skoda.png';
-import SupraImg from '../assets/supra.png';
-import RollsImg from '../assets/rolls royce.png';
-import AudiImg from '../assets/AudiElectric.png';
+// Safe fallback image
 import HeroCarImg from '../assets/herocar.png';
-import MustangImg from '../assets/blackcar.png';
-import NanoImg from '../assets/Nano.png';
-import HondaImg from '../assets/Honda.png';
-
-const carImageAssets = {
-  'porsche': PorscheImg,
-  'lamborghini': LamboImg,
-  'bugatti': BugattiImg,
-  'mercedes': MercedesImg,
-  'mercedes-benz': MercedesImg,
-  'g63': G63Img,
-  'kia': KiaImg,
-  'skoda': SkodaImg,
-  'toyota': SupraImg,
-  'ford': MustangImg,
-  'rolls-royce': RollsImg,
-  'audi': AudiImg,
-  'tata': NanoImg,
-  'nano': NanoImg,
-  'honda': HondaImg,
-};
-
-const getCarImage = (car) => {
-  // Priority 1: Use car's own image URL if available
-  if (car.images?.[0] && car.images[0].startsWith('http')) {
-    return car.images[0];
-  }
-  
-  const brand = (car.brand || '').toLowerCase();
-  const model = (car.model || '').toLowerCase();
-  const name = (car.name || '').toLowerCase();
-  
-  // Priority 2: Match specific models
-  if (name.includes('elevate') || model.includes('elevate')) return HondaImg;
-  if (name.includes('nano') || model.includes('nano')) return NanoImg;
-  if (name.includes('g63') || model.includes('g63')) return G63Img;
-  if (name.includes('supra') || model.includes('supra')) return SupraImg;
-  
-  // Priority 3: Match brand
-  if (carImageAssets[brand]) {
-    return carImageAssets[brand];
-  }
-  
-  // Priority 4: Default fallback
-  return HeroCarImg;
-};
 
 const CarDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
   
   const themeContext = useTheme();
   const { theme = {
@@ -174,32 +119,76 @@ const CarDetails = () => {
             >
               <div className="absolute inset-0 bg-green-500/5 rounded-[32px] transform scale-0 group-hover:scale-100 transition-transform duration-500 rounded-full" />
               <img 
-                src={getCarImage(car)} 
-                alt={car.name} 
-                className="max-w-full max-h-[350px] object-contain drop-shadow-2xl z-10 transform group-hover:scale-110 transition duration-700 ease-out" 
+                src={selectedImage || car.primaryImage || car.images?.[0] || HeroCarImg} 
+                alt={car.name || `${car.brand} ${car.model}`} 
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = HeroCarImg;
+                }}
+                className="max-w-full max-h-[350px] object-contain drop-shadow-2xl z-10 transform group-hover:scale-105 transition duration-500 ease-out" 
               />
             </div>
+
+            {/* Gallery Thumbnails if multiple images exist */}
+            {car.images && car.images.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto pb-2">
+                {car.images.map((imgUrl, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImage(imgUrl)}
+                    className={`w-20 h-14 rounded-xl border-2 p-1 overflow-hidden transition-all ${
+                      (selectedImage || car.primaryImage || car.images[0]) === imgUrl 
+                        ? 'border-green-500 shadow-md scale-105' 
+                        : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                    style={{ backgroundColor: theme.card }}
+                  >
+                    <img
+                      src={imgUrl}
+                      alt={`Angle ${idx + 1}`}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = HeroCarImg;
+                      }}
+                      className="w-full h-full object-contain"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
             
-            {/* Quick Badges */}
-            <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
-               <div 
-                 className="flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm text-sm whitespace-nowrap"
-                 style={{ backgroundColor: theme.card, borderColor: theme.border }}
-               >
-                  <CheckCircle2 size={16} className="text-green-500"/> Verified
-               </div>
-               <div 
-                 className="flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm text-sm whitespace-nowrap"
-                 style={{ backgroundColor: theme.card, borderColor: theme.border }}
-               >
-                  <CheckCircle2 size={16} className="text-green-500"/> Insured
-               </div>
-               <div 
-                 className="flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm text-sm whitespace-nowrap"
-                 style={{ backgroundColor: theme.card, borderColor: theme.border }}
-               >
-                  <CheckCircle2 size={16} className="text-green-500"/> Cleaned
-               </div>
+            {/* Quick Badges & Provenance */}
+            <div className="flex flex-wrap gap-3 items-center">
+              {car.imageMetadata?.verificationStatus === 'verified' ? (
+                <div 
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-sm text-xs font-semibold text-emerald-600 bg-emerald-500/10 border-emerald-500/20"
+                >
+                  <CheckCircle2 size={14} className="text-emerald-500" />
+                  <span>Verified Model Photo</span>
+                  {car.imageMetadata?.imageSource && (
+                    <span className="text-[10px] text-slate-400 font-normal">({car.imageMetadata.imageSource})</span>
+                  )}
+                </div>
+              ) : (
+                <div 
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-sm text-xs font-semibold text-slate-400 bg-slate-500/10 border-slate-500/20"
+                >
+                  <Info size={14} className="text-slate-400" />
+                  <span>Catalog Asset</span>
+                </div>
+              )}
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm text-sm whitespace-nowrap"
+                style={{ backgroundColor: theme.card, borderColor: theme.border }}
+              >
+                <CheckCircle2 size={16} className="text-green-500"/> Insured
+              </div>
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm text-sm whitespace-nowrap"
+                style={{ backgroundColor: theme.card, borderColor: theme.border }}
+              >
+                <CheckCircle2 size={16} className="text-green-500"/> Sanitized
+              </div>
             </div>
           </motion.div>
 

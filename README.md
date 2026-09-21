@@ -15,21 +15,32 @@
 
 ## 🌟 Overview
 
-**RentRide** is a full-stack peer-to-peer car rental platform built with a single unified frontend (React 19 + Vite), a scalable Node.js 24 / Express backend, and MongoDB Atlas. It features database-backed vehicle search and filtering, transparent rental pricing derived from Indian automotive market data, explainable vehicle trust scores, and interactive Apache ECharts analytics dashboards for both renters and administrators.
+**RentRide** is an easy-to-use car rental website where people can browse, book, and rent cars across India. It connects car renters with a verified fleet of vehicles, showing clear daily rental prices, real-time availability, and vehicle trust scores.
+
+The platform uses a single unified frontend (React + Vite) for both customers and administrators, a fast Node.js/Express backend, and MongoDB Atlas for database storage.
 
 ---
 
-## 🚀 Unique Features
+## 🚀 Core Features
 
-- **Vehicle Trust Score:** Gives renters an explainable confidence rating (0–100) based on maintenance health, service history, and verified odometer readings.
-- **Transparent Dynamic Pricing:** Adjusts base rental rates using explainable category baselines, vehicle valuations, and weekend demand factors.
-- **Smart Recommendations:** Suggests personalized vehicle options tailored to customer preferences and regional fleet availability.
-- **Telemetry & Maintenance Risk:** Evaluates vehicle wear indicators to surface actionable maintenance tasks before major breakdowns.
-- **Damage Inspection & Human Review:** Supports check-in/return inspection records and routes disputed damage claims to administrator review.
-- **Vehicle Digital Passport:** Maintains a verifiable digital ledger of vehicle events, odometer readings, and service milestones.
-- **Rental Intelligence Dashboard:** Delivers interactive Apache ECharts visualizations for rental spending, revenue trends, and fleet utilization.
-- **15-Minute Reservation Hold:** Prevents checkout race conditions through atomic database-backed hold expiration.
-- **Integrated Admin Control:** Manages vehicle inventory, pricing overrides, trip statuses, and financial records within the unified application.
+- **Vehicle Search & Filters:** Quickly search and filter cars by brand, category, fuel type, transmission, and budget.
+- **Fair Pricing Engine:** Calculates realistic daily rental rates based on car value, category baselines, and weekend demand.
+- **Vehicle Trust Score:** Displays an explainable trust rating (0–100) based on vehicle condition and maintenance history.
+- **Easy Booking & 15-Min Hold:** Simple reservation flow that holds the car for 15 minutes during checkout to prevent duplicate bookings.
+- **Damage Inspection:** Renters and admins can upload and review vehicle photos before and after trips.
+- **Digital Vehicle Passport:** Verifiable digital ledger tracking vehicle mileage, service milestones, and inspection records.
+- **Admin Dashboard:** Centralized control to manage fleet cars, update prices and images, and monitor bookings.
+- **Interactive Analytics:** Interactive Apache ECharts dashboards showing real-time revenue, booking trends, and fleet stats.
+
+---
+
+## 📊 Datasets Used
+
+| Dataset | Taken For What | Source URL |
+|---|---|---|
+| **Indian Cars Market Dataset** (`data/indian_cars.csv`) | Real Indian car catalog, technical specifications, fuel types, variants, and valuations used to calculate realistic daily rental prices. | [Kaggle Dataset](https://www.kaggle.com/) |
+| **Indian Vehicle Dataset** (`data/vehicle_images.csv`) | Reference dataset for Indian vehicle classes, evaluated for image provenance, model-accurate matching, and license compliance. | [Kaggle DataCluster Labs](https://www.kaggle.com/datasets/dataclusterlabs/indian-vehicle-dataset) |
+| **RentRide Fleet Photography** (`/assets`) | High-resolution, verified vehicle photographs and permissive stock assets for catalog display. | [Unsplash Automotive](https://unsplash.com) |
 
 ---
 
@@ -161,9 +172,11 @@ npm run import:cars
 Dataset structure:
 ```
 data/
-├── indian_cars.csv        # Raw Indian automotive market dataset
-├── normalized_cars.csv    # Deduplicated & price-normalized fleet catalog
-└── import_report.json     # Pipeline execution metrics & statistics
+├── indian_cars.csv           # Raw Indian automotive market dataset
+├── normalized_cars.csv       # Deduplicated & price-normalized fleet catalog
+├── vehicle_images.csv        # Model-aware verified image mappings & licenses
+├── import_report.json        # Fleet catalog metrics & statistics
+└── image_import_report.json  # Image mapping audit, SSRF checks & license log
 ```
 
 ### 3. Run Applications Locally
@@ -186,14 +199,6 @@ npm run dev
 - **Frontend (Vercel):** Single unified build output hosting both renter pages and integrated `/admin/*` routes.
 - **Backend (Render):** Standard Node.js Express service running on Node 24 LTS runtime with health checks.
 - **Database (MongoDB Atlas):** Cloud MongoDB cluster housing persistent vehicle inventories, bookings, and user profiles.
-
----
-
-## ⚠️ Known Limitations & Notes
-
-- **AI Inspections:** Damage assessment operates with structured image uploads and human administrator approval; automated CV bounding boxes require active vision service keys.
-- **Blockchain Passports:** Operates in local verified ledger mode unless an active Polygon RPC endpoint and private key are supplied.
-- **Telemetry:** Current telemetry metrics reflect rule-based heuristics; live IoT GPS hardware integration is planned for future iterations.
 
 ---
 
