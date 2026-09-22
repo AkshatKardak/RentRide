@@ -218,16 +218,17 @@ const MyDamageReports = () => {
                 {/* Admin Decision */}
                 {report.status === 'approved' && report.actualCost && (
                   <div 
-                    className="mb-4 p-4 rounded-xl border border-green-200 bg-green-50"
+                    className="mb-4 p-4 rounded-xl border border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800/40"
                   >
-                    <p className="text-xs font-bold text-green-700 mb-1">
-                      ✓ Approved by Admin
+                    <p className="text-xs font-bold text-green-700 dark:text-green-400 mb-1 flex items-center gap-1.5">
+                      <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+                      Approved by Admin
                     </p>
-                    <p className="text-lg font-black text-green-600">
+                    <p className="text-lg font-black text-green-600 dark:text-green-400">
                       Final Cost: ₹{report.actualCost.toLocaleString()}
                     </p>
                     {report.adminNotes && (
-                      <p className="text-xs text-green-700 mt-2">
+                      <p className="text-xs text-green-700 dark:text-green-300 mt-2">
                         Note: {report.adminNotes}
                       </p>
                     )}
@@ -236,12 +237,13 @@ const MyDamageReports = () => {
 
                 {report.status === 'rejected' && report.adminNotes && (
                   <div 
-                    className="mb-4 p-4 rounded-xl border border-red-200 bg-red-50"
+                    className="mb-4 p-4 rounded-xl border border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-800/40"
                   >
-                    <p className="text-xs font-bold text-red-700 mb-1">
-                      ✗ Rejected
+                    <p className="text-xs font-bold text-red-700 dark:text-red-400 mb-1 flex items-center gap-1.5">
+                      <XCircle className="w-3.5 h-3.5 text-red-600" />
+                      Rejected
                     </p>
-                    <p className="text-sm text-red-600">
+                    <p className="text-sm text-red-600 dark:text-red-400">
                       {report.adminNotes}
                     </p>
                   </div>

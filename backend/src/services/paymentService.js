@@ -38,12 +38,23 @@ exports.createOrder = async (amount, additionalOptions = {}) => {
  */
 exports.verifySignature = (orderId, paymentId, signature) => {
     try {
+        if (!orderId || !paymentId || !signature || !process.env.RAZORPAY_KEY_SECRET) {
+            return false;
+        }
+
         const generatedSignature = crypto
             .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
             .update(orderId + '|' + paymentId)
             .digest('hex');
 
-        return generatedSignature === signature;
+        const a = Buffer.from(generatedSignature, 'utf8');
+        const b = Buffer.from(signature, 'utf8');
+
+        if (a.length !== b.length) {
+            return false;
+        }
+
+        return crypto.timingSafeEqual(a, b);
     } catch (error) {
         console.error('Error verifying signature:', error);
         return false;

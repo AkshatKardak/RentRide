@@ -25,7 +25,7 @@ const AIAssistant = () => {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      text: "Hi! I'm your RentRide AI Assistant. I can help you with:\n\n🔍 Find the perfect car for your needs\n🛡️ Get insurance advice\n📸 Identify cars from photos\n💬 Report damage with guided assistance\n\nWhat can I help you with today?",
+      text: "Hello! I am your RentRide Fleet Assistant. I can assist you with:\n\n• Finding the perfect vehicle for your travel needs\n• Providing insurance and liability guidance\n• Identifying car models and specifications\n• Assisting with damage inspections and return reports\n\nWhat can I assist you with today?",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -111,7 +111,7 @@ const AIAssistant = () => {
 
     const userMessage = {
       role: "user",
-      text: "📸 [Uploaded car image]",
+      text: "[Uploaded car image]",
       image: URL.createObjectURL(file),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
@@ -152,7 +152,7 @@ const AIAssistant = () => {
 
     const userMessage = {
       role: "user",
-      text: `🛡️ Need insurance advice for ${insuranceDetails.days}-day ${insuranceDetails.tripType} trip`,
+      text: `Need insurance advice for ${insuranceDetails.days}-day ${insuranceDetails.tripType} trip`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
     setMessages(prev => [...prev, userMessage]);
@@ -558,8 +558,8 @@ const AIAssistant = () => {
               </span>
               <span className="w-1 h-1 rounded-full" style={{ backgroundColor: theme.border }}></span>
               <span>
-                {activeFeature === 'search' ? '🔍 Recommendation Mode' :
-                 activeFeature === 'recognize' ? '📸 Visual Identification Mode' :
+                {activeFeature === 'search' ? 'Recommendation Mode' :
+                 activeFeature === 'recognize' ? 'Visual Identification Mode' :
                  'AI Powered Assistant'}
               </span>
             </div>

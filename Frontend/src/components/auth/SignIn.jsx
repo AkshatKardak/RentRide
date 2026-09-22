@@ -64,16 +64,13 @@ export default function SignIn() {
     setLoading(true);
 
     try {
-      console.log('[SignIn] Starting Google login...');
       const result = await loginWithGoogle();
 
       if (result.success) {
-        console.log('[SignIn] ✅ Google login successful!');
         toast.success('Successfully logged in with Google!');
         navigate('/dashboard');
       }
     } catch (err) {
-      console.error('[SignIn] ❌ Google login failed:', err);
       setError(err.message || 'Google sign-in failed');
     } finally {
       setLoading(false);

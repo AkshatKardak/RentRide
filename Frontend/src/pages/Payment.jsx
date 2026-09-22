@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useTheme } from "../context/ThemeContext";
 import {
   CreditCard,
@@ -14,7 +15,9 @@ import {
   Loader,
   CheckCircle,
   AlertCircle,
-  Car
+  Car,
+  Info,
+  Sparkles
 } from "lucide-react";
 import { paymentService } from "../services/paymentService";
 import { bookingService } from "../services/bookingService";
@@ -297,9 +300,11 @@ const Payment = () => {
         // Show success message
         const savedAmount = result.data.discount;
         const finalAmount = result.data.finalAmount;
-        alert(`✅ Coupon "${promoCode}" applied!\n💰 You saved ₹${savedAmount}\n📊 Final amount: ₹${finalAmount}`);
+        toast.success(`Coupon "${promoCode}" applied! Saved ₹${savedAmount.toLocaleString()}`);
       } else {
-        setCouponError(result.message || 'Invalid or expired coupon code');
+        const errorMsg = result.message || 'Invalid or expired coupon code';
+        setCouponError(errorMsg);
+        toast.error(errorMsg);
         setAppliedCoupon(false);
         setCurrentDiscount(0);
         setCurrentPromoCode('');
@@ -307,6 +312,7 @@ const Payment = () => {
     } catch (error) {
       console.error('Coupon validation error:', error);
       setCouponError('Failed to apply coupon. Please try again.');
+      toast.error('Failed to apply coupon. Please try again.');
       setAppliedCoupon(false);
       setCurrentDiscount(0);
       setCurrentPromoCode('');
@@ -543,14 +549,16 @@ const Payment = () => {
               >
                 {/* Tabs */}
                 <div
-                  className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl"
+                  className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl mb-6"
                   style={{
                     backgroundColor: theme.inputBg,
                     borderWidth: 1,
                     borderColor: theme.border
                   }}
                 >
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
                     className={tabClass(method === "card")}
                     onClick={() => setMethod("card")}
                     style={{
@@ -561,9 +569,11 @@ const Payment = () => {
                     <CreditCard className="w-4 h-4" />
                     <span className="hidden sm:inline">Credit/Debit Card</span>
                     <span className="sm:hidden">Card</span>
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
                     className={tabClass(method === "upi")}
                     onClick={() => setMethod("upi")}
                     style={{
@@ -574,9 +584,11 @@ const Payment = () => {
                     <Wallet className="w-4 h-4" />
                     <span className="hidden sm:inline">UPI / Wallets</span>
                     <span className="sm:hidden">UPI</span>
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
                     className={tabClass(method === "netbanking")}
                     onClick={() => setMethod("netbanking")}
                     style={{
@@ -587,217 +599,219 @@ const Payment = () => {
                     <Building2 className="w-4 h-4" />
                     <span className="hidden sm:inline">Net Banking</span>
                     <span className="sm:hidden">Bank</span>
-                  </button>
+                  </motion.button>
                 </div>
 
-                {/* Card Form */}
-                {method === "card" && (
-                  <div className="space-y-4">
-                    <p className="font-bold text-base sm:text-lg" style={{ color: theme.text }}>
-                      Credit or Debit Card
-                    </p>
+                <AnimatePresence mode="wait">
+                  {/* Card Form */}
+                  {method === "card" && (
+                    <motion.div
+                      key="card"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-4"
+                    >
+                      <p className="font-bold text-base sm:text-lg" style={{ color: theme.text }}>
+                        Credit or Debit Card
+                      </p>
 
-                    <p className="text-xs sm:text-sm" style={{ color: theme.textSecondary }}>
-                      Razorpay securely processes all card payments. Click the Pay button below to proceed.
-                    </p>
+                      <p className="text-xs sm:text-sm" style={{ color: theme.textSecondary }}>
+                        Razorpay securely processes all card payments. Click the Pay button below to proceed.
+                      </p>
 
-                    <div className="space-y-4">
-                      <input
-                        type="text"
-                        placeholder="Card Number"
-                        value={cardNumber}
-                        onChange={(e) => setCardNumber(e.target.value)}
-                        maxLength={19}
-                        className="w-full rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
-                        style={{
-                          backgroundColor: theme.inputBg,
-                          borderColor: theme.border,
-                          color: theme.text
-                        }}
-                      />
-
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-4">
                         <input
                           type="text"
-                          placeholder="MM/YY"
-                          value={expiry}
-                          onChange={(e) => setExpiry(e.target.value)}
-                          maxLength={5}
-                          className="rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
+                          placeholder="Card Number"
+                          value={cardNumber}
+                          onChange={(e) => setCardNumber(e.target.value)}
+                          maxLength={19}
+                          className="w-full rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
                           style={{
                             backgroundColor: theme.inputBg,
                             borderColor: theme.border,
                             color: theme.text
                           }}
                         />
-                        <input
-                          type="text"
-                          placeholder="CVV"
-                          value={cvv}
-                          onChange={(e) => setCvv(e.target.value)}
-                          maxLength={3}
-                          className="rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
-                          style={{
-                            backgroundColor: theme.inputBg,
-                            borderColor: theme.border,
-                            color: theme.text
-                          }}
-                        />
-                      </div>
 
-                      <input
-                        type="text"
-                        placeholder="Cardholder Name"
-                        value={holder}
-                        onChange={(e) => setHolder(e.target.value)}
-                        className="w-full rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
-                        style={{
-                          backgroundColor: theme.inputBg,
-                          borderColor: theme.border,
-                          color: theme.text
-                        }}
-                      />
-
-                      <label className="flex items-center gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={saveCard}
-                          onChange={(e) => setSaveCard(e.target.checked)}
-                          className="w-5 h-5 accent-green-500 cursor-pointer"
-                        />
-                        <span className="text-xs sm:text-sm" style={{ color: theme.textSecondary }}>
-                          Securely save card for future bookings
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                )}
-
-                {/* UPI */}
-                {method === "upi" && (
-                  <div className="space-y-6">
-                    {/* Header */}
-                    <div>
-                      <p className="font-bold text-lg mb-2" style={{ color: theme.text }}>
-                        UPI / Wallets
-                      </p>
-                      <p className="text-sm" style={{ color: theme.textSecondary }}>
-                        Enter your UPI ID to make instant payment. All major UPI apps supported.
-                      </p>
-                    </div>
-
-                    {/* UPI ID Input */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold uppercase tracking-wider" style={{ color: theme.textSecondary }}>
-                        UPI ID
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={upiId}
-                          onChange={(e) => setUpiId(e.target.value.toLowerCase())}
-                          placeholder="yourname@paytm / yourname@okaxis"
-                          className="w-full rounded-xl border px-4 py-4 pr-12 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors lowercase"
-                          style={{
-                            backgroundColor: theme.inputBg,
-                            borderColor: theme.border,
-                            color: theme.text
-                          }}
-                        />
-                        <Wallet
-                          className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2"
-                          style={{ color: theme.textSecondary }}
-                        />
-                      </div>
-
-                      {/* UPI ID Validation Hint */}
-                      {upiId && !validateUpiId(upiId) && (
-                        <p className="text-xs text-red-500 mt-2 flex items-center gap-1">
-                          <AlertCircle className="w-3 h-3" />
-                          Please enter a valid UPI ID (e.g., username@paytm)
-                        </p>
-                      )}
-
-                      {upiId && validateUpiId(upiId) && (
-                        <p className="text-xs text-green-500 mt-2 flex items-center gap-1">
-                          <CheckCircle className="w-3 h-3" />
-                          Valid UPI ID
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Popular UPI Apps */}
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: theme.textSecondary }}>
-                        Supported UPI Apps
-                      </p>
-                      <div className="grid grid-cols-4 gap-3">
-                        {['GooglePay', 'PhonePe', 'Paytm', 'BHIM'].map((app) => (
-                          <div
-                            key={app}
-                            className="p-3 rounded-xl border text-center transition-all hover:border-green-500 hover:shadow-md cursor-pointer"
+                        <div className="grid grid-cols-2 gap-4">
+                          <input
+                            type="text"
+                            placeholder="MM/YY"
+                            value={expiryDate}
+                            onChange={(e) => setExpiryDate(e.target.value)}
+                            maxLength={5}
+                            className="rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
                             style={{
                               backgroundColor: theme.inputBg,
-                              borderColor: theme.border
+                              borderColor: theme.border,
+                              color: theme.text
                             }}
-                          >
-                            <p className="text-xs font-bold" style={{ color: theme.text }}>
-                              {app}
-                            </p>
-                          </div>
-                        ))}
+                          />
+
+                          <input
+                            type="password"
+                            placeholder="CVV"
+                            value={cvv}
+                            onChange={(e) => setCvv(e.target.value)}
+                            maxLength={4}
+                            className="rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
+                            style={{
+                              backgroundColor: theme.inputBg,
+                              borderColor: theme.border,
+                              color: theme.text
+                            }}
+                          />
+                        </div>
+
+                        <input
+                          type="text"
+                          placeholder="Cardholder Name"
+                          value={cardHolder}
+                          onChange={(e) => setCardHolder(e.target.value)}
+                          className="w-full rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
+                          style={{
+                            backgroundColor: theme.inputBg,
+                            borderColor: theme.border,
+                            color: theme.text
+                          }}
+                        />
                       </div>
-                    </div>
+                    </motion.div>
+                  )}
 
-                    {/* Information Box */}
-                    <div
-                      className="p-4 rounded-xl border-l-4 border-l-green-500"
-                      style={{
-                        backgroundColor: isDarkMode ? 'rgba(16, 185, 129, 0.1)' : '#D1FAE5',
-                        borderRight: `1px solid ${theme.border}`,
-                        borderTop: `1px solid ${theme.border}`,
-                        borderBottom: `1px solid ${theme.border}`
-                      }}
+                  {/* UPI */}
+                  {method === "upi" && (
+                    <motion.div
+                      key="upi"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-6"
                     >
-                      <p className="text-sm font-bold mb-1" style={{ color: theme.text }}>
-                        💡 Quick Tip
-                      </p>
-                      <p className="text-xs" style={{ color: theme.textSecondary }}>
-                        After clicking Pay, you'll be redirected to Razorpay where you can complete the payment using your UPI app.
-                      </p>
-                    </div>
-                  </div>
-                )}
+                      <div>
+                        <p className="font-bold text-base sm:text-lg mb-1" style={{ color: theme.text }}>
+                          UPI / VPA Payment
+                        </p>
+                        <p className="text-xs sm:text-sm" style={{ color: theme.textSecondary }}>
+                          Enter your UPI ID or choose from supported UPI applications below.
+                        </p>
+                      </div>
 
-                {/* Netbanking */}
-                {method === "netbanking" && (
-                  <div className="space-y-4">
-                    <p className="font-bold text-base sm:text-lg" style={{ color: theme.text }}>
-                      Net Banking
-                    </p>
-                    <p className="text-xs sm:text-sm" style={{ color: theme.textSecondary }}>
-                      Razorpay supports all major banks. Click the Pay button to proceed and select your bank.
-                    </p>
-                    <select
-                      className="w-full rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 appearance-none transition-colors"
-                      style={{
-                        backgroundColor: theme.inputBg,
-                        borderColor: theme.border,
-                        color: theme.text
-                      }}
+                      {/* UPI Input */}
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: theme.textSecondary }}>
+                          Enter UPI ID
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            placeholder="example@okhdfcbank"
+                            value={upiId}
+                            onChange={(e) => setUpiId(e.target.value)}
+                            className="w-full rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors"
+                            style={{
+                              backgroundColor: theme.inputBg,
+                              borderColor: theme.border,
+                              color: theme.text
+                            }}
+                          />
+                        </div>
+
+                        {upiId && validateUpiId(upiId) && (
+                          <p className="text-xs text-green-500 mt-2 flex items-center gap-1">
+                            <CheckCircle className="w-3 h-3" />
+                            Valid UPI ID
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Popular UPI Apps */}
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: theme.textSecondary }}>
+                          Supported UPI Apps
+                        </p>
+                        <div className="grid grid-cols-4 gap-3">
+                          {['GooglePay', 'PhonePe', 'Paytm', 'BHIM'].map((app) => (
+                            <motion.div
+                              key={app}
+                              whileHover={{ y: -2, scale: 1.02 }}
+                              whileTap={{ scale: 0.97 }}
+                              className="p-3 rounded-xl border text-center transition-all hover:border-green-500 hover:shadow-md cursor-pointer"
+                              style={{
+                                backgroundColor: theme.inputBg,
+                                borderColor: theme.border
+                              }}
+                            >
+                              <p className="text-xs font-bold" style={{ color: theme.text }}>
+                                {app}
+                              </p>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Information Box */}
+                      <div
+                        className="p-4 rounded-xl border-l-4 border-l-green-500"
+                        style={{
+                          backgroundColor: isDarkMode ? 'rgba(16, 185, 129, 0.1)' : '#D1FAE5',
+                          borderRight: `1px solid ${theme.border}`,
+                          borderTop: `1px solid ${theme.border}`,
+                          borderBottom: `1px solid ${theme.border}`
+                        }}
+                      >
+                        <p className="text-sm font-bold mb-1 flex items-center gap-1.5" style={{ color: theme.text }}>
+                          <Info className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          Quick Tip
+                        </p>
+                        <p className="text-xs" style={{ color: theme.textSecondary }}>
+                          After clicking Pay, you will be redirected to Razorpay where you can complete the payment using your UPI app.
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Netbanking */}
+                  {method === "netbanking" && (
+                    <motion.div
+                      key="netbanking"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-4"
                     >
-                      <option>Select Your Bank</option>
-                      <option>HDFC Bank</option>
-                      <option>ICICI Bank</option>
-                      <option>State Bank of India</option>
-                      <option>Axis Bank</option>
-                      <option>Kotak Mahindra Bank</option>
-                      <option>Punjab National Bank</option>
-                      <option>Bank of Baroda</option>
-                      <option>Other Banks</option>
-                    </select>
-                  </div>
-                )}
+                      <p className="font-bold text-base sm:text-lg" style={{ color: theme.text }}>
+                        Net Banking
+                      </p>
+                      <p className="text-xs sm:text-sm" style={{ color: theme.textSecondary }}>
+                        Razorpay supports all major banks. Click the Pay button to proceed and select your bank.
+                      </p>
+                      <select
+                        className="w-full rounded-xl border px-4 py-4 text-sm sm:text-base focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 appearance-none transition-colors"
+                        style={{
+                          backgroundColor: theme.inputBg,
+                          borderColor: theme.border,
+                          color: theme.text
+                        }}
+                      >
+                        <option>Select Your Bank</option>
+                        <option>HDFC Bank</option>
+                        <option>ICICI Bank</option>
+                        <option>State Bank of India</option>
+                        <option>Axis Bank</option>
+                        <option>Kotak Mahindra Bank</option>
+                        <option>Punjab National Bank</option>
+                        <option>Bank of Baroda</option>
+                        <option>Other Banks</option>
+                      </select>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Trust row */}

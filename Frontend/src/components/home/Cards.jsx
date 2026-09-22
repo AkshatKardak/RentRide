@@ -86,12 +86,17 @@ const Cards = ({ item }) => {
               <h3 className='font-bold text-lg leading-snug' style={{ color: theme.text }}>
                 {carName}
               </h3>
-              <p className="text-xs flex items-center gap-1 text-slate-400 mt-0.5">
-                <MapPin size={12} className="text-emerald-500" />
+              <p className="text-xs flex items-center gap-1.5 text-slate-400 mt-0.5 flex-wrap">
+                <MapPin size={12} className="text-emerald-500 flex-shrink-0" />
                 {city && <span>{city} • </span>}
-                <span className="capitalize">{item.category || 'Luxury'}</span>
+                <span className="capitalize">{item.category || 'Vehicle'}</span>
                 <span>•</span>
-                <span className="capitalize">{item.fuelType || 'Petrol'}</span>
+                <span className="capitalize font-medium text-slate-600 dark:text-slate-300">{item.transmission || 'Manual'}</span>
+                {item.availableTransmissions?.length > 1 && (
+                  <span className="text-[10px] px-1.5 py-0.5 bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 rounded font-bold">
+                    Also {item.availableTransmissions.filter(t => t.toLowerCase() !== item.transmission?.toLowerCase()).map(t => t.toUpperCase()).join('/')}
+                  </span>
+                )}
               </p>
               {item.desc && (
                 <p className="text-xs text-slate-400 line-clamp-2 mt-1">

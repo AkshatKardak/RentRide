@@ -13,7 +13,8 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  Eye
+  Eye,
+  Sparkles
 } from 'lucide-react';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import damageService from '../services/damageService';
@@ -226,8 +227,9 @@ const DamageReportDetail = () => {
                 className="rounded-2xl border p-6 bg-blue-50"
                 style={{ borderColor: 'rgba(59, 130, 246, 0.3)' }}
               >
-                <h2 className="text-xl font-black mb-4 text-blue-700">
-                  🤖 AI Analysis
+                <h2 className="text-xl font-black mb-4 text-blue-700 flex items-center gap-2">
+                  <Sparkles size={20} className="text-blue-600" />
+                  <span>AI Automated Inspection Analysis</span>
                 </h2>
                 <div className="grid grid-cols-3 gap-4 mb-4">
                   <div>

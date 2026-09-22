@@ -89,6 +89,17 @@ exports.verifyPayment = async (req, res, next) => {
                 return next(new ErrorResponse('Payment record not found', 404));
             }
 
+            if (payment.user.toString() !== req.user.id) {
+                return next(new ErrorResponse('Unauthorized payment verification attempt', 403));
+            }
+
+            if (payment.status === 'paid') {
+                return res.status(200).json({
+                    success: true,
+                    message: 'Payment already verified and confirmed'
+                });
+            }
+
             payment.transactionId = paymentId;
             payment.status = 'paid';
             await payment.save();
@@ -139,12 +150,12 @@ exports.createDamagePayment = async (req, res, next) => {
             return next(new ErrorResponse('Damage report not approved yet', 400));
         }
 
-        if (!damageReport.actualCost || damageReport.actualCost <= 0) {
-            return next(new ErrorResponse('Invalid cost amount', 400));
-        }
+        // Create Razorpay Order for damage repair amount
+        const order = await createOrder(damageReport.actualCost || damageReport.estimatedCost);
 
-        // Create Razorpay Order
-        const order = await createOrder(damageReport.actualCost);
+        // Update damage report with order ID
+        damageReport.orderId = order.id;
+        await damageReport.save();
 
         res.status(200).json({
             success: true,
@@ -172,6 +183,17 @@ exports.verifyDamagePayment = async (req, res, next) => {
 
             if (!damageReport) {
                 return next(new ErrorResponse('Damage report not found', 404));
+            }
+
+            if (damageReport.user.toString() !== req.user.id) {
+                return next(new ErrorResponse('Unauthorized damage payment verification', 403));
+            }
+
+            if (damageReport.paymentStatus === 'paid') {
+                return res.status(200).json({
+                    success: true,
+                    message: 'Damage settlement already completed'
+                });
             }
 
             damageReport.paymentStatus = 'paid';

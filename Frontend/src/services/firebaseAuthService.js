@@ -14,7 +14,6 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
 // Google Sign-In with POPUP - OPTIMIZED
 export const loginWithGoogle = async () => {
   try {
-    console.log('[firebaseAuth] Starting Google sign-in with popup...');
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({
       prompt: 'select_account'
@@ -26,12 +25,9 @@ export const loginWithGoogle = async () => {
 
     // Use popup with optimized settings
     const result = await signInWithPopup(auth, provider);
-    console.log('[firebaseAuth] ✅ Popup returned successfully');
 
     const user = result.user;
     const idToken = await user.getIdToken();
-
-    console.log('[firebaseAuth] Sending to backend...');
     
     // Use timeout to prevent hanging
     const timeoutPromise = new Promise((_, reject) => 
@@ -49,8 +45,6 @@ export const loginWithGoogle = async () => {
 
     const response = await Promise.race([backendPromise, timeoutPromise]);
 
-    console.log('[firebaseAuth] ✅ Backend response:', response.data);
-
     if (response.data.success) {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -64,7 +58,7 @@ export const loginWithGoogle = async () => {
 
     throw new Error('Backend authentication failed');
   } catch (error) {
-    console.error('[firebaseAuth] ❌ Google login error:', error);
+    console.error('[firebaseAuth] Google login error:', error?.message || 'Unknown error');
 
     let errorMessage = 'Google login failed';
 

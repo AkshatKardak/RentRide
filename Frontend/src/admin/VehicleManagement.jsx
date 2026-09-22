@@ -15,7 +15,8 @@ import {
   Save,
   X,
   Image as ImageIcon,
-  ExternalLink
+  ExternalLink,
+  Star
 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -392,7 +393,14 @@ export default function VehicleManagement() {
                         )}
                       </td>
                       <td className="py-3 px-4 font-bold">
-                        {car.rating ? `${car.rating}★` : <span className="text-slate-400 font-mono">—</span>}
+                        {car.rating ? (
+                          <span className="inline-flex items-center gap-1 text-slate-200">
+                            {car.rating}
+                            <Star size={11} className="text-amber-400 fill-amber-400" />
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 font-mono">—</span>
+                        )}
                       </td>
                       <td className="py-3 px-4">
                         {car.trustScore ? (

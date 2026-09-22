@@ -23,14 +23,6 @@ const PaymentSuccess = () => {
   const referenceId = searchParams.get('razorpay_payment_link_reference_id');
   const status = searchParams.get('razorpay_payment_link_status');
 
-  useEffect(() => {
-    console.log('Payment Details:', {
-      paymentId,
-      paymentLinkId,
-      referenceId,
-      status
-    });
-  }, []);
 
   return (
     <div 

@@ -339,7 +339,7 @@ const BookingConfirmation = () => {
               </button>
 
               <p className="text-xs text-center mt-3" style={{ color: theme.textSecondary, opacity: 0.7 }}>
-                💳 You can apply coupon codes on the payment page
+                You can apply coupon codes on the payment page
               </p>
             </motion.div>
           </div>

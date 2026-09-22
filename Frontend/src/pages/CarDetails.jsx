@@ -10,7 +10,8 @@ import {
   CheckCircle2, 
   ArrowLeft, 
   Star,
-  Info 
+  Info,
+  SlidersHorizontal 
 } from 'lucide-react';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import { carService } from '../services/carService';
@@ -284,11 +285,119 @@ const CarDetails = () => {
             </div>
 
             {/* Specs Grid */}
-            <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-2 gap-4 mb-6">
                <SpecBox icon={<Gauge size={20} />} label="Transmission" value={car.transmission} theme={theme} />
                <SpecBox icon={<Fuel size={20} />} label="Fuel Type" value={car.fuelType} theme={theme} />
                <SpecBox icon={<Users size={20} />} label="Capacity" value={`${car.seats || 5} Persons`} theme={theme} />
                <SpecBox icon={<Info size={20} />} label="Mileage" value={`${car.mileage?.toLocaleString() || '25,000'} km`} theme={theme} />
+            </div>
+
+            {/* Available Powertrain & Transmission Modes */}
+            <div 
+              className="p-5 rounded-3xl border mb-8 transition-all shadow-sm space-y-4"
+              style={{ backgroundColor: theme.card, borderColor: theme.border }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
+                    <SlidersHorizontal size={16} />
+                  </div>
+                  <h3 className="font-bold text-sm" style={{ color: theme.text }}>
+                    Powertrain & Transmission Modes
+                  </h3>
+                </div>
+                <span className="text-[11px] font-semibold text-emerald-500 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                  {car.allVariants?.length > 1 ? `${car.allVariants.length} Fleet Variants` : 'Standard Setup'}
+                </span>
+              </div>
+
+              {/* Transmission Mode Switcher */}
+              <div>
+                <p className="text-xs font-semibold text-slate-400 mb-2">
+                  Transmission Mode:
+                  <span className="text-emerald-500 font-bold capitalize ml-1.5">{car.transmission}</span>
+                  {car.availableTransmissions?.length > 1 && (
+                    <span className="text-[11px] text-slate-400 font-normal ml-2">
+                      (Also available in {car.availableTransmissions.filter(t => t.toLowerCase() !== car.transmission?.toLowerCase()).map(t => t.toUpperCase()).join(', ')})
+                    </span>
+                  )}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {(car.availableTransmissions || [car.transmission]).map((trans) => {
+                    const isSelected = trans.toLowerCase() === car.transmission?.toLowerCase();
+                    const matchingSibling = car.allVariants?.find(v => v.transmission?.toLowerCase() === trans.toLowerCase());
+                    return (
+                      <button
+                        key={trans}
+                        type="button"
+                        onClick={() => {
+                          if (!isSelected && matchingSibling) {
+                            navigate(`/car/${matchingSibling._id}`);
+                          }
+                        }}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                          isSelected
+                            ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-500/20'
+                            : 'hover:bg-emerald-500/10 border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:text-emerald-500 hover:border-emerald-500/30 cursor-pointer'
+                        }`}
+                      >
+                        <Gauge size={14} />
+                        <span className="capitalize">{trans}</span>
+                        {isSelected ? (
+                          <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded ml-1">Current</span>
+                        ) : (
+                          <span className="text-[10px] text-emerald-500 font-normal ml-1">Switch ↗</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Fuel Type Switcher */}
+              {car.availableFuelTypes?.length > 0 && (
+                <div className="pt-3 border-t" style={{ borderColor: theme.border }}>
+                  <p className="text-xs font-semibold text-slate-400 mb-2">
+                    Fuel & Powertrain:
+                    <span className="text-emerald-500 font-bold capitalize ml-1.5">{car.fuelType}</span>
+                    {car.availableFuelTypes?.length > 1 && (
+                      <span className="text-[11px] text-slate-400 font-normal ml-2">
+                        (Also in {car.availableFuelTypes.filter(f => f.toLowerCase() !== car.fuelType?.toLowerCase()).map(f => f.toUpperCase()).join(', ')})
+                      </span>
+                    )}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {car.availableFuelTypes.map((fuel) => {
+                      const isSelected = fuel.toLowerCase() === car.fuelType?.toLowerCase();
+                      const matchingSibling = car.allVariants?.find(v => v.fuelType?.toLowerCase() === fuel.toLowerCase());
+                      return (
+                        <button
+                          key={fuel}
+                          type="button"
+                          onClick={() => {
+                            if (!isSelected && matchingSibling) {
+                              navigate(`/car/${matchingSibling._id}`);
+                            }
+                          }}
+                          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                            isSelected
+                              ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-500/20'
+                              : 'hover:bg-emerald-500/10 border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:text-emerald-500 hover:border-emerald-500/30 cursor-pointer'
+                          }`}
+                        >
+                          <Fuel size={14} />
+                          <span className="capitalize">{fuel}</span>
+                          {isSelected ? (
+                            <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded ml-1">Current</span>
+                          ) : (
+                            <span className="text-[10px] text-emerald-500 font-normal ml-1">Switch ↗</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Description */}

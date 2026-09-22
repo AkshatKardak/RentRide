@@ -194,7 +194,6 @@ exports.firebaseRegister = async (req, res, next) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                firebaseUid: user.firebaseUid,
                 profilePicture: user.profilePicture,
                 role: user.role
             }
@@ -266,7 +265,6 @@ exports.firebaseLogin = async (req, res, next) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                firebaseUid: user.firebaseUid,
                 profilePicture: user.profilePicture,
                 role: user.role
             }
@@ -348,7 +346,6 @@ exports.firebaseGoogleLogin = async (req, res, next) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                firebaseUid: user.firebaseUid,
                 profilePicture: user.profilePicture,
                 role: user.role
             }

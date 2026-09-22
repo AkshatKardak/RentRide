@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, CheckCircle2, XCircle, Eye, ShieldAlert, Image as ImageIcon } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, XCircle, Eye, ShieldAlert, Image as ImageIcon, X } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '../context/ThemeContext';
@@ -141,7 +141,9 @@ export default function DamageManagement() {
           }`}>
             <div className="flex items-center justify-between border-b pb-3 border-inherit">
               <h3 className="font-bold text-lg">Damage Inspection Review</h3>
-              <button onClick={() => setSelectedReport(null)} className="text-slate-400 hover:text-white">✕</button>
+              <button onClick={() => setSelectedReport(null)} className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+                <X size={18} />
+              </button>
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-xs">

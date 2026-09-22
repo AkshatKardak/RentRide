@@ -99,7 +99,7 @@ const OffersCode = () => {
               className="text-4xl font-bold mb-4"
               style={{ color: theme.text }}
             >
-              🎉 Exclusive Offers & Promo Codes
+              Exclusive Offers & Promo Codes
             </h1>
             <p
               className="text-lg"

@@ -111,11 +111,9 @@ const handleGoogleSignup = async () => {
   setLoading(true);
 
   try {
-    console.log('[SignUp] Starting Google signup...');
     const result = await loginWithGoogle();
 
     if (result.success) {
-      console.log('[SignUp] ✅ Google signup successful!');
       setSuccess('Successfully signed up with Google!');
 
       setTimeout(() => {
@@ -123,7 +121,6 @@ const handleGoogleSignup = async () => {
       }, 1000);
     }
   } catch (err) {
-    console.error('[SignUp] ❌ Google signup failed:', err);
     setError(err.message || 'Google sign-up failed');
     setLoading(false);
   }

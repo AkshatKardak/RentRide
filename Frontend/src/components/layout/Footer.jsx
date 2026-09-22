@@ -141,7 +141,7 @@ const Footer = () => {
           style={{ borderColor: theme.border }}
         >
           <p className='text-sm' style={{ color: theme.textSecondary }}>
-            © 2025 RentRide. All rights reserved. Made with 💚 by <span className='text-green-500 font-semibold'>Akshat</span>
+            © 2026 RentRide. All rights reserved. Engineered for mobility excellence by <span className='text-emerald-500 font-semibold'>Akshat</span>
           </p>
           <div className='flex gap-6 text-sm'>
             <a href='#' className='hover:text-green-500 transition-colors' style={{ color: theme.textSecondary }}>Privacy Policy</a>

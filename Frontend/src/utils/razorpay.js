@@ -16,17 +16,17 @@ export const initRazorpayPayment = (order, bookingDetails, onSuccess, onFailure)
     const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_demo_key';
 
     if (!razorpayKey || razorpayKey === 'rzp_test_demo_key') {
-      console.warn('⚠️ Using demo Razorpay key. Add VITE_RAZORPAY_KEY_ID to your .env file');
+      console.warn('Using demo Razorpay key. Add VITE_RAZORPAY_KEY_ID to your .env file');
     }
 
     const options = {
-      key: razorpayKey, // ← This is the missing key!
+      key: razorpayKey,
       amount: order.amount,
       currency: order.currency || 'INR',
       name: 'FTS Car Rental',
       description: bookingDetails.description || 'Car Rental Payment',
       order_id: order.id,
-      image: '/logo.png', // Your company logo
+      image: '/logo.png',
       prefill: {
         name: bookingDetails.name || '',
         email: bookingDetails.email || '',
@@ -37,10 +37,9 @@ export const initRazorpayPayment = (order, bookingDetails, onSuccess, onFailure)
         car_name: bookingDetails.name || ''
       },
       theme: {
-        color: '#10b981' // Green color matching your theme
+        color: '#10b981'
       },
       handler: function (response) {
-        console.log('✅ Payment successful:', response);
         if (onSuccess) {
           onSuccess(response);
         }
@@ -48,7 +47,6 @@ export const initRazorpayPayment = (order, bookingDetails, onSuccess, onFailure)
       },
       modal: {
         ondismiss: function () {
-          console.log('❌ Payment cancelled by user');
           const error = new Error('Payment cancelled by user');
           if (onFailure) {
             onFailure(error);
@@ -63,8 +61,7 @@ export const initRazorpayPayment = (order, bookingDetails, onSuccess, onFailure)
     try {
       const paymentObject = new window.Razorpay(options);
       paymentObject.on('payment.failed', function (response) {
-        console.error('❌ Payment failed:', response.error);
-        const error = new Error(response.error.description || 'Payment failed');
+        const error = new Error(response?.error?.description || 'Payment failed');
         if (onFailure) {
           onFailure(error);
         }
@@ -72,7 +69,6 @@ export const initRazorpayPayment = (order, bookingDetails, onSuccess, onFailure)
       });
       paymentObject.open();
     } catch (error) {
-      console.error('❌ Razorpay initialization error:', error);
       if (onFailure) {
         onFailure(error);
       }

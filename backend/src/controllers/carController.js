@@ -94,13 +94,62 @@ exports.getAllCars = async (req, res) => {
 
     const count = await Car.countDocuments(filter);
 
+    // Efficiently enrich cars with fleet sibling configurations (transmissions & fuel types for that brand+model)
+    const uniqueModels = [...new Set(cars.map(c => `${c.brand}:::${c.model}`))];
+    const modelQueries = uniqueModels.map(m => {
+      const [b, mod] = m.split(':::');
+      return { brand: b, model: mod };
+    });
+
+    let siblingSummaryMap = {};
+    if (modelQueries.length > 0) {
+      try {
+        const agg = await Car.aggregate([
+          { $match: { $or: modelQueries, available: true } },
+          {
+            $group: {
+              _id: { brand: '$brand', model: '$model' },
+              transmissions: { $addToSet: '$transmission' },
+              fuelTypes: { $addToSet: '$fuelType' },
+              count: { $sum: 1 }
+            }
+          }
+        ]);
+        agg.forEach(item => {
+          const key = `${item._id.brand}:::${item._id.model}`;
+          siblingSummaryMap[key] = {
+            availableTransmissions: (item.transmissions || []).filter(Boolean).sort(),
+            availableFuelTypes: (item.fuelTypes || []).filter(Boolean).sort(),
+            variantCount: item.count
+          };
+        });
+      } catch (aggErr) {
+        console.warn('Could not aggregate vehicle variants:', aggErr.message);
+      }
+    }
+
+    const enrichedCars = cars.map(c => {
+      const carObj = c.toObject();
+      const summary = siblingSummaryMap[`${c.brand}:::${c.model}`] || {
+        availableTransmissions: [c.transmission].filter(Boolean),
+        availableFuelTypes: [c.fuelType].filter(Boolean),
+        variantCount: 1
+      };
+      return {
+        ...carObj,
+        availableTransmissions: summary.availableTransmissions,
+        availableFuelTypes: summary.availableFuelTypes,
+        variantCount: summary.variantCount
+      };
+    });
+
     res.json({
       success: true,
-      count: cars.length,
+      count: enrichedCars.length,
       total: count,
       totalPages: Math.ceil(count / limitNum),
       currentPage: pageNum,
-      data: cars
+      data: enrichedCars
     });
   } catch (error) {
     console.error('Error fetching cars:', error);
@@ -152,7 +201,7 @@ exports.getFilterOptions = async (req, res) => {
   }
 };
 
-// Get single car
+// Get single car with sibling variants and available modes
 exports.getCarById = async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -163,9 +212,25 @@ exports.getCarById = async (req, res) => {
       });
     }
 
+    // Fetch sibling variants of the same brand and model
+    const siblings = await Car.find({
+      brand: car.brand,
+      model: car.model,
+      available: true
+    }).select('_id name brand model variant transmission fuelType pricePerDay rating trustScore city available year images primaryImage');
+
+    const availableTransmissions = [...new Set(siblings.map(s => s.transmission).concat(car.transmission))].filter(Boolean).sort();
+    const availableFuelTypes = [...new Set(siblings.map(s => s.fuelType).concat(car.fuelType))].filter(Boolean).sort();
+
     res.json({
       success: true,
-      data: car
+      data: {
+        ...car.toObject(),
+        siblingVariants: siblings.filter(s => s._id.toString() !== car._id.toString()),
+        allVariants: siblings,
+        availableTransmissions,
+        availableFuelTypes
+      }
     });
   } catch (error) {
     res.status(500).json({

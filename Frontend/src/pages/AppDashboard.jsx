@@ -10,7 +10,9 @@ import {
   TrendingUp,
   Clock,
   ArrowRight,
-  AlertTriangle
+  AlertTriangle,
+  Zap,
+  AlertCircle
 } from "lucide-react";
 import { bookingService } from '../services/bookingService';
 import damageService from '../services/damageService';
@@ -276,10 +278,11 @@ const AppDashboard = () => {
           {/* QUICK ACTIONS */}
           <div className="space-y-6">
             <h2
-              className="text-xl font-black uppercase tracking-widest opacity-70"
+              className="text-xl font-black uppercase tracking-widest opacity-70 flex items-center gap-2"
               style={{ color: theme.text }}
             >
-              ⚡ Quick Access
+              <Zap size={18} className="text-emerald-500" />
+              <span>Quick Access</span>
             </h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               <QuickAction
@@ -315,10 +318,11 @@ const AppDashboard = () => {
           {pendingItems.length > 0 && (
             <div className="space-y-6">
               <h2
-                className="text-xl font-black uppercase tracking-widest opacity-70"
+                className="text-xl font-black uppercase tracking-widest opacity-70 flex items-center gap-2"
                 style={{ color: theme.text }}
               >
-                🚩 Action Required
+                <AlertCircle size={18} className="text-rose-500" />
+                <span>Action Required</span>
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {pendingItems.map((item, idx) => (

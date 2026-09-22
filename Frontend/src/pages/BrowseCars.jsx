@@ -230,24 +230,48 @@ const BrowseCars = () => {
             </div>
           </div>
 
-          {/* Category Quick Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
-            {QUICK_CATEGORIES.map(cat => {
-              const active = category.toLowerCase() === cat.toLowerCase();
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all duration-200 whitespace-nowrap border ${
-                    active
-                      ? 'bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 border-emerald-400 shadow-md shadow-emerald-500/20 scale-105'
-                      : 'bg-slate-900/80 text-slate-300 border-slate-800 hover:border-slate-700 hover:bg-slate-850'
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
+          {/* Category & Transmission Mode Quick Pills */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 mb-6 overflow-x-auto">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+              {QUICK_CATEGORIES.map(cat => {
+                const active = category.toLowerCase() === cat.toLowerCase();
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setCategory(cat)}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 whitespace-nowrap border ${
+                      active
+                        ? 'bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 border-emerald-400 shadow-md shadow-emerald-500/20 scale-105'
+                        : 'bg-slate-900/80 text-slate-300 border-slate-800 hover:border-slate-700 hover:bg-slate-850'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Quick Transmission Mode Toggle */}
+            <div className="flex items-center gap-1.5 self-start sm:self-auto bg-slate-900/80 p-1 rounded-xl border border-slate-800 text-xs font-bold">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider px-2">Mode:</span>
+              {['All', 'Automatic', 'Manual'].map(t => {
+                const active = transmission.toLowerCase() === t.toLowerCase();
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setTransmission(t)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                      active
+                        ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Search & Filter Bar */}
@@ -623,7 +647,7 @@ const CarCard = ({ car, index, theme, onBook, onDetails }) => {
           </div>
 
           {/* Specs Feature Strip */}
-          <div className="grid grid-cols-3 gap-2 py-2.5 mb-3 border-y border-slate-800/80">
+          <div className="grid grid-cols-3 gap-2 py-2.5 mb-2.5 border-y border-slate-800/80">
             <div className="flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-800/40 text-[11px] text-slate-300 font-medium">
               <Users size={13} className="text-emerald-400" />
               <span>{car.seats || 5} Seats</span>
@@ -637,6 +661,16 @@ const CarCard = ({ car, index, theme, onBook, onDetails }) => {
               <span className="truncate">{car.transmission || 'Manual'}</span>
             </div>
           </div>
+
+          {/* Sibling Variant Mode Indicator */}
+          {car.availableTransmissions?.length > 1 && (
+            <div className="mb-2.5 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-[10px]">
+              <span className="text-slate-400 font-semibold">Fleet Options:</span>
+              <span className="text-emerald-400 font-bold uppercase tracking-wider">
+                {car.availableTransmissions.join(' • ')}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Pricing & Call-to-Action */}
