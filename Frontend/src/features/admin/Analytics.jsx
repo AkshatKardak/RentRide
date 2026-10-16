@@ -30,6 +30,14 @@ export default function Analytics() {
         axios.get(`${baseUrl}/analytics/locations`, { headers })
       ]);
 
+      const primaryColor = isDarkMode ? '#B85D3B' : '#A34F32';
+      const copperColor = isDarkMode ? '#C68A5A' : '#B8794A';
+      const tooltipBg = isDarkMode ? '#171714' : '#FFFFFF';
+      const tooltipBorder = isDarkMode ? '#383632' : '#E8E0D3';
+      const tooltipText = isDarkMode ? '#F3EEE5' : '#20201E';
+      const axisText = isDarkMode ? '#8E8679' : '#6B6459';
+      const gridSplit = isDarkMode ? '#242320' : '#F3EEE5';
+
       // 1. Revenue Over Time
       if (revRes.status === 'fulfilled' && revRes.value.data?.success) {
         const revData = revRes.value.data.data || [];
@@ -40,37 +48,30 @@ export default function Analytics() {
           setRevenueTimeChart({
             tooltip: {
               trigger: 'axis',
-              backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
-              borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+              backgroundColor: tooltipBg,
+              borderColor: tooltipBorder,
               borderWidth: 1,
-              textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12 },
-              formatter: '{b}: <b style="color:#10b981">₹{c}</b>'
+              textStyle: { color: tooltipText, fontSize: 12 },
+              formatter: '{b}: <b style="color:' + primaryColor + '">₹{c}</b>'
             },
             grid: { top: 25, right: 20, bottom: 35, left: 60 },
             xAxis: {
               type: 'category',
               data: xLabels,
-              axisLabel: {
-                color: isDarkMode ? '#94a3b8' : '#64748b',
-                fontSize: 11
-              },
-              axisLine: { lineStyle: { color: isDarkMode ? '#334155' : '#e2e8f0' } }
+              axisLabel: { color: axisText, fontSize: 11 },
+              axisLine: { lineStyle: { color: tooltipBorder } }
             },
             yAxis: {
               type: 'value',
-              axisLabel: {
-                color: isDarkMode ? '#94a3b8' : '#64748b',
-                formatter: '₹{value}',
-                fontSize: 11
-              },
-              splitLine: { lineStyle: { color: isDarkMode ? 'rgba(51, 65, 85, 0.4)' : 'rgba(226, 232, 240, 0.8)' } }
+              axisLabel: { color: axisText, formatter: '₹{value}', fontSize: 11 },
+              splitLine: { lineStyle: { color: gridSplit } }
             },
             series: [{
               data: yValues,
               type: 'bar',
               barWidth: '40%',
               itemStyle: {
-                color: '#10b981',
+                color: primaryColor,
                 borderRadius: [6, 6, 0, 0]
               }
             }]
@@ -92,15 +93,15 @@ export default function Analytics() {
 
         if (pieData.length > 0) {
           setCategoryChart({
-            color: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316', '#14b8a6'],
+            color: ['#A34F32', '#B8794A', '#D9822B', '#8C8275', '#B9623E', '#C68A5A', '#6B6459', '#3D3833'],
             tooltip: {
               trigger: 'item',
-              backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
-              borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+              backgroundColor: tooltipBg,
+              borderColor: tooltipBorder,
               borderWidth: 1,
               padding: [8, 12],
-              textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12, fontWeight: 600 },
-              formatter: '{b}: <b style="color:#10b981">{c}</b> ({d}%)'
+              textStyle: { color: tooltipText, fontSize: 12, fontWeight: 600 },
+              formatter: '{b}: <b style="color:' + primaryColor + '">{c}</b> ({d}%)'
             },
             legend: {
               type: 'scroll',
@@ -111,14 +112,7 @@ export default function Analytics() {
               itemHeight: 10,
               itemGap: 16,
               icon: 'circle',
-              textStyle: {
-                color: isDarkMode ? '#94a3b8' : '#475569',
-                fontSize: 11,
-                fontWeight: 600
-              },
-              pageIconColor: '#10b981',
-              pageIconInactiveColor: isDarkMode ? '#475569' : '#cbd5e1',
-              pageTextStyle: { color: isDarkMode ? '#94a3b8' : '#475569' }
+              textStyle: { color: axisText, fontSize: 11, fontWeight: 600 }
             },
             series: [{
               name: 'Category',
@@ -128,24 +122,19 @@ export default function Analytics() {
               avoidLabelOverlap: true,
               itemStyle: {
                 borderRadius: 8,
-                borderColor: isDarkMode ? '#0f172a' : '#ffffff',
+                borderColor: isDarkMode ? '#11110F' : '#FFFFFF',
                 borderWidth: 2
               },
-              label: {
-                show: false
-              },
-              labelLine: {
-                show: false
-              },
+              label: { show: false },
               emphasis: {
                 scale: true,
                 scaleSize: 6,
                 label: {
                   show: true,
                   formatter: '{b}\n{c} ({d}%)',
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: 'bold',
-                  color: isDarkMode ? '#f8fafc' : '#0f172a'
+                  color: tooltipText
                 }
               },
               data: pieData
@@ -164,15 +153,15 @@ export default function Analytics() {
 
         if (fuelPieData.length > 0) {
           setFuelChart({
-            color: ['#10b981', '#3b82f6', '#f59e0b', '#06b6d4', '#8b5cf6'],
+            color: ['#A34F32', '#B8794A', '#5A534A', '#D9822B', '#8E8679'],
             tooltip: {
               trigger: 'item',
-              backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
-              borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+              backgroundColor: tooltipBg,
+              borderColor: tooltipBorder,
               borderWidth: 1,
               padding: [8, 12],
-              textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12, fontWeight: 600 },
-              formatter: '{b}: <b style="color:#10b981">{c}</b> ({d}%)'
+              textStyle: { color: tooltipText, fontSize: 12, fontWeight: 600 },
+              formatter: '{b}: <b style="color:' + primaryColor + '">{c}</b> ({d}%)'
             },
             legend: {
               type: 'scroll',
@@ -183,14 +172,7 @@ export default function Analytics() {
               itemHeight: 10,
               itemGap: 16,
               icon: 'circle',
-              textStyle: {
-                color: isDarkMode ? '#94a3b8' : '#475569',
-                fontSize: 11,
-                fontWeight: 600
-              },
-              pageIconColor: '#10b981',
-              pageIconInactiveColor: isDarkMode ? '#475569' : '#cbd5e1',
-              pageTextStyle: { color: isDarkMode ? '#94a3b8' : '#475569' }
+              textStyle: { color: axisText, fontSize: 11, fontWeight: 600 }
             },
             series: [{
               name: 'Fuel Type',
@@ -200,24 +182,19 @@ export default function Analytics() {
               avoidLabelOverlap: true,
               itemStyle: {
                 borderRadius: 8,
-                borderColor: isDarkMode ? '#0f172a' : '#ffffff',
+                borderColor: isDarkMode ? '#11110F' : '#FFFFFF',
                 borderWidth: 2
               },
-              label: {
-                show: false
-              },
-              labelLine: {
-                show: false
-              },
+              label: { show: false },
               emphasis: {
                 scale: true,
                 scaleSize: 6,
                 label: {
                   show: true,
                   formatter: '{b}\n{c} ({d}%)',
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: 'bold',
-                  color: isDarkMode ? '#f8fafc' : '#0f172a'
+                  color: tooltipText
                 }
               },
               data: fuelPieData
@@ -241,35 +218,29 @@ export default function Analytics() {
           setCityChart({
             tooltip: {
               trigger: 'axis',
-              backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
-              borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+              backgroundColor: tooltipBg,
+              borderColor: tooltipBorder,
               borderWidth: 1,
-              textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12 }
+              textStyle: { color: tooltipText, fontSize: 12 }
             },
             grid: { top: 25, right: 20, bottom: 35, left: 50 },
             xAxis: {
               type: 'category',
               data: cities,
-              axisLabel: {
-                color: isDarkMode ? '#94a3b8' : '#64748b',
-                fontSize: 11
-              },
-              axisLine: { lineStyle: { color: isDarkMode ? '#334155' : '#e2e8f0' } }
+              axisLabel: { color: axisText, fontSize: 11 },
+              axisLine: { lineStyle: { color: tooltipBorder } }
             },
             yAxis: {
               type: 'value',
-              axisLabel: {
-                color: isDarkMode ? '#94a3b8' : '#64748b',
-                fontSize: 11
-              },
-              splitLine: { lineStyle: { color: isDarkMode ? 'rgba(51, 65, 85, 0.4)' : 'rgba(226, 232, 240, 0.8)' } }
+              axisLabel: { color: axisText, fontSize: 11 },
+              splitLine: { lineStyle: { color: gridSplit } }
             },
             series: [{
               data: counts,
               type: 'bar',
               barWidth: '40%',
               itemStyle: {
-                color: '#3b82f6',
+                color: copperColor,
                 borderRadius: [6, 6, 0, 0]
               }
             }]
@@ -289,10 +260,12 @@ export default function Analytics() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-sans">
       <div>
-        <h1 className="text-2xl lg:text-3xl font-black tracking-tight">Fleet Intelligence & Analytics</h1>
-        <p className="text-xs md:text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl lg:text-3xl font-display font-black tracking-tight text-text">
+          Fleet Intelligence & Analytics
+        </h1>
+        <p className="text-xs md:text-sm text-muted mt-1">
           Apache ECharts operational insights: revenue distributions, regional demand, and category telemetry
         </p>
       </div>

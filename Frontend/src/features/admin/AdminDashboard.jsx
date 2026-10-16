@@ -5,13 +5,10 @@ import {
   CalendarCheck,
   Coins,
   AlertTriangle,
-  Users,
-  ShieldCheck,
-  TrendingUp,
   Activity,
   ArrowUpRight,
-  Clock,
-  Sparkles
+  TrendingUp,
+  ShieldCheck
 } from 'lucide-react';
 import axios from 'axios';
 import * as echarts from 'echarts';
@@ -40,7 +37,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [isDarkMode]);
 
   const fetchDashboardData = async () => {
     try {
@@ -56,8 +53,10 @@ export default function AdminDashboard() {
         axios.get(`${baseUrl}/admin/maintenance`, { headers })
       ]);
 
+      let fetchedStats = stats;
       if (statsRes.status === 'fulfilled' && statsRes.value.data?.success) {
-        setStats(statsRes.value.data.data);
+        fetchedStats = statsRes.value.data.data;
+        setStats(fetchedStats);
       }
 
       if (activityRes.status === 'fulfilled' && activityRes.value.data?.success) {
@@ -67,6 +66,9 @@ export default function AdminDashboard() {
       if (maintenanceRes.status === 'fulfilled' && maintenanceRes.value.data?.success) {
         setMaintenanceAlerts(maintenanceRes.value.data.data || []);
       }
+
+      const primaryColor = isDarkMode ? '#B85D3B' : '#A34F32';
+      const copperColor = isDarkMode ? '#C68A5A' : '#B8794A';
 
       // Configure Revenue Chart
       if (revenueRes.status === 'fulfilled' && revenueRes.value.data?.success) {
@@ -78,30 +80,37 @@ export default function AdminDashboard() {
           setRevenueChartData({
             tooltip: {
               trigger: 'axis',
-              formatter: '{b}: ₹{c}'
+              backgroundColor: isDarkMode ? '#171714' : '#FFFFFF',
+              borderColor: isDarkMode ? '#383632' : '#E8E0D3',
+              borderWidth: 1,
+              textStyle: { color: isDarkMode ? '#F3EEE5' : '#20201E', fontSize: 12 },
+              formatter: '{b}: <b style="color:' + primaryColor + '">₹{c}</b>'
             },
-            grid: { top: 30, right: 20, bottom: 30, left: 50 },
+            grid: { top: 25, right: 20, bottom: 30, left: 50 },
             xAxis: {
               type: 'category',
               data: dates,
-              axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
+              axisLine: { lineStyle: { color: isDarkMode ? '#383632' : '#E8E0D3' } },
+              axisLabel: { color: isDarkMode ? '#8E8679' : '#6B6459', fontSize: 11 }
             },
             yAxis: {
               type: 'value',
-              axisLabel: { formatter: '₹{value}' },
-              splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
+              axisLabel: { formatter: '₹{value}', color: isDarkMode ? '#8E8679' : '#6B6459', fontSize: 11 },
+              splitLine: { lineStyle: { color: isDarkMode ? '#242320' : '#F3EEE5' } }
             },
             series: [{
               data: amounts,
               type: 'line',
               smooth: true,
+              showSymbol: false,
+              lineStyle: { width: 3, color: primaryColor },
               areaStyle: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: 'rgba(16, 185, 129, 0.4)' },
-                  { offset: 1, color: 'rgba(16, 185, 129, 0.02)' }
+                  { offset: 0, color: 'rgba(163, 79, 50, 0.35)' },
+                  { offset: 1, color: 'rgba(163, 79, 50, 0.02)' }
                 ])
               },
-              itemStyle: { color: '#10b981' }
+              itemStyle: { color: primaryColor }
             }]
           });
         } else {
@@ -112,17 +121,17 @@ export default function AdminDashboard() {
       }
 
       // Configure Fleet Utilization Donut Chart
-      if (stats.totalCars > 0) {
-        const rentedCount = Math.max(0, stats.totalCars - stats.availableCars);
+      if (fetchedStats.totalCars > 0) {
+        const rentedCount = Math.max(0, fetchedStats.totalCars - fetchedStats.availableCars);
         setUtilizationChartData({
           tooltip: {
             trigger: 'item',
-            backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.96)',
-            borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+            backgroundColor: isDarkMode ? '#171714' : '#FFFFFF',
+            borderColor: isDarkMode ? '#383632' : '#E8E0D3',
             borderWidth: 1,
             padding: [8, 12],
-            textStyle: { color: isDarkMode ? '#f8fafc' : '#0f172a', fontSize: 12, fontWeight: 600 },
-            formatter: '{b}: <b style="color:#10b981">{c}</b> ({d}%)'
+            textStyle: { color: isDarkMode ? '#F3EEE5' : '#20201E', fontSize: 12, fontWeight: 600 },
+            formatter: '{b}: <b style="color:' + primaryColor + '">{c}</b> ({d}%)'
           },
           legend: {
             type: 'scroll',
@@ -133,15 +142,19 @@ export default function AdminDashboard() {
             itemHeight: 10,
             itemGap: 16,
             icon: 'circle',
-            textStyle: { color: isDarkMode ? '#94a3b8' : '#475569', fontSize: 11, fontWeight: 600 }
+            textStyle: { color: isDarkMode ? '#8E8679' : '#6B6459', fontSize: 11, fontWeight: 600 }
           },
           series: [{
             name: 'Status',
             type: 'pie',
             center: ['50%', '42%'],
-            radius: ['40%', '64%'],
+            radius: ['42%', '66%'],
             avoidLabelOverlap: true,
-            itemStyle: { borderRadius: 8, borderColor: isDarkMode ? '#0f172a' : '#fff', borderWidth: 2 },
+            itemStyle: {
+              borderRadius: 8,
+              borderColor: isDarkMode ? '#11110F' : '#FFFFFF',
+              borderWidth: 2
+            },
             label: { show: false },
             emphasis: {
               scale: true,
@@ -149,15 +162,19 @@ export default function AdminDashboard() {
               label: {
                 show: true,
                 formatter: '{b}\n{c} ({d}%)',
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: 'bold',
-                color: isDarkMode ? '#f8fafc' : '#0f172a'
+                color: isDarkMode ? '#F3EEE5' : '#20201E'
               }
             },
             data: [
-              { value: stats.availableCars, name: 'Available', itemStyle: { color: '#10b981' } },
-              { value: rentedCount, name: 'Rented', itemStyle: { color: '#3b82f6' } },
-              { value: Math.max(0, stats.totalCars - stats.availableCars - rentedCount), name: 'Maintenance', itemStyle: { color: '#f59e0b' } }
+              { value: fetchedStats.availableCars, name: 'Available', itemStyle: { color: primaryColor } },
+              { value: rentedCount, name: 'Rented', itemStyle: { color: copperColor } },
+              {
+                value: Math.max(0, fetchedStats.totalCars - fetchedStats.availableCars - rentedCount),
+                name: 'Maintenance',
+                itemStyle: { color: isDarkMode ? '#5E574B' : '#948C7E' }
+              }
             ].filter(d => d.value > 0)
           }]
         });
@@ -178,51 +195,53 @@ export default function AdminDashboard() {
       value: `₹${(stats.totalRevenue || 0).toLocaleString()}`,
       subtext: `₹${(stats.monthlyRevenue || 0).toLocaleString()} this month`,
       icon: Coins,
-      color: 'text-emerald-500',
-      bg: 'bg-emerald-500/10 border-emerald-500/20'
+      color: 'text-primary',
+      bg: 'bg-primary/10 border-primary/20'
     },
     {
       title: 'Total Vehicles',
       value: stats.totalCars || 0,
       subtext: `${stats.availableCars || 0} currently available`,
       icon: Car,
-      color: 'text-blue-500',
-      bg: 'bg-blue-500/10 border-blue-500/20'
+      color: 'text-accent',
+      bg: 'bg-accent/10 border-accent/20'
     },
     {
       title: 'Active Bookings',
       value: stats.activeBookings || 0,
       subtext: `${stats.pendingBookings || 0} pending review`,
       icon: CalendarCheck,
-      color: 'text-purple-500',
-      bg: 'bg-purple-500/10 border-purple-500/20'
+      color: 'text-text',
+      bg: 'bg-surface-sunken border-border'
     },
     {
       title: 'Fleet Utilization',
       value: `${stats.fleetUtilization || (stats.totalCars > 0 ? Math.round(((stats.totalCars - stats.availableCars) / stats.totalCars) * 100) : 0)}%`,
       subtext: 'Real-time live deployment',
       icon: Activity,
-      color: 'text-amber-500',
-      bg: 'bg-amber-500/10 border-amber-500/20'
+      color: 'text-primary',
+      bg: 'bg-primary/10 border-primary/20'
     }
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-sans">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-black tracking-tight">Executive Dashboard</h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl lg:text-3xl font-display font-black tracking-tight text-text">
+            Executive Dashboard
+          </h1>
+          <p className="text-xs md:text-sm text-muted mt-1">
             Real-time fleet operations, financial performance, and health status
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             to="/admin/vehicles"
-            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-500/20 transition-all"
+            className="px-4 py-2.5 bg-primary hover:bg-primary-hover text-white font-bold text-xs rounded-xl shadow-md shadow-primary/20 transition-all flex items-center gap-1.5"
           >
-            + Manage Fleet
+            <span>+ Manage Fleet</span>
           </Link>
         </div>
       </div>
@@ -234,12 +253,10 @@ export default function AdminDashboard() {
           return (
             <div
               key={idx}
-              className={`p-5 rounded-2xl border transition-all ${
-                isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
-              }`}
+              className="p-5 rounded-2xl border border-border bg-surface shadow-xs hover:border-primary/30 transition-all"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-muted">
                   {card.title}
                 </span>
                 <div className={`p-2 rounded-xl border ${card.bg}`}>
@@ -247,10 +264,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="mt-4">
-                <span className="text-2xl lg:text-3xl font-black tracking-tight">
+                <span className="text-2xl lg:text-3xl font-display font-black tracking-tight text-text font-mono">
                   {loading ? '...' : card.value}
                 </span>
-                <p className="text-xs text-slate-500 mt-1 font-medium">{card.subtext}</p>
+                <p className="text-xs text-muted mt-1 font-medium">{card.subtext}</p>
               </div>
             </div>
           );
@@ -282,31 +299,29 @@ export default function AdminDashboard() {
       {/* Tables: Recent Bookings & Maintenance Health */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Bookings */}
-        <div className={`p-5 rounded-2xl border ${
-          isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
-        }`}>
+        <div className="p-5 rounded-2xl border border-border bg-surface shadow-xs">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-base">Recent Rentals</h3>
-            <Link to="/admin/bookings" className="text-xs font-bold text-emerald-500 hover:underline">
+            <h3 className="font-display font-bold text-base text-text">Recent Rentals</h3>
+            <Link to="/admin/bookings" className="text-xs font-bold text-primary hover:underline">
               View All ↗
             </Link>
           </div>
           {recentBookings.length === 0 ? (
-            <div className="py-8 text-center text-slate-400 text-xs">
+            <div className="py-8 text-center text-muted text-xs">
               No recent bookings found in database
             </div>
           ) : (
-            <div className="divide-y divide-inherit">
+            <div className="divide-y divide-border">
               {recentBookings.map((b) => (
                 <div key={b._id} className="py-3 flex items-center justify-between text-xs">
                   <div>
-                    <p className="font-bold">{b.car?.name || b.car?.model || 'Rental Vehicle'}</p>
-                    <p className="text-slate-400 mt-0.5">{b.user?.name || 'Customer'}</p>
+                    <p className="font-bold text-text">{b.car?.name || b.car?.model || 'Rental Vehicle'}</p>
+                    <p className="text-muted mt-0.5">{b.user?.name || 'Customer'}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-emerald-500">₹{(b.totalPrice || 0).toLocaleString()}</p>
-                    <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase mt-0.5 ${
-                      b.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
+                    <p className="font-mono font-bold text-primary">₹{(b.totalPrice || 0).toLocaleString()}</p>
+                    <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase mt-0.5 ${
+                      b.status === 'confirmed' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-accent/10 text-accent border border-accent/20'
                     }`}>
                       {b.status}
                     </span>
@@ -318,32 +333,30 @@ export default function AdminDashboard() {
         </div>
 
         {/* Maintenance Warnings */}
-        <div className={`p-5 rounded-2xl border ${
-          isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
-        }`}>
+        <div className="p-5 rounded-2xl border border-border bg-surface shadow-xs">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-base flex items-center gap-2">
-              <AlertTriangle size={16} className="text-amber-500" />
+            <h3 className="font-display font-bold text-base text-text flex items-center gap-2">
+              <AlertTriangle size={16} className="text-accent" />
               <span>Fleet Health Watchlist</span>
             </h3>
-            <Link to="/admin/vehicles" className="text-xs font-bold text-emerald-500 hover:underline">
+            <Link to="/admin/vehicles" className="text-xs font-bold text-primary hover:underline">
               Inspect ↗
             </Link>
           </div>
           {maintenanceAlerts.length === 0 ? (
-            <div className="py-8 text-center text-slate-400 text-xs">
+            <div className="py-8 text-center text-muted text-xs">
               All vehicles operating above 80% health threshold
             </div>
           ) : (
-            <div className="divide-y divide-inherit">
+            <div className="divide-y divide-border">
               {maintenanceAlerts.slice(0, 5).map((car) => (
                 <div key={car._id} className="py-3 flex items-center justify-between text-xs">
                   <div>
-                    <p className="font-bold">{car.brand} {car.model} ({car.year})</p>
-                    <p className="text-slate-400 mt-0.5">{car.city} • Trust: {car.trustScore}/100</p>
+                    <p className="font-bold text-text">{car.brand} {car.model} ({car.year})</p>
+                    <p className="text-muted mt-0.5">{car.city} • Trust: {car.trustScore}/100</p>
                   </div>
                   <div className="text-right">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-500">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-accent/10 text-accent border border-accent/20">
                       Health: {car.maintenance?.healthScore || 75}%
                     </span>
                   </div>

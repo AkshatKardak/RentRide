@@ -21,7 +21,7 @@ import {
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/context/ThemeContext';
-import { getCarImageUrl, heroCarImg } from '@/utils/carImageMap';
+import { getCarImageUrl, heroCarImg } from '@/features/cars/carImageMap';
 
 export default function VehicleManagement() {
   const { isDarkMode } = useTheme();
@@ -219,18 +219,18 @@ export default function VehicleManagement() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-black tracking-tight">Fleet Vehicle Management</h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl lg:text-3xl font-display font-black tracking-tight text-text">Fleet Vehicle Management</h1>
+          <p className="text-xs md:text-sm text-muted mt-1">
             Configure rates, monitor trust scores, and inspect vehicle availability
           </p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-500/20 flex items-center gap-2 transition-all self-start md:self-auto"
+          className="px-4 py-2.5 bg-primary hover:bg-primary-hover text-white font-bold text-xs rounded-xl shadow-md shadow-primary/20 flex items-center gap-2 transition-all self-start md:self-auto"
         >
           <Plus size={16} />
           <span>Add New Vehicle</span>
@@ -238,19 +238,15 @@ export default function VehicleManagement() {
       </div>
 
       {/* Filter Bar */}
-      <div className={`p-4 rounded-2xl border flex flex-col md:flex-row items-center gap-3 ${
-        isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
-      }`}>
+      <div className="p-4 rounded-2xl border border-border bg-surface shadow-xs flex flex-col md:flex-row items-center gap-3">
         <form onSubmit={handleSearchSubmit} className="flex-1 w-full relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-subtle" size={16} />
           <input
             type="text"
             placeholder="Search by brand, model, or city..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 text-sm border rounded-xl focus:outline-none focus:border-emerald-500 transition-colors ${
-              isDarkMode ? 'bg-slate-800/80 border-slate-700 text-white placeholder-slate-500' : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
-            }`}
+            className="w-full pl-10 pr-4 py-2 text-sm border border-border bg-surface-sunken text-text rounded-xl focus:outline-none focus:border-primary transition-colors placeholder:text-muted"
           />
         </form>
 
@@ -258,9 +254,7 @@ export default function VehicleManagement() {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className={`px-3 py-2 text-xs font-semibold rounded-xl border focus:outline-none focus:border-emerald-500 transition-colors ${
-              isDarkMode ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-300 text-slate-800 shadow-sm'
-            }`}
+            className="px-3 py-2 text-xs font-semibold rounded-xl border border-border bg-surface text-text focus:outline-none focus:border-primary transition-colors shadow-2xs"
           >
             <option value="All">All Categories</option>
             <option value="sedan">Sedan</option>
@@ -273,9 +267,7 @@ export default function VehicleManagement() {
           <select
             value={available}
             onChange={(e) => setAvailable(e.target.value)}
-            className={`px-3 py-2 text-xs font-semibold rounded-xl border focus:outline-none focus:border-emerald-500 transition-colors ${
-              isDarkMode ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-300 text-slate-800 shadow-sm'
-            }`}
+            className="px-3 py-2 text-xs font-semibold rounded-xl border border-border bg-surface text-text focus:outline-none focus:border-primary transition-colors shadow-2xs"
           >
             <option value="All">All Status</option>
             <option value="true">Available</option>
@@ -285,14 +277,10 @@ export default function VehicleManagement() {
       </div>
 
       {/* Vehicles Table */}
-      <div className={`rounded-2xl border overflow-hidden ${
-        isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
-      }`}>
+      <div className="rounded-2xl border border-border bg-surface shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className={`border-b text-slate-400 uppercase font-bold text-[10px] tracking-wider ${
-              isDarkMode ? 'bg-slate-950/40 border-slate-800' : 'bg-slate-50 border-slate-200'
-            }`}>
+            <thead className="border-b border-border bg-surface-sunken/60 text-muted uppercase font-mono font-bold text-[10px] tracking-wider">
               <tr>
                 <th className="py-3.5 px-4">Vehicle</th>
                 <th className="py-3.5 px-4">Variant</th>
@@ -307,17 +295,17 @@ export default function VehicleManagement() {
                 <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-inherit">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={11} className="py-12 text-center text-slate-400">
-                    <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  <td colSpan={11} className="py-12 text-center text-muted">
+                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                     Loading vehicle inventory...
                   </td>
                 </tr>
               ) : cars.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="py-12 text-center text-slate-400">
+                  <td colSpan={11} className="py-12 text-center text-muted">
                     No vehicles found matching criteria
                   </td>
                 </tr>
@@ -325,10 +313,10 @@ export default function VehicleManagement() {
                 cars.map((car) => {
                   const isEditingThis = editingCar === car._id;
                   return (
-                    <tr key={car._id} className="hover:bg-slate-500/5 transition-colors">
-                      <td className="py-3 px-4 font-bold flex items-center gap-2">
+                    <tr key={car._id} className="hover:bg-surface-sunken/40 transition-colors">
+                      <td className="py-3 px-4 font-bold flex items-center gap-2.5">
                         <div
-                          className="relative group cursor-pointer"
+                          className="relative group cursor-pointer w-12 h-8 rounded-lg overflow-hidden bg-surface-sunken border border-border shrink-0 flex items-center justify-center p-0.5"
                           onClick={() => handleOpenImageModal(car)}
                           title="Click to view/edit image & provenance"
                         >
@@ -339,53 +327,53 @@ export default function VehicleManagement() {
                               e.currentTarget.onerror = null;
                               e.currentTarget.src = heroCarImg;
                             }}
-                            className="w-10 h-7 object-cover rounded-md border border-slate-200 dark:border-slate-800 group-hover:opacity-75 transition-opacity"
+                            className="w-full h-full object-contain group-hover:scale-105 transition-transform"
                           />
-                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 rounded-md transition-opacity">
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-overlay rounded-lg transition-opacity">
                             <ImageIcon size={12} className="text-white" />
                           </div>
                         </div>
                         <div>
-                          <p className="font-bold">{car.brand} {car.model}</p>
-                          <p className="text-[10px] text-slate-400 uppercase font-mono">{car.fuelType} • {car.transmission}</p>
+                          <p className="font-bold text-text">{car.brand} {car.model}</p>
+                          <p className="text-[10px] text-muted uppercase font-mono">{car.fuelType} • {car.transmission}</p>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-slate-400">{car.variant || 'Base'}</td>
-                      <td className="py-3 px-4 font-medium">{car.year}</td>
+                      <td className="py-3 px-4 text-muted">{car.variant || 'Base'}</td>
+                      <td className="py-3 px-4 font-mono font-medium text-text">{car.year}</td>
                       <td className="py-3 px-4 capitalize">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/10">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-surface-sunken text-muted border border-border">
                           {car.category || 'Sedan'}
                         </span>
                       </td>
-                      <td className="py-3 px-4">{car.city || 'N/A'}</td>
-                      <td className="py-3 px-4 font-bold">
+                      <td className="py-3 px-4 text-muted">{car.city || 'N/A'}</td>
+                      <td className="py-3 px-4 font-mono font-bold">
                         {isEditingThis ? (
                           <div className="flex items-center gap-1">
                             <input
                               type="number"
                               value={newPrice}
                               onChange={(e) => setNewPrice(e.target.value)}
-                              className="w-20 px-2 py-1 bg-transparent border rounded text-xs focus:outline-none border-emerald-500"
+                              className="w-20 px-2 py-1 bg-surface-sunken border border-primary rounded text-xs focus:outline-none"
                             />
                             <button
                               onClick={() => handleSavePrice(car._id)}
-                              className="p-1 text-emerald-500 hover:bg-emerald-500/10 rounded"
+                              className="p-1 text-primary hover:bg-primary/10 rounded"
                             >
                               <Save size={14} />
                             </button>
                             <button
                               onClick={() => setEditingCar(null)}
-                              className="p-1 text-slate-400 hover:bg-slate-500/10 rounded"
+                              className="p-1 text-muted hover:bg-surface-sunken rounded"
                             >
                               <X size={14} />
                             </button>
                           </div>
                         ) : (
                           <div className="flex items-center gap-1.5">
-                            <span className="text-emerald-500">₹{car.pricePerDay || 2200}</span>
+                            <span className="text-primary font-bold">₹{car.pricePerDay || 2200}</span>
                             <button
                               onClick={() => { setEditingCar(car._id); setNewPrice(car.pricePerDay); }}
-                              className="text-slate-400 hover:text-slate-200"
+                              className="text-muted hover:text-text transition-colors"
                             >
                               <Edit2 size={12} />
                             </button>
@@ -394,36 +382,36 @@ export default function VehicleManagement() {
                       </td>
                       <td className="py-3 px-4 font-bold">
                         {car.rating ? (
-                          <span className="inline-flex items-center gap-1 text-slate-200">
+                          <span className="inline-flex items-center gap-1 text-text font-mono">
                             {car.rating}
-                            <Star size={11} className="text-amber-400 fill-amber-400" />
+                            <Star size={11} className="text-amber-500 fill-amber-500" />
                           </span>
                         ) : (
-                          <span className="text-slate-400 font-mono">—</span>
+                          <span className="text-muted font-mono">—</span>
                         )}
                       </td>
                       <td className="py-3 px-4">
                         {car.trustScore ? (
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            car.trustScore >= 80 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                            car.trustScore >= 80 ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-accent/10 text-accent border border-accent/20'
                           }`}>
                             {car.trustScore}/100
                           </span>
                         ) : (
-                          <span className="text-slate-400 font-mono">—</span>
+                          <span className="text-muted font-mono">—</span>
                         )}
                       </td>
                       <td className="py-3 px-4">
                         {car.imageMetadata?.verificationStatus === 'verified' ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
                             <CheckCircle2 size={10} /> Verified
                           </span>
                         ) : car.imageMetadata?.verificationStatus === 'fallback' ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-accent/10 text-accent border border-accent/20">
                             Fallback
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-surface-sunken text-muted border border-border">
                             Unverified
                           </span>
                         )}
@@ -431,10 +419,10 @@ export default function VehicleManagement() {
                       <td className="py-3 px-4">
                         <button
                           onClick={() => handleToggleAvailability(car._id, car.available)}
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase transition-all ${
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase transition-all ${
                             car.available
-                              ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20'
-                              : 'bg-rose-500/10 text-rose-500 hover:bg-rose-500/20'
+                              ? 'bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20'
+                              : 'bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 border border-rose-500/20'
                           }`}
                         >
                           {car.available ? 'Available' : 'Unavailable'}
@@ -445,7 +433,7 @@ export default function VehicleManagement() {
                           <button
                             onClick={() => handleOpenImageModal(car)}
                             title="Manage Vehicle Image & Provenance"
-                            className="p-1.5 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors"
+                            className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors"
                           >
                             <ImageIcon size={14} />
                           </button>
@@ -469,25 +457,23 @@ export default function VehicleManagement() {
 
       {/* Edit Image & Provenance Modal */}
       {imageModalCar && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className={`w-full max-w-lg p-6 rounded-3xl border shadow-2xl ${
-            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
-          }`}>
+        <div className="fixed inset-0 z-50 bg-overlay backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="w-full max-w-lg p-6 rounded-3xl border border-border bg-surface shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="font-bold text-lg">Vehicle Image & Provenance</h3>
-                <p className="text-xs text-slate-400">{imageModalCar.brand} {imageModalCar.model} ({imageModalCar.year})</p>
+                <h3 className="font-display font-bold text-lg text-text">Vehicle Image & Provenance</h3>
+                <p className="text-xs text-muted">{imageModalCar.brand} {imageModalCar.model} ({imageModalCar.year})</p>
               </div>
               <button 
                 onClick={() => setImageModalCar(null)} 
-                className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="p-1.5 rounded-lg text-muted hover:text-text hover:bg-surface-sunken"
               >
                 <X size={18} />
               </button>
             </div>
 
             {/* Current Image Preview */}
-            <div className="mb-4 p-4 rounded-2xl bg-slate-500/5 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center">
+            <div className="mb-4 p-4 rounded-2xl bg-surface-sunken border border-border flex flex-col items-center justify-center">
               <img
                 src={imageForm.primaryImage || heroCarImg}
                 alt="Preview"
@@ -497,56 +483,56 @@ export default function VehicleManagement() {
                 }}
                 className="max-h-36 max-w-full object-contain drop-shadow"
               />
-              <p className="text-[10px] text-slate-400 mt-2">Live Preview</p>
+              <p className="text-[10px] text-muted mt-2 font-mono">Live Preview</p>
             </div>
 
             <form onSubmit={handleSaveImage} className="space-y-4 text-xs">
               <div>
-                <label className="font-bold block mb-1">Image URL (HTTPS or relative asset)</label>
+                <label className="font-bold block mb-1 text-text">Image URL (HTTPS or relative asset)</label>
                 <input
                   type="text"
                   required
                   placeholder="https://images.unsplash.com/photo-... or /assets/herocar.png"
                   value={imageForm.primaryImage}
                   onChange={(e) => setImageForm({ ...imageForm, primaryImage: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:outline-none focus:border-primary placeholder:text-muted"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">
+                <p className="text-[10px] text-muted mt-1">
                   Protected against SSRF. Allowed hosts: Unsplash, Cloudinary, ImgBB, Wikimedia, Pexels.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold block mb-1">Image Source / Provenance</label>
+                  <label className="font-bold block mb-1 text-text">Image Source / Provenance</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Unsplash Verified Indian Fleet Photography"
                     value={imageForm.imageSource}
                     onChange={(e) => setImageForm({ ...imageForm, imageSource: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:outline-none focus:border-primary placeholder:text-muted"
                   />
                 </div>
                 <div>
-                  <label className="font-bold block mb-1">License</label>
+                  <label className="font-bold block mb-1 text-text">License</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Unsplash Permissive License"
                     value={imageForm.license}
                     onChange={(e) => setImageForm({ ...imageForm, license: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:outline-none focus:border-primary placeholder:text-muted"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="font-bold block mb-1">Verification Status</label>
+                <label className="font-bold block mb-1 text-text">Verification Status</label>
                 <select
                   value={imageForm.verificationStatus}
                   onChange={(e) => setImageForm({ ...imageForm, verificationStatus: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none"
+                  className="w-full px-3 py-2 rounded-xl border border-border bg-surface text-text focus:outline-none focus:border-primary"
                 >
                   <option value="verified">Verified (Exact Model Match & Licensed)</option>
                   <option value="unverified">Unverified (Pending Review)</option>
@@ -559,14 +545,14 @@ export default function VehicleManagement() {
                 <button
                   type="submit"
                   disabled={savingImage}
-                  className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-bold rounded-xl shadow-md shadow-primary/20 flex items-center justify-center gap-2"
                 >
                   {savingImage ? 'Validating & Saving...' : 'Save & Verify Image'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setImageModalCar(null)}
-                  className="px-4 py-2.5 border rounded-xl hover:bg-slate-500/10 transition-colors"
+                  className="px-4 py-2.5 border border-border rounded-xl text-text hover:bg-surface-sunken transition-colors"
                 >
                   Cancel
                 </button>
@@ -578,13 +564,11 @@ export default function VehicleManagement() {
 
       {/* Add Car Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className={`w-full max-w-lg p-6 rounded-3xl border shadow-2xl ${
-            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
-          }`}>
+        <div className="fixed inset-0 z-50 bg-overlay backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="w-full max-w-lg p-6 rounded-3xl border border-border bg-surface shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg">Add New Fleet Vehicle</h3>
-              <button onClick={() => setShowAddModal(false)} className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <h3 className="font-display font-bold text-lg text-text">Add New Fleet Vehicle</h3>
+              <button onClick={() => setShowAddModal(false)} className="p-1.5 rounded-lg text-muted hover:text-text hover:bg-surface-sunken">
                 <X size={18} />
               </button>
             </div>
@@ -592,45 +576,45 @@ export default function VehicleManagement() {
             <form onSubmit={handleCreateCar} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold block mb-1">Brand</label>
+                  <label className="font-bold block mb-1 text-text">Brand</label>
                   <input
                     type="text"
                     required
                     placeholder="Hyundai, Tata, Toyota..."
                     value={newCarForm.brand}
                     onChange={(e) => setNewCarForm({ ...newCarForm, brand: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:outline-none focus:border-primary placeholder:text-muted"
                   />
                 </div>
                 <div>
-                  <label className="font-bold block mb-1">Model</label>
+                  <label className="font-bold block mb-1 text-text">Model</label>
                   <input
                     type="text"
                     required
                     placeholder="Creta, Harrier, Fortuner..."
                     value={newCarForm.model}
                     onChange={(e) => setNewCarForm({ ...newCarForm, model: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:outline-none focus:border-primary placeholder:text-muted"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="font-bold block mb-1">Year</label>
+                  <label className="font-bold block mb-1 text-text">Year</label>
                   <input
                     type="number"
                     value={newCarForm.year}
                     onChange={(e) => setNewCarForm({ ...newCarForm, year: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div>
-                  <label className="font-bold block mb-1">Category</label>
+                  <label className="font-bold block mb-1 text-text">Category</label>
                   <select
                     value={newCarForm.category}
                     onChange={(e) => setNewCarForm({ ...newCarForm, category: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none"
+                    className="w-full px-3 py-2 rounded-xl border border-border bg-surface text-text focus:outline-none focus:border-primary"
                   >
                     <option value="sedan">Sedan</option>
                     <option value="suv">SUV</option>
@@ -640,32 +624,32 @@ export default function VehicleManagement() {
                   </select>
                 </div>
                 <div>
-                  <label className="font-bold block mb-1">Price/Day (₹)</label>
+                  <label className="font-bold block mb-1 text-text">Price/Day (₹)</label>
                   <input
                     type="number"
                     value={newCarForm.pricePerDay}
                     onChange={(e) => setNewCarForm({ ...newCarForm, pricePerDay: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold block mb-1">City</label>
+                  <label className="font-bold block mb-1 text-text">City</label>
                   <input
                     type="text"
                     value={newCarForm.city}
                     onChange={(e) => setNewCarForm({ ...newCarForm, city: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div>
-                  <label className="font-bold block mb-1">Transmission</label>
+                  <label className="font-bold block mb-1 text-text">Transmission</label>
                   <select
                     value={newCarForm.transmission}
                     onChange={(e) => setNewCarForm({ ...newCarForm, transmission: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border bg-transparent border-inherit focus:outline-none"
+                    className="w-full px-3 py-2 rounded-xl border border-border bg-surface text-text focus:outline-none focus:border-primary"
                   >
                     <option value="manual">Manual</option>
                     <option value="automatic">Automatic</option>
@@ -675,7 +659,7 @@ export default function VehicleManagement() {
 
               <button
                 type="submit"
-                className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20"
+                className="w-full py-2.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-md shadow-primary/20 transition-all"
               >
                 Save Vehicle
               </button>

@@ -54,37 +54,31 @@ export default function UserManagement() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-black tracking-tight">Customer Management</h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl lg:text-3xl font-display font-black tracking-tight text-text">Customer Management</h1>
+          <p className="text-xs md:text-sm text-muted mt-1">
             Registered renters, verification tiers, and access control
           </p>
         </div>
 
         <div className="relative w-full md:w-72">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-subtle" size={16} />
           <input
             type="text"
             placeholder="Search by name or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 text-xs border rounded-xl focus:outline-none focus:border-emerald-500 transition-colors ${
-              isDarkMode ? 'bg-slate-800/80 border-slate-700 text-white placeholder-slate-500' : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
-            }`}
+            className="w-full pl-10 pr-4 py-2 text-xs border border-border bg-surface-sunken text-text rounded-xl focus:outline-none focus:border-primary transition-colors placeholder:text-muted"
           />
         </div>
       </div>
 
-      <div className={`rounded-2xl border overflow-hidden ${
-        isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
-      }`}>
+      <div className="rounded-2xl border border-border bg-surface shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className={`border-b text-slate-400 uppercase font-bold text-[10px] tracking-wider ${
-              isDarkMode ? 'bg-slate-950/40 border-slate-800' : 'bg-slate-50 border-slate-200'
-            }`}>
+            <thead className="border-b border-border bg-surface-sunken/60 text-muted uppercase font-mono font-bold text-[10px] tracking-wider">
               <tr>
                 <th className="py-3.5 px-4">User</th>
                 <th className="py-3.5 px-4">Role</th>
@@ -94,41 +88,41 @@ export default function UserManagement() {
                 <th className="py-3.5 px-4 text-right">Access Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-inherit">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-400">
-                    <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  <td colSpan={6} className="py-12 text-center text-muted">
+                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                     Loading user records...
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-400">
+                  <td colSpan={6} className="py-12 text-center text-muted">
                     No users found
                   </td>
                 </tr>
               ) : (
                 filteredUsers.map((u) => (
-                  <tr key={u._id} className="hover:bg-slate-500/5 transition-colors">
+                  <tr key={u._id} className="hover:bg-surface-sunken/40 transition-colors">
                     <td className="py-3 px-4">
-                      <p className="font-bold">{u.name || 'User'}</p>
-                      <p className="text-[10px] text-slate-400">{u.email}</p>
+                      <p className="font-bold text-text">{u.name || 'User'}</p>
+                      <p className="text-[10px] text-muted font-mono">{u.email}</p>
                     </td>
-                    <td className="py-3 px-4 uppercase font-bold text-[10px]">
+                    <td className="py-3 px-4 uppercase font-mono font-bold text-[10px]">
                       <span className={`px-2 py-0.5 rounded ${
-                        u.role === 'admin' ? 'bg-purple-500/10 text-purple-500' : 'bg-slate-500/10 text-slate-400'
+                        u.role === 'admin' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-surface-sunken text-muted border border-border'
                       }`}>
                         {u.role || 'user'}
                       </span>
                     </td>
-                    <td className="py-3 px-4 font-bold">{u.totalBookings || 0}</td>
-                    <td className="py-3 px-4 font-bold text-emerald-500">
+                    <td className="py-3 px-4 font-mono font-bold text-text">{u.totalBookings || 0}</td>
+                    <td className="py-3 px-4 font-mono font-bold text-primary">
                       ₹{(u.totalSpent || 0).toLocaleString()}
                     </td>
-                    <td className="py-3 px-4 uppercase">
+                    <td className="py-3 px-4 uppercase font-mono">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        u.status === 'active' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
+                        u.status === 'active' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
                       }`}>
                         {u.status || 'active'}
                       </span>
@@ -139,8 +133,8 @@ export default function UserManagement() {
                           onClick={() => handleToggleStatus(u._id, u.status || 'active')}
                           className={`px-3 py-1 rounded-lg font-bold text-[10px] transition-colors ${
                             u.status === 'suspended'
-                              ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20'
-                              : 'bg-rose-500/10 text-rose-500 hover:bg-rose-500/20'
+                              ? 'bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20'
+                              : 'bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 border border-rose-500/20'
                           }`}
                         >
                           {u.status === 'suspended' ? 'Activate' : 'Suspend'}

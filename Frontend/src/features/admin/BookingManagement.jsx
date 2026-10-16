@@ -59,11 +59,11 @@ export default function BookingManagement() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-black tracking-tight">Rental Bookings</h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl lg:text-3xl font-display font-black tracking-tight text-text">Rental Bookings</h1>
+          <p className="text-xs md:text-sm text-muted mt-1">
             Review customer reservations, approvals, and trip completions
           </p>
         </div>
@@ -71,9 +71,7 @@ export default function BookingManagement() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className={`px-3 py-2 text-xs font-semibold rounded-xl border focus:outline-none focus:border-emerald-500 self-start md:self-auto transition-colors ${
-            isDarkMode ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-white border-slate-300 text-slate-800 shadow-sm'
-          }`}
+          className="px-3.5 py-2 text-xs font-semibold rounded-xl border border-border bg-surface text-text focus:outline-none focus:border-primary self-start md:self-auto transition-colors shadow-2xs"
         >
           <option value="All">All Statuses</option>
           <option value="pending">Pending</option>
@@ -84,14 +82,10 @@ export default function BookingManagement() {
         </select>
       </div>
 
-      <div className={`rounded-2xl border overflow-hidden ${
-        isDarkMode ? 'bg-slate-900 border-slate-800/80 shadow-md shadow-black/20' : 'bg-white border-slate-200/90 shadow-sm'
-      }`}>
+      <div className="rounded-2xl border border-border bg-surface shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className={`border-b text-slate-400 uppercase font-bold text-[10px] tracking-wider ${
-              isDarkMode ? 'bg-slate-950/40 border-slate-800' : 'bg-slate-50 border-slate-200'
-            }`}>
+            <thead className="border-b border-border bg-surface-sunken/60 text-muted uppercase font-mono font-bold text-[10px] tracking-wider">
               <tr>
                 <th className="py-3.5 px-4">Booking ID</th>
                 <th className="py-3.5 px-4">Customer</th>
@@ -103,51 +97,52 @@ export default function BookingManagement() {
                 <th className="py-3.5 px-4 text-right">Update Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-inherit">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
-                    <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  <td colSpan={8} className="py-12 text-center text-muted">
+                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                     Loading bookings...
                   </td>
                 </tr>
               ) : bookings.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
+                  <td colSpan={8} className="py-12 text-center text-muted">
                     No bookings found
                   </td>
                 </tr>
               ) : (
                 bookings.map((b) => (
-                  <tr key={b._id} className="hover:bg-slate-500/5 transition-colors">
-                    <td className="py-3 px-4 font-mono font-bold text-slate-400">
+                  <tr key={b._id} className="hover:bg-surface-sunken/40 transition-colors">
+                    <td className="py-3 px-4 font-mono font-bold text-muted">
                       #{b._id.slice(-6).toUpperCase()}
                     </td>
                     <td className="py-3 px-4">
-                      <p className="font-bold">{b.user?.name || 'Customer'}</p>
-                      <p className="text-[10px] text-slate-400">{b.user?.email || 'N/A'}</p>
+                      <p className="font-bold text-text">{b.user?.name || 'Customer'}</p>
+                      <p className="text-[10px] text-muted font-mono">{b.user?.email || 'N/A'}</p>
                     </td>
                     <td className="py-3 px-4">
-                      <p className="font-bold">{b.car?.name || b.car?.model || 'Vehicle'}</p>
-                      <p className="text-[10px] text-slate-400">{b.car?.city || 'Hub'}</p>
+                      <p className="font-bold text-text">{b.car?.name || b.car?.model || 'Vehicle'}</p>
+                      <p className="text-[10px] text-muted">{b.car?.city || 'Hub'}</p>
                     </td>
-                    <td className="py-3 px-4 font-medium">
+                    <td className="py-3 px-4 font-mono text-muted">
                       {new Date(b.startDate).toLocaleDateString()} → {new Date(b.endDate).toLocaleDateString()}
                     </td>
-                    <td className="py-3 px-4 font-bold text-emerald-500">
+                    <td className="py-3 px-4 font-mono font-bold text-primary">
                       ₹{(b.totalPrice || 0).toLocaleString()}
                     </td>
                     <td className="py-3 px-4 capitalize">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        b.paymentStatus === 'paid' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                        b.paymentStatus === 'paid' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-accent/10 text-accent border border-accent/20'
                       }`}>
                         {b.paymentStatus || 'pending'}
                       </span>
                     </td>
                     <td className="py-3 px-4 uppercase">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        b.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-500' :
-                        b.status === 'cancelled' ? 'bg-rose-500/10 text-rose-500' : 'bg-blue-500/10 text-blue-500'
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                        b.status === 'confirmed' ? 'bg-primary/10 text-primary border border-primary/20' :
+                        b.status === 'cancelled' ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' :
+                        'bg-accent/10 text-accent border border-accent/20'
                       }`}>
                         {b.status}
                       </span>
@@ -156,9 +151,7 @@ export default function BookingManagement() {
                       <select
                         value={b.status}
                         onChange={(e) => handleUpdateStatus(b._id, e.target.value)}
-                        className={`px-2 py-1 rounded-lg text-[10px] font-bold border focus:outline-none focus:border-emerald-500 transition-colors ${
-                          isDarkMode ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-300 text-slate-800'
-                        }`}
+                        className="px-2 py-1 rounded-lg text-[10px] font-bold border border-border bg-surface text-text focus:outline-none focus:border-primary transition-colors shadow-2xs"
                       >
                         <option value="pending">Pending</option>
                         <option value="approved">Approved</option>

@@ -13,10 +13,10 @@ import {
   LogOut,
   Menu,
   X,
-  ShieldCheck,
   ChevronRight,
   Sun,
-  Moon
+  Moon,
+  ExternalLink
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -26,7 +26,9 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
 
-  const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{"name":"Admin User","email":"admin@rentride.com"}');
+  const adminUser = JSON.parse(
+    localStorage.getItem('adminUser') || '{"name":"Admin User","email":"admin@rentride.com"}'
+  );
 
   const navItems = [
     { label: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },
@@ -46,70 +48,77 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className={`min-h-screen flex ${isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`min-h-screen flex font-sans ${isDarkMode ? 'bg-bg text-text' : 'bg-bg text-text'}`}>
       {/* Sidebar Overlay for Mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-overlay z-40 lg:hidden backdrop-blur-xs transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 bottom-0 z-50 w-64 border-r transition-transform duration-200 lg:translate-x-0 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } ${isDarkMode ? 'bg-slate-900 border-slate-800 shadow-2xl shadow-black/40' : 'bg-white border-slate-200 shadow-sm'}`}>
+      <aside
+        className={`fixed top-0 left-0 bottom-0 z-50 w-64 border-r transition-transform duration-200 lg:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } ${
+          isDarkMode
+            ? 'bg-surface border-border shadow-2xl shadow-black/40'
+            : 'bg-surface border-border shadow-sm'
+        }`}
+      >
         <div className="flex flex-col h-full">
           {/* Brand Header */}
-          <div className={`p-5 border-b flex items-center justify-between ${
-            isDarkMode ? 'border-slate-800/80' : 'border-slate-200'
-          }`}>
+          <div className="p-5 border-b border-border flex items-center justify-between">
             <Link to="/admin/dashboard" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl p-1.5 flex items-center justify-center bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 shadow-md shadow-emerald-500/10 transition-transform group-hover:scale-105">
-                <img 
-                  src="/tab.png" 
-                  alt="RentRide Logo" 
-                  className="w-full h-full object-contain filter drop-shadow-sm" 
+              <div className="w-10 h-10 rounded-xl p-1.5 flex items-center justify-center bg-primary/10 border border-primary/25 shadow-md shadow-primary/10 transition-transform group-hover:scale-105">
+                <img
+                  src="/tab.png"
+                  alt="RentRide Logo"
+                  className="w-full h-full object-contain filter drop-shadow-sm"
                 />
               </div>
               <div>
-                <span className="font-black text-lg tracking-tight flex items-center">
-                  Rent<span className="text-emerald-500">Ride</span>
+                <span className="font-display font-black text-lg tracking-tight flex items-center">
+                  Rent<span className="text-primary ml-0.5">Ride</span>
                 </span>
-                <span className="block text-[10px] uppercase font-extrabold tracking-widest text-emerald-500">
+                <span className="block text-[10px] uppercase font-mono font-bold tracking-widest text-primary">
                   Fleet Control
                 </span>
               </div>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-1.5 rounded-lg lg:hidden hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400"
+              className="p-1.5 rounded-lg lg:hidden hover:bg-surface-sunken text-muted hover:text-text transition-colors"
             >
               <X size={18} />
             </button>
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
+          <nav className="flex-1 p-3.5 space-y-1.5 overflow-y-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path || (item.path !== '/admin/dashboard' && location.pathname.startsWith(item.path));
+              const isActive =
+                location.pathname === item.path ||
+                (item.path !== '/admin/dashboard' && location.pathname.startsWith(item.path));
               return (
                 <Link
                   key={item.path}
                   to={item.path}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                     isActive
                       ? isDarkMode
-                        ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm shadow-emerald-500/10'
-                        : 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                      : isDarkMode
-                      ? 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 border border-transparent'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent'
+                        ? 'bg-primary/20 border border-primary/35 text-primary shadow-sm shadow-primary/10 font-bold'
+                        : 'bg-primary text-white shadow-md shadow-primary/25 font-bold'
+                      : 'text-muted hover:text-text hover:bg-surface-sunken border border-transparent'
                   }`}
                 >
-                  <Icon size={17} className={isActive ? (isDarkMode ? 'text-emerald-400' : 'text-white') : 'text-slate-400'} />
+                  <Icon
+                    size={17}
+                    className={isActive ? (isDarkMode ? 'text-primary' : 'text-white') : 'text-subtle'}
+                  />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -117,22 +126,20 @@ export default function AdminLayout() {
           </nav>
 
           {/* User & Logout */}
-          <div className={`p-4 border-t ${isDarkMode ? 'border-slate-800/80' : 'border-slate-200'}`}>
-            <div className={`p-3 rounded-xl mb-3 flex items-center gap-3 border ${
-              isDarkMode ? 'bg-slate-800/60 border-slate-700/50' : 'bg-slate-100/90 border-slate-200/80'
-            }`}>
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-500 font-black flex items-center justify-center text-xs">
+          <div className="p-4 border-t border-border">
+            <div className="p-3 rounded-xl mb-3 flex items-center gap-3 border border-border bg-surface-sunken/70">
+              <div className="w-8 h-8 rounded-lg bg-primary/15 text-primary font-mono font-bold flex items-center justify-center text-xs">
                 AD
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold truncate">{adminUser.name || 'Administrator'}</p>
-                <p className="text-[10px] text-slate-400 truncate">{adminUser.email || 'admin@rentride.com'}</p>
+                <p className="text-xs font-bold truncate text-text">{adminUser.name || 'Administrator'}</p>
+                <p className="text-[10px] text-muted truncate font-mono">{adminUser.email || 'admin@rentride.com'}</p>
               </div>
             </div>
 
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors border border-rose-500/20 hover:border-rose-500/40"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors border border-rose-500/20 hover:border-rose-500/40"
             >
               <LogOut size={15} />
               <span>Log Out</span>
@@ -144,20 +151,18 @@ export default function AdminLayout() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
         {/* Top Header */}
-        <header className={`sticky top-0 z-30 h-16 border-b backdrop-blur-md flex items-center justify-between px-4 lg:px-8 ${
-          isDarkMode ? 'bg-slate-950/80 border-slate-800' : 'bg-white/80 border-slate-200'
-        }`}>
+        <header className="sticky top-0 z-30 h-16 border-b border-border backdrop-blur-md bg-surface/85 flex items-center justify-between px-4 lg:px-8">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-2 rounded-xl lg:hidden hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500"
+              className="p-2 rounded-xl lg:hidden hover:bg-surface-sunken text-muted hover:text-text transition-colors"
             >
               <Menu size={20} />
             </button>
-            <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
+            <div className="flex items-center gap-2 text-xs font-medium text-muted">
               <span>Admin</span>
-              <ChevronRight size={14} />
-              <span className="text-emerald-500 font-bold capitalize">
+              <ChevronRight size={14} className="text-subtle" />
+              <span className="text-primary font-bold capitalize">
                 {location.pathname.split('/')[2] || 'Dashboard'}
               </span>
             </div>
@@ -166,18 +171,18 @@ export default function AdminLayout() {
           <div className="flex items-center gap-3">
             <button
               onClick={toggleTheme}
-              className={`p-2 rounded-xl border transition-colors ${
-                isDarkMode ? 'border-slate-800 bg-slate-900 text-amber-400' : 'border-slate-200 bg-slate-100 text-slate-700'
-              }`}
+              aria-label="Toggle theme"
+              className="p-2 rounded-xl border border-border bg-surface-sunken text-text hover:border-primary/40 transition-colors"
             >
-              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+              {isDarkMode ? <Sun size={17} className="text-accent" /> : <Moon size={17} className="text-primary" />}
             </button>
 
             <Link
               to="/browsecars"
-              className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-sunken text-text flex items-center gap-1.5 transition-colors shadow-2xs"
             >
-              Visit Portal ↗
+              <span>Visit Portal</span>
+              <ExternalLink size={12} className="text-primary" />
             </Link>
           </div>
         </header>
