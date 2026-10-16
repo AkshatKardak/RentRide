@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@/hooks/useTheme';
 import { Moon, Sun, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
-import { signupWithEmail, loginWithGoogle } from '@/services/firebaseAuthService';
+import { signupWithEmail, loginWithGoogle } from '@/features/auth/firebaseAuthService';
 import api from '@/lib/api';
 
 export default function SignUp() {

@@ -221,10 +221,14 @@ router.get('/promotions', protect, authorize('admin', 'manager'), async (req, re
     if (active === 'true') {
       filter.active = true;
       filter.validFrom = { $lte: new Date() };
-      filter.validUntil = { $gte: new Date() };
+      filter.$or = [
+        { validTo: { $gte: new Date() } },
+        { validUntil: { $gte: new Date() } }
+      ];
     } else if (active === 'false') {
       filter.$or = [
         { active: false },
+        { validTo: { $lt: new Date() } },
         { validUntil: { $lt: new Date() } }
       ];
     }
@@ -265,7 +269,16 @@ router.get('/promotions', protect, authorize('admin', 'manager'), async (req, re
 // Create promotion (Admin only)
 router.post('/promotions', protect, authorize('admin', 'manager'), async (req, res) => {
   try {
-    const promotion = await Promotion.create(req.body);
+    const data = { ...req.body };
+    if (!data.name) data.name = data.code;
+    if (!data.description) data.description = `Promotion ${data.code}`;
+    if (!data.value && data.discount) data.value = data.discount;
+    if (!data.type && data.discountType) data.type = data.discountType;
+    if (!data.validFrom) data.validFrom = new Date();
+    if (!data.validTo && data.validUntil) data.validTo = new Date(data.validUntil);
+    if (!data.usageLimit) data.usageLimit = 1000;
+
+    const promotion = await Promotion.create(data);
 
     res.status(201).json({
       success: true,

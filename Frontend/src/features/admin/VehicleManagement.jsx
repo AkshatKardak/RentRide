@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 import { getCarImageUrl, heroCarImg } from '@/features/cars/carImageMap';
 
 export default function VehicleManagement() {

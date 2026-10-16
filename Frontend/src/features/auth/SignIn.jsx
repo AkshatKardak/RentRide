@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@/hooks/useTheme';
 import { Moon, Sun, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
-import { loginWithEmail, loginWithGoogle } from '@/services/firebaseAuthService';
+import { loginWithEmail, loginWithGoogle } from '@/features/auth/firebaseAuthService';
 import { toast } from 'react-hot-toast';
 import api from '@/lib/api';
 

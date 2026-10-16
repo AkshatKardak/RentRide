@@ -20,7 +20,7 @@ import {
   ChevronDown,
   ArrowRight
 } from 'lucide-react';
-import { carService } from '@/services/carService';
+import { carService } from '@/features/cars/carService';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
 import { getCarImageUrl, heroCarImg } from '@/features/cars/carImageMap';
 
@@ -181,6 +181,46 @@ const BrowseCars = () => {
     navigate(`/car/${carId}`);
   };
 
+  const [groupByModel, setGroupByModel] = useState(true);
+
+  // Group cars by model so variants of the same model share a single card with variant selectors
+  const carGroups = useMemo(() => {
+    if (!groupByModel) {
+      return displayCars.map((c, i) => ({
+        key: c._id || `car-${i}`,
+        brand: c.brand,
+        model: c.model,
+        variants: [c],
+        defaultVariant: c
+      }));
+    }
+
+    const map = new Map();
+    for (const car of displayCars) {
+      const brandKey = (car.brand || '').trim().toLowerCase();
+      const modelKey = (car.model || '').trim().toLowerCase();
+      const groupKey = `${brandKey}___${modelKey}`;
+
+      if (!map.has(groupKey)) {
+        map.set(groupKey, {
+          key: groupKey,
+          brand: car.brand,
+          model: car.model,
+          variants: []
+        });
+      }
+      map.get(groupKey).variants.push(car);
+    }
+
+    return Array.from(map.values()).map(group => {
+      const sorted = [...group.variants].sort((a, b) => (a.pricePerDay || 0) - (b.pricePerDay || 0));
+      return {
+        ...group,
+        defaultVariant: sorted.find(v => v.available) || sorted[0]
+      };
+    });
+  }, [displayCars, groupByModel]);
+
   return (
     <>
       <DashboardNavbar />
@@ -197,25 +237,54 @@ const BrowseCars = () => {
                 Browse <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-hover to-accent">Fleet</span>
               </h1>
               <p className="text-xs sm:text-sm text-text-muted mt-2">
-                Choose from our verified fleet of <span className="font-bold text-primary font-mono">{totalCount || displayCars.length}</span> vehicles with transparent pricing and model-accurate photography.
+                Choose from our verified fleet of <span className="font-bold text-primary font-mono">{carGroups.length}</span> {groupByModel ? 'distinct models' : 'vehicles'} (<span className="font-semibold text-text">{totalCount || displayCars.length}</span> trims available) with model-accurate photography.
               </p>
             </div>
 
-            {/* Quick Sort Dropdown */}
-            <div className="flex items-center gap-2 self-start md:self-auto bg-surface p-1.5 rounded-2xl border border-border shadow-xs">
-              <span className="text-xs font-semibold px-2 text-text-muted">Sort:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                aria-label="Sort cars by"
-                className="bg-surface-sunken border border-border text-text text-xs font-semibold px-3 py-1.5 rounded-xl focus:ring-2 focus:ring-primary/20 cursor-pointer outline-none"
-              >
-                <option value="featured">Featured First</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="rating">Top Rated</option>
-                <option value="trust">Highest Trust Score</option>
-              </select>
+            {/* Quick Sort & View Mode Controls */}
+            <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+              {/* Grouping Toggle */}
+              <div className="flex items-center gap-1 bg-surface p-1 rounded-2xl border border-border shadow-xs text-xs">
+                <button
+                  type="button"
+                  onClick={() => setGroupByModel(true)}
+                  className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                    groupByModel
+                      ? 'bg-primary text-white shadow-xs'
+                      : 'text-text-muted hover:text-text'
+                  }`}
+                >
+                  By Model
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGroupByModel(false)}
+                  className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                    !groupByModel
+                      ? 'bg-primary text-white shadow-xs'
+                      : 'text-text-muted hover:text-text'
+                  }`}
+                >
+                  All Trims
+                </button>
+              </div>
+
+              {/* Sort Dropdown */}
+              <div className="flex items-center gap-2 bg-surface p-1.5 rounded-2xl border border-border shadow-xs">
+                <span className="text-xs font-semibold px-2 text-text-muted">Sort:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  aria-label="Sort cars by"
+                  className="bg-surface-sunken border border-border text-text text-xs font-semibold px-3 py-1.5 rounded-xl focus:ring-2 focus:ring-primary/20 cursor-pointer outline-none"
+                >
+                  <option value="featured">Featured First</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="rating">Top Rated</option>
+                  <option value="trust">Highest Trust Score</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -398,7 +467,7 @@ const BrowseCars = () => {
                 </div>
               ))}
             </div>
-          ) : displayCars.length === 0 ? (
+          ) : carGroups.length === 0 ? (
             <div className="py-20 text-center bg-surface border border-border rounded-3xl p-8 max-w-xl mx-auto shadow-sm">
               <CarIcon className="w-12 h-12 mx-auto text-text-subtle mb-3" />
               <h3 className="text-base font-bold text-text font-display">No matching vehicles found</h3>
@@ -415,13 +484,13 @@ const BrowseCars = () => {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
-                {displayCars.map((car, index) => (
+                {carGroups.map((group, index) => (
                   <CarCard
-                    key={car._id || index}
-                    car={car}
+                    key={group.key || index}
+                    group={group}
                     index={index}
-                    onBook={() => handleBookCar(car)}
-                    onDetails={() => handleViewDetails(car._id)}
+                    onBook={(car) => handleBookCar(car)}
+                    onDetails={(carId) => handleViewDetails(carId)}
                   />
                 ))}
               </div>
@@ -458,8 +527,29 @@ const BrowseCars = () => {
   );
 };
 
-const CarCard = ({ car, index, onBook, onDetails }) => {
-  const imageSrc = getCarImageUrl(car);
+const CarCard = ({ group, index, onBook, onDetails }) => {
+  const variants = group.variants || [group.defaultVariant];
+  const [selectedVariantId, setSelectedVariantId] = useState(group.defaultVariant?._id || variants[0]?._id);
+
+  // Active selected car
+  const activeCar = variants.find(v => v._id === selectedVariantId) || variants[0] || group.defaultVariant;
+  const imageSrc = getCarImageUrl(activeCar);
+
+  // Calculate price range if multiple variants exist
+  const prices = variants.map(v => v.pricePerDay || 0).filter(p => p > 0);
+  const minPrice = prices.length ? Math.min(...prices) : (activeCar.pricePerDay || 0);
+  const maxPrice = prices.length ? Math.max(...prices) : (activeCar.pricePerDay || 0);
+  const hasPriceRange = minPrice !== maxPrice;
+
+  // Available transmissions across all variants in this model group
+  const allTransmissions = Array.from(new Set([
+    ...variants.map(v => v.transmission?.toLowerCase()).filter(Boolean),
+    ...(activeCar.availableTransmissions || []).map(t => t.toLowerCase())
+  ]));
+
+  const alternativeTransmissions = allTransmissions.filter(
+    t => t !== activeCar.transmission?.toLowerCase()
+  );
 
   return (
     <motion.div
@@ -475,18 +565,24 @@ const CarCard = ({ car, index, onBook, onDetails }) => {
           {/* Image Showcase Stage with fixed 16:10 aspect ratio and sunken backdrop */}
           <div className="relative aspect-[16/10] w-full rounded-xl bg-surface-sunken/60 border border-border/50 p-3 flex items-center justify-center overflow-hidden mb-3.5">
             {/* Category Badge */}
-            <div className="absolute top-2.5 left-2.5 z-20">
+            <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5">
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-surface/90 border border-border text-text-muted backdrop-blur-xs shadow-xs">
-                {car.category || 'Standard'}
+                {activeCar.category || 'Standard'}
               </span>
+
+              {variants.length > 1 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-accent-soft text-accent border border-accent/20 backdrop-blur-xs shadow-xs">
+                  {variants.length} Trims
+                </span>
+              )}
             </div>
 
             {/* Trust or Availability Badge */}
             <div className="absolute top-2.5 right-2.5 z-20">
-              {car.available ? (
+              {activeCar.available ? (
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-primary-soft text-primary border border-primary/20 backdrop-blur-xs flex items-center gap-1 shadow-xs">
                   <ShieldCheck size={12} className="text-primary" />
-                  {car.trustScore ? `${car.trustScore}% Trust` : 'Verified'}
+                  {activeCar.trustScore ? `${activeCar.trustScore}% Trust` : 'Verified'}
                 </span>
               ) : (
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-danger-soft text-danger border border-danger/20 backdrop-blur-xs flex items-center gap-1">
@@ -497,8 +593,9 @@ const CarCard = ({ car, index, onBook, onDetails }) => {
 
             {/* Model-Accurate Vehicle Image */}
             <motion.img
+              key={activeCar._id}
               src={imageSrc}
-              alt={car.name || `${car.brand} ${car.model}`}
+              alt={activeCar.name || `${activeCar.brand} ${activeCar.model}`}
               onError={(e) => {
                 e.currentTarget.onerror = null;
                 e.currentTarget.src = heroCarImg;
@@ -508,49 +605,86 @@ const CarCard = ({ car, index, onBook, onDetails }) => {
           </div>
 
           {/* Vehicle Identity */}
-          <div className="space-y-1 mb-3">
+          <div className="space-y-1 mb-2.5">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold uppercase tracking-wider text-accent font-mono">
-                {car.brand}
+                {activeCar.brand}
               </span>
-              {car.city && (
+              {activeCar.city && (
                 <span className="text-[11px] text-text-subtle flex items-center gap-1">
-                  <MapPin size={11} className="text-primary" /> {car.city}
+                  <MapPin size={11} className="text-primary" /> {activeCar.city}
                 </span>
               )}
             </div>
 
             <h3 className="font-bold text-base text-text font-display group-hover:text-primary transition-colors line-clamp-1">
-              {car.name || `${car.brand} ${car.model}`}
+              {activeCar.brand} {activeCar.model}
+              {activeCar.variant && activeCar.variant !== 'Base' ? (
+                <span className="text-xs font-semibold text-text-muted ml-1.5 font-sans">
+                  · {activeCar.variant}
+                </span>
+              ) : null}
             </h3>
 
             <p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
-              {car.description || `Experience superior driving dynamics and verified safety with this ${car.brand} ${car.model}.`}
+              {activeCar.description || `Experience superior driving dynamics and verified safety with this ${activeCar.brand} ${activeCar.model}.`}
             </p>
           </div>
+
+          {/* Multi-Variant Selection Chips (When model has multiple trims/transmissions) */}
+          {variants.length > 1 && (
+            <div className="mb-3">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-subtle block mb-1.5">
+                Select Trim / Transmission:
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {variants.map(v => {
+                  const isSelected = v._id === activeCar._id;
+                  const transTag = v.transmission?.toLowerCase() === 'automatic' ? 'AT' : 'MT';
+                  const fuelTag = v.fuelType ? v.fuelType.toUpperCase() : '';
+                  const trimLabel = v.variant && v.variant !== 'Base' ? v.variant : `${transTag} ${fuelTag}`;
+
+                  return (
+                    <button
+                      key={v._id}
+                      type="button"
+                      onClick={() => setSelectedVariantId(v._id)}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all border ${
+                        isSelected
+                          ? 'bg-primary text-white border-primary shadow-xs scale-102'
+                          : 'bg-surface-sunken text-text-muted border-border hover:border-primary/30 hover:text-text'
+                      }`}
+                    >
+                      {trimLabel} · ₹{v.pricePerDay}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Specs Feature Strip */}
           <div className="grid grid-cols-3 gap-2 py-2 mb-2.5 border-y border-border">
             <div className="flex items-center justify-center gap-1.5 py-1 rounded-lg bg-surface-sunken text-[11px] text-text-muted font-medium">
               <Users size={12} className="text-primary" />
-              <span>{car.seats || 5} Seats</span>
+              <span>{activeCar.seats || 5} Seats</span>
             </div>
             <div className="flex items-center justify-center gap-1.5 py-1 rounded-lg bg-surface-sunken text-[11px] text-text-muted font-medium capitalize">
               <Fuel size={12} className="text-primary" />
-              <span className="truncate">{car.fuelType || 'Petrol'}</span>
+              <span className="truncate">{activeCar.fuelType || 'Petrol'}</span>
             </div>
             <div className="flex items-center justify-center gap-1.5 py-1 rounded-lg bg-surface-sunken text-[11px] text-text-muted font-medium capitalize">
               <Gauge size={12} className="text-primary" />
-              <span className="truncate">{car.transmission || 'Manual'}</span>
+              <span className="truncate">{activeCar.transmission || 'Manual'}</span>
             </div>
           </div>
 
-          {/* Sibling Variant Mode Indicator */}
-          {car.availableTransmissions?.length > 1 && (
+          {/* Sibling Variant Mode Indicator (e.g. Also available in Automatic / Diesel) */}
+          {alternativeTransmissions.length > 0 && (
             <div className="mb-2 px-2.5 py-1 rounded-lg bg-accent-soft border border-accent/20 flex items-center justify-between text-[10px]">
               <span className="text-text-muted font-semibold">Also available in:</span>
-              <span className="text-accent font-bold uppercase tracking-wider">
-                {car.availableTransmissions.filter(t => t.toLowerCase() !== car.transmission?.toLowerCase()).join(' • ')}
+              <span className="text-accent font-bold uppercase tracking-wider capitalize">
+                {alternativeTransmissions.join(' • ')}
               </span>
             </div>
           )}
@@ -559,33 +693,40 @@ const CarCard = ({ car, index, onBook, onDetails }) => {
         {/* Pricing & Call-to-Action */}
         <div className="flex items-center justify-between pt-3 mt-1 gap-2 border-t border-border">
           <div>
-            <span className="text-[10px] text-text-subtle uppercase tracking-wider block font-semibold">Daily Rate</span>
-            <div className="flex items-baseline gap-0.5">
+            <span className="text-[10px] text-text-subtle uppercase tracking-wider block font-semibold">
+              {hasPriceRange ? 'Current Trim Rate' : 'Daily Rate'}
+            </span>
+            <div className="flex items-baseline gap-1">
               <span className="text-lg font-black text-primary font-mono tabular-nums">
-                ₹{car.pricePerDay?.toLocaleString('en-IN') || 0}
+                ₹{activeCar.pricePerDay?.toLocaleString('en-IN') || 0}
               </span>
               <span className="text-[10px] text-text-subtle font-normal">/day</span>
             </div>
+            {hasPriceRange && (
+              <span className="text-[9px] text-text-subtle block font-mono">
+                Range: ₹{minPrice} – ₹{maxPrice}
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              onClick={onDetails}
+              onClick={() => onDetails(activeCar._id)}
               className="px-3 py-1.5 text-xs font-semibold text-text-muted hover:text-text border border-border hover:border-border-strong rounded-xl transition-all duration-200 bg-surface-raised"
             >
               Details
             </button>
 
             <button
-              onClick={car.available ? onBook : null}
-              disabled={!car.available}
+              onClick={activeCar.available ? () => onBook(activeCar) : null}
+              disabled={!activeCar.available}
               className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all duration-200 shadow-xs ${
-                car.available
+                activeCar.available
                   ? 'bg-primary hover:bg-primary-hover text-white shadow-primary/20'
                   : 'bg-surface-sunken text-text-subtle border border-border cursor-not-allowed'
               }`}
             >
-              {car.available ? 'Rent Now' : 'Booked'}
+              {activeCar.available ? 'Rent Now' : 'Booked'}
             </button>
           </div>
         </div>

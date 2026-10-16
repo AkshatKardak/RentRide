@@ -13,9 +13,9 @@ import {
   X,
   ArrowRight
 } from "lucide-react";
-import { bookingService } from '@/services/bookingService';
-import { paymentService } from '@/services/paymentService';
-import damageService from '@/services/damageService';
+import { bookingService } from '@/features/bookings/bookingService';
+import { paymentService } from '@/features/payment/paymentService';
+import damageService from '@/features/damage/damageService';
 import { loadRazorpayScript, initRazorpayPayment } from '@/features/payment/razorpay';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
 import { StaggerContainer, StaggerItem, Reveal } from '@/components/fx';

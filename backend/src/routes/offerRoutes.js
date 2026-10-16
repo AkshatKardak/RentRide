@@ -1,25 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const {
-    getAllOffers,
-    validateOffer,
-    createOffer,
-    updateOffer,
-    deleteOffer
-} = require('../controllers/offerController');
+  getAllPromotions,
+  getPromotionById,
+  validatePromotionCode,
+  createPromotion,
+  updatePromotion,
+  deletePromotion
+} = require('../controllers/promotionController');
 const { protect } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/adminMiddleware');
-const { offerRules } = require('../utils/validators');
 
-// Public route
-router.get('/', getAllOffers);
+// DEPRECATED: /api/offers is forwarded to canonical Promotion controller
+router.get('/', getAllPromotions);
+router.post('/validate', validatePromotionCode);
+router.get('/:id', getPromotionById);
 
-// Protected route
-router.post('/validate', protect, validateOffer);
-
-// Admin routes (spread the array with ...)
-router.post('/', protect, authorize('admin'), ...offerRules, createOffer);
-router.put('/:id', protect, authorize('admin'), updateOffer);
-router.delete('/:id', protect, authorize('admin'), deleteOffer);
+// Admin operations forwarded
+router.post('/', protect, authorize('admin'), createPromotion);
+router.put('/:id', protect, authorize('admin'), updatePromotion);
+router.delete('/:id', protect, authorize('admin'), deletePromotion);
 
 module.exports = router;

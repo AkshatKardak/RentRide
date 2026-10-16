@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import * as echarts from 'echarts';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 import EChartCard from '@/components/ui/EChartCard';
 
 export default function AdminDashboard() {

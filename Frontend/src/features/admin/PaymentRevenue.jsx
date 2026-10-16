@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CreditCard, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import axios from 'axios';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function PaymentRevenue() {
   const { isDarkMode } = useTheme();

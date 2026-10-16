@@ -18,7 +18,7 @@ import {
   Moon,
   ExternalLink
 } from 'lucide-react';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function AdminLayout() {
   const location = useLocation();

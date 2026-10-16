@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Users, Search, Shield, Ban, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function UserManagement() {
   const { isDarkMode } = useTheme();

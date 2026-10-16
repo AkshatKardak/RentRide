@@ -15,11 +15,11 @@ import {
   AlertCircle,
   ShieldCheck
 } from "lucide-react";
-import { bookingService } from '@/services/bookingService';
-import damageService from '@/services/damageService';
+import { bookingService } from '@/features/bookings/bookingService';
+import damageService from '@/features/damage/damageService';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
 import EChartCard from "@/components/ui/EChartCard";
-import { carService } from '@/services/carService';
+import { carService } from '@/features/cars/carService';
 import { getCarImageUrl } from '@/features/cars/carImageMap';
 import { CountUp } from '@/components/fx';
 

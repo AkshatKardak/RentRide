@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CalendarCheck, Search, CheckCircle2, XCircle, Clock, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function BookingManagement() {
   const { isDarkMode } = useTheme();

@@ -20,8 +20,8 @@ import {
   Sparkles,
   X
 } from "lucide-react";
-import { paymentService } from "@/services/paymentService";
-import { bookingService } from "@/services/bookingService";
+import { paymentService } from '@/features/payment/paymentService';
+import { bookingService } from '@/features/bookings/bookingService';
 import { loadRazorpayScript, initRazorpayPayment } from "@/features/payment/razorpay";
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
 
@@ -155,13 +155,40 @@ const Payment = () => {
   const [cardHolder, setCardHolder] = useState("");
   const [upiId, setUpiId] = useState('');
 
-  const [promoCode, setPromoCode] = useState(incoming.promoCode || '');
+  // Check incoming promo or localStorage rentride_active_promo
+  const initialPromo = useMemo(() => {
+    if (incoming.promoCode) return { code: incoming.promoCode };
+    try {
+      return JSON.parse(localStorage.getItem('rentride_active_promo')) || 
+             JSON.parse(localStorage.getItem('appliedPromoCode')) || null;
+    } catch {
+      return null;
+    }
+  }, [incoming.promoCode]);
+
+  const [promoCode, setPromoCode] = useState(initialPromo?.code || '');
   const [loadingCoupon, setLoadingCoupon] = useState(false);
   const [couponError, setCouponError] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState(incoming.promoCode ? true : false);
+  const [appliedCoupon, setAppliedCoupon] = useState(false);
 
   const [currentDiscount, setCurrentDiscount] = useState(summary?.promoDiscount || 0);
-  const [currentPromoCode, setCurrentPromoCode] = useState(summary?.promoCode || '');
+  const [currentPromoCode, setCurrentPromoCode] = useState(summary?.promoCode || initialPromo?.code || '');
+
+  // Auto-apply promo from Hub if available on mount
+  useEffect(() => {
+    if (initialPromo?.code && summary?.baseFare && !appliedCoupon) {
+      paymentService.validateCoupon(initialPromo.code.trim(), summary.baseFare)
+        .then(res => {
+          if (res.success && res.data) {
+            setCurrentDiscount(res.data.discountAmount);
+            setCurrentPromoCode(res.data.code);
+            setAppliedCoupon(true);
+            toast.success(`Active Voucher "${res.data.code}" applied! You save ₹${res.data.discountAmount}`);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [initialPromo, summary?.baseFare]);
 
   const calculateFinalTotal = () => {
     if (!summary) return 0;
@@ -225,6 +252,7 @@ const Payment = () => {
           car: summary.carId,
           startDate: summary.startDate,
           endDate: summary.endDate,
+          promotionCode: currentPromoCode || null,
           totalPrice: calculateFinalTotal(),
           pickupLocation: { city: 'Mumbai', address: 'BKC Hub' },
           dropoffLocation: { city: 'Mumbai', address: 'BKC Hub' }
@@ -275,6 +303,8 @@ const Payment = () => {
             }
 
             if (verifyResponse.success) {
+              localStorage.removeItem('rentride_active_promo');
+              localStorage.removeItem('appliedPromoCode');
               setPaymentSuccessData({
                 paymentId: response.razorpay_payment_id,
                 amount: calculateFinalTotal(),

@@ -85,6 +85,49 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default: 5.0
     },
+    loyaltyTier: {
+        type: String,
+        enum: ['bronze', 'silver', 'gold', 'platinum'],
+        default: 'bronze'
+    },
+    referral: {
+        code: {
+            type: String,
+            uppercase: true,
+            trim: true
+        },
+        referredBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        totalReferred: {
+            type: Number,
+            default: 0
+        },
+        rewardsEarned: {
+            type: Number,
+            default: 0
+        }
+    },
+    wallet: {
+        balance: {
+            type: Number,
+            default: 500 // Welcome credits
+        },
+        autoApply: {
+            type: Boolean,
+            default: true
+        },
+        ledger: [{
+            amount: { type: Number, required: true },
+            type: { type: String, enum: ['credit', 'debit'], required: true },
+            category: { type: String, enum: ['referral', 'refund', 'cashback', 'promotional', 'payment', 'welcome'], default: 'promotional' },
+            description: { type: String, required: true },
+            referenceId: { type: String },
+            expiresAt: { type: Date },
+            createdAt: { type: Date, default: Date.now }
+        }]
+    },
     createdAt: {
         type: Date,
         default: Date.now

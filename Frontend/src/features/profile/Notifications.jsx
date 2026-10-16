@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 import { Bell, CheckCircle, AlertTriangle, Info, Clock, Trash2, X } from 'lucide-react';
 import { notificationService } from '@/features/profile/notificationService';
 import { toast } from 'react-hot-toast';

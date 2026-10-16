@@ -17,7 +17,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
-import { carService } from '@/services/carService';
+import { carService } from '@/features/cars/carService';
 import { useTheme } from '@/hooks/useTheme';
 import { getCarImageUrl, heroCarImg as HeroCarImg } from '@/features/cars/carImageMap';
 

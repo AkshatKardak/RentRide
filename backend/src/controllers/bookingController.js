@@ -79,8 +79,14 @@ exports.createBooking = async (req, res) => {
         totalPrice = Math.max(0, totalPrice - discount);
         if (promotion.usedCount !== undefined) {
           promotion.usedCount += 1;
-          await promotion.save();
         }
+        if (promotion.usedBy && userId) {
+          promotion.usedBy.push({
+            user: userId,
+            usedAt: new Date()
+          });
+        }
+        await promotion.save();
       }
     }
 

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Cards from './Cards';
 import { useTheme } from '@/hooks/useTheme';
 import { Reveal, StaggerContainer, StaggerItem } from '@/components/fx';
-import { carService } from '@/services/carService';
+import { carService } from '@/features/cars/carService';
 
 import RollsRoyce from '@/assets/rolls royce.png';
 import Mercedes from '@/assets/mercedes.png';

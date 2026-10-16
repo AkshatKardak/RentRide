@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AlertTriangle, CheckCircle2, XCircle, Eye, ShieldAlert, Image as ImageIcon, X } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function DamageManagement() {
   const { isDarkMode } = useTheme();

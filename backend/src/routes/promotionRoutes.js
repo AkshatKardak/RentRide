@@ -3,6 +3,7 @@ const router = express.Router();
 const { 
   getAllPromotions,
   getPromotionById,
+  getEligiblePromotions,
   validatePromotionCode,
   createPromotion,
   updatePromotion,
@@ -14,6 +15,7 @@ const { authorize } = require('../middleware/adminMiddleware');
 
 // Public routes - no authentication needed
 router.get('/', getAllPromotions);
+router.post('/eligible', getEligiblePromotions);
 router.post('/validate', validatePromotionCode);
 router.get('/:id', getPromotionById);
 

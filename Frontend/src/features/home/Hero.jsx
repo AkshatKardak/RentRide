@@ -4,7 +4,7 @@ import { Search, Calendar, MapPin, Zap, Shield, Clock, ArrowRight } from 'lucide
 import { motion } from 'framer-motion'
 import herocar from '@/assets/herocar1.png';
 import { Reveal, HoverLift } from '@/components/fx';
-import { getStoredItem } from '@/utils/safeStorage';
+import { getStoredItem } from '@/lib/safeStorage';
 
 export default function Hero() {
   const user = getStoredItem('user', null);

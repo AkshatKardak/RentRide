@@ -1,14 +1,27 @@
 const Promotion = require('../models/Promotion');
 const Booking = require('../models/Booking');
 
-// Get all promotions
+// Get all promotions (with optional category, city, tier, active filters)
 exports.getAllPromotions = async (req, res) => {
   try {
-    const { active, sortBy = 'createdAt', order = 'desc' } = req.query;
+    const { active, category, city, tier, sortBy = 'createdAt', order = 'desc' } = req.query;
     
     const filter = {};
     if (active !== undefined) {
       filter.active = active === 'true';
+    }
+    if (category && category !== 'All') {
+      filter.category = category.toLowerCase();
+    }
+    if (tier && tier !== 'all') {
+      filter.tier = { $in: [tier.toLowerCase(), 'all'] };
+    }
+    if (city) {
+      filter.$or = [
+        { cities: { $size: 0 } },
+        { cities: { $exists: false } },
+        { cities: new RegExp(`^${city}$`, 'i') }
+      ];
     }
     
     const promotions = await Promotion.find(filter)
@@ -55,18 +68,81 @@ exports.getPromotionById = async (req, res) => {
   }
 };
 
+// Compute all eligible promotions and recommend the best offer
+exports.getEligiblePromotions = async (req, res) => {
+  try {
+    const { bookingAmount = 3000, vehicleId, city, rentalDays = 2 } = req.body || {};
+    const amount = Number(bookingAmount) || 3000;
+    
+    const now = new Date();
+    const promotions = await Promotion.find({
+      active: true,
+      validFrom: { $lte: now },
+      validTo: { $gte: now }
+    }).populate('applicableVehicles', 'name brand model');
+    
+    const eligible = [];
+    for (const promo of promotions) {
+      if (promo.usedCount >= promo.usageLimit) continue;
+      if (vehicleId && !promo.isApplicableToVehicle(vehicleId)) continue;
+      if (city && !promo.isApplicableToCity(city)) continue;
+      if (amount < promo.minBookingAmount) continue;
+
+      // Check firstBookingOnly if authenticated user present
+      if (promo.firstBookingOnly && req.user) {
+        const bookingsCount = await Booking.countDocuments({ user: req.user._id });
+        if (bookingsCount > 0) continue;
+      }
+
+      const discount = promo.calculateDiscount(amount);
+      if (discount > 0) {
+        eligible.push({
+          ...promo.toObject(),
+          calculatedDiscount: discount,
+          finalAmount: Math.max(0, amount - discount)
+        });
+      }
+    }
+
+    // Sort by largest discount first
+    eligible.sort((a, b) => b.calculatedDiscount - a.calculatedDiscount);
+
+    res.json({
+      success: true,
+      count: eligible.length,
+      data: eligible,
+      bestOffer: eligible[0] || null
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error computing eligible promotions',
+      error: error.message
+    });
+  }
+};
+
 // Validate promotion code
 exports.validatePromotionCode = async (req, res) => {
   try {
-    const { code, vehicleId, bookingAmount } = req.body;
+    const { code, vehicleId, city, bookingAmount } = req.body;
     
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        valid: false,
+        message: 'Please provide a coupon code'
+      });
+    }
+
     const promotion = await Promotion.findOne({ 
-      code: code.toUpperCase() 
+      code: code.trim().toUpperCase() 
     }).populate('applicableVehicles');
     
     if (!promotion) {
       return res.status(404).json({ 
         success: false,
+        valid: false,
         message: 'Invalid promotion code' 
       });
     }
@@ -74,43 +150,68 @@ exports.validatePromotionCode = async (req, res) => {
     if (!promotion.isValid()) {
       return res.status(400).json({ 
         success: false,
-        message: 'Promotion code has expired or is no longer valid' 
+        valid: false,
+        message: 'Promotion code has expired or usage limit reached' 
       });
     }
     
     if (vehicleId && !promotion.isApplicableToVehicle(vehicleId)) {
       return res.status(400).json({ 
         success: false,
+        valid: false,
         message: 'Promotion code is not applicable to this vehicle' 
+      });
+    }
+
+    if (city && !promotion.isApplicableToCity(city)) {
+      return res.status(400).json({
+        success: false,
+        valid: false,
+        message: `Promotion code is only valid in: ${promotion.cities.join(', ')}`
       });
     }
     
     if (bookingAmount < promotion.minBookingAmount) {
       return res.status(400).json({ 
         success: false,
-        message: `Minimum booking amount of ₹${promotion.minBookingAmount} required` 
+        valid: false,
+        message: `Minimum booking amount of ₹${promotion.minBookingAmount.toLocaleString('en-IN')} required` 
       });
+    }
+
+    if (promotion.firstBookingOnly && req.user) {
+      const userBookings = await Booking.countDocuments({ user: req.user._id });
+      if (userBookings > 0) {
+        return res.status(400).json({
+          success: false,
+          valid: false,
+          message: 'This offer is only valid for your first rental booking'
+        });
+      }
     }
     
     const discount = promotion.calculateDiscount(bookingAmount);
     
     res.json({
       success: true,
+      valid: true,
       data: {
         promotion: {
           id: promotion._id,
           code: promotion.code,
           name: promotion.name,
+          category: promotion.category,
           type: promotion.type,
           value: promotion.value
         },
         discount,
-        finalAmount: bookingAmount - discount
+        finalAmount: Math.max(0, bookingAmount - discount)
       }
     });
   } catch (error) {
     res.status(500).json({ 
       success: false,
+      valid: false,
       message: 'Error validating promotion code', 
       error: error.message 
     });
@@ -203,7 +304,6 @@ exports.getPromotionStats = async (req, res) => {
       });
     }
     
-    // Get bookings that used this promotion
     const bookings = await Booking.find({ promotion: promotion._id })
       .populate('user', 'name email')
       .populate('car', 'name brand model')
@@ -213,9 +313,10 @@ exports.getPromotionStats = async (req, res) => {
       promotion: {
         code: promotion.code,
         name: promotion.name,
+        category: promotion.category,
         usedCount: promotion.usedCount,
         usageLimit: promotion.usageLimit,
-        remainingUses: promotion.usageLimit - promotion.usedCount
+        remainingUses: Math.max(0, promotion.usageLimit - promotion.usedCount)
       },
       bookings: bookings.length,
       totalDiscountGiven: bookings.reduce((sum, b) => sum + (b.discount || 0), 0),

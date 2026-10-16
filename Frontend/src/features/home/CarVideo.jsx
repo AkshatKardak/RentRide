@@ -1,23 +1,52 @@
-import { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { Reveal } from '@/components/fx';
-import carVideo from '@/assets/car1.mp4';
+
+const HERO_VIDEO_SRC = '/assets/video/hero-loop.mp4';
+const HERO_VIDEO_POSTER = '/assets/showcase/banner.jpg';
 
 const CarVideo = () => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
   const { isDarkMode } = useTheme();
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    // If not reduced motion, attempt autoplay muted
+    if (!prefersReducedMotion && videoRef.current) {
+      videoRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(() => {
+        // Autoplay policy prevented playback, keep paused
+        setIsPlaying(false);
+      });
+    }
+  }, [prefersReducedMotion]);
 
   const handlePlayPause = () => {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
+        setIsPlaying(false);
       } else {
-        videoRef.current.play();
+        videoRef.current.play().then(() => {
+          setIsPlaying(true);
+        }).catch((err) => {
+          console.warn('Playback prevented:', err);
+        });
       }
-      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleToggleMute = (e) => {
+    e.stopPropagation();
+    if (videoRef.current) {
+      const nextMuted = !isMuted;
+      videoRef.current.muted = nextMuted;
+      setIsMuted(nextMuted);
     }
   };
 
@@ -46,16 +75,18 @@ const CarVideo = () => {
           <div className="relative rounded-3xl overflow-hidden border border-border shadow-2xl bg-surface group">
             <video
               ref={videoRef}
-              src={carVideo}
+              src={HERO_VIDEO_SRC}
+              poster={HERO_VIDEO_POSTER}
+              preload="metadata"
               loop
-              muted
+              muted={isMuted}
               playsInline
               className="w-full h-[380px] sm:h-[480px] lg:h-[580px] object-cover"
               onEnded={() => setIsPlaying(false)}
             />
             
             {/* Dark gradient overlay for text readability */}
-            <div className={`absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent transition-opacity duration-300 pointer-events-none ${isPlaying ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent transition-opacity duration-300 pointer-events-none ${isPlaying ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}>
               <div className="absolute bottom-8 left-8 right-8 text-white">
                 <span className="text-xs uppercase tracking-widest text-accent font-bold">Unmatched Performance</span>
                 <h3 className="text-2xl sm:text-3xl font-black mt-1 font-display">Crafted For The Enthusiast</h3>
@@ -63,7 +94,7 @@ const CarVideo = () => {
               </div>
             </div>
 
-            {/* Centered Play Button */}
+            {/* Centered Play Button (when paused) */}
             <AnimatePresence>
               {!isPlaying && (
                 <motion.div
@@ -86,20 +117,34 @@ const CarVideo = () => {
               )}
             </AnimatePresence>
 
-            {/* Corner Pause Button */}
-            {isPlaying && (
+            {/* Corner Control Affordances (Pause & Mute/Unmute) */}
+            <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
               <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handlePlayPause}
-                className="absolute top-4 right-4 w-11 h-11 bg-black/70 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center cursor-pointer hover:bg-primary transition-all text-white z-20"
-                aria-label="Pause video"
+                onClick={handleToggleMute}
+                className="w-10 h-10 bg-black/60 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center cursor-pointer hover:bg-primary transition-all text-white"
+                aria-label={isMuted ? "Unmute video" : "Mute video"}
+                title={isMuted ? "Unmute" : "Mute"}
               >
-                <Pause size={18} className="fill-white" />
+                {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
               </motion.button>
-            )}
+
+              {isPlaying && (
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handlePlayPause}
+                  className="w-10 h-10 bg-black/60 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center cursor-pointer hover:bg-primary transition-all text-white"
+                  aria-label="Pause video"
+                  title="Pause"
+                >
+                  <Pause size={16} className="fill-white" />
+                </motion.button>
+              )}
+            </div>
           </div>
         </Reveal>
       </div>

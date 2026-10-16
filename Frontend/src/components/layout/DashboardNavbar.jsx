@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import Logo from "@/assets/logo.png";
-import { notificationService } from "@/services/notificationService";
+import { notificationService } from '@/features/profile/notificationService';
 
 const DashboardNavbar = () => {
   const navigate = useNavigate();

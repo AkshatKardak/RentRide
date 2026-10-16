@@ -6,7 +6,7 @@ import {
   Camera, Upload, Shield, AlertTriangle, Image as ImageIcon, X
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { aiService } from "@/services/aiService";
+import { aiService } from '@/features/ai/aiService';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
 
 const AIAssistant = () => {

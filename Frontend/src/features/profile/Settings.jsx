@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 import { Bell, Lock, Shield, Smartphone, Moon, Sun, ChevronRight, Loader } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { userService } from '@/features/profile/userService';

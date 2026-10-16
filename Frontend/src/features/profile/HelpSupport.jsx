@@ -11,7 +11,7 @@ import {
   FileText 
 } from 'lucide-react';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 
 const HelpSupport = () => {
   const { isDarkMode } = useTheme();

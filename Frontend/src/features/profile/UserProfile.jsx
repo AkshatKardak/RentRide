@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from '@/hooks/useTheme';
 import { User, Mail, Phone, MapPin, Camera, Save, Loader } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { userService } from '@/services/userService';
+import { userService } from '@/features/profile/userService';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
 
 const UserProfile = () => {
