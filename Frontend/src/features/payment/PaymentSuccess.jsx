@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle, ArrowRight, Home } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
@@ -10,85 +10,63 @@ const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const { isDarkMode } = useTheme();
 
-  const theme = {
-    bg: isDarkMode ? '#0f172a' : '#f8f9fa',
-    cardBg: isDarkMode ? '#1e293b' : '#ffffff',
-    text: isDarkMode ? '#f1f5f9' : '#1F2937',
-    textSecondary: isDarkMode ? '#cbd5e1' : '#6B7280',
-    border: isDarkMode ? '#334155' : '#e5e7eb',
-  };
-
   const paymentId = searchParams.get('razorpay_payment_id');
   const paymentLinkId = searchParams.get('razorpay_payment_link_id');
   const referenceId = searchParams.get('razorpay_payment_link_reference_id');
   const status = searchParams.get('razorpay_payment_link_status');
 
-
   return (
-    <div 
-      className="min-h-screen"
-      style={{ backgroundColor: theme.bg }}
-    >
+    <div className="min-h-screen bg-bg text-text transition-colors duration-300 font-sans">
       <DashboardNavbar />
       
-      <div className="flex items-center justify-center px-4 pt-32">
+      <div className="flex items-center justify-center px-4 pt-32 pb-16">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-md w-full rounded-2xl border p-8 text-center shadow-xl"
-          style={{
-            backgroundColor: theme.cardBg,
-            borderColor: theme.border
-          }}
+          transition={{ duration: 0.4 }}
+          className="max-w-md w-full rounded-3xl border border-border bg-surface p-8 text-center shadow-xl"
         >
           <motion.div 
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-6"
+            transition={{ delay: 0.15, type: "spring", stiffness: 220 }}
+            className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6 shadow-md shadow-primary/10"
           >
-            <CheckCircle className="w-12 h-12 text-green-500" />
+            <CheckCircle className="w-10 h-10 text-primary" />
           </motion.div>
 
-          <h1 className="text-2xl md:text-3xl font-black mb-2" style={{ color: theme.text }}>
-            Payment Successful!
+          <h1 className="text-2xl md:text-3xl font-display font-black tracking-tight text-text mb-2">
+            Payment Confirmed!
           </h1>
           
-          <p className="text-sm mb-6" style={{ color: theme.textSecondary }}>
-            Your booking has been confirmed. Thank you for choosing RentRide!
+          <p className="text-xs text-muted mb-6">
+            Your rental booking is secured on the tamper-proof ledger. Have a safe journey!
           </p>
 
           {paymentId && (
-            <div 
-              className="rounded-xl border p-4 mb-6 text-left"
-              style={{
-                backgroundColor: theme.bg,
-                borderColor: theme.border
-              }}
-            >
-              <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: theme.textSecondary }}>
+            <div className="rounded-2xl border border-border bg-surface-sunken p-4 mb-6 text-left">
+              <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted mb-2">
                 Transaction Details
               </p>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span style={{ color: theme.textSecondary }}>Payment ID:</span>
-                  <span className="font-mono text-xs" style={{ color: theme.text }}>
-                    {paymentId.substring(0, 20)}...
+              <div className="space-y-1.5 font-mono text-xs">
+                <div className="flex justify-between">
+                  <span className="text-muted">Payment ID:</span>
+                  <span className="font-bold text-text truncate max-w-[180px]">
+                    {paymentId}
                   </span>
                 </div>
                 {referenceId && (
-                  <div className="flex justify-between text-sm">
-                    <span style={{ color: theme.textSecondary }}>Reference:</span>
-                    <span className="font-mono text-xs" style={{ color: theme.text }}>
+                  <div className="flex justify-between">
+                    <span className="text-muted">Reference:</span>
+                    <span className="font-bold text-text">
                       {referenceId}
                     </span>
                   </div>
                 )}
-                <div className="flex justify-between text-sm">
-                  <span style={{ color: theme.textSecondary }}>Status:</span>
-                  <span className="font-bold text-green-500">
-                    {status === 'paid' ? 'Paid' : 'Completed'}
+                <div className="flex justify-between">
+                  <span className="text-muted">Status:</span>
+                  <span className="font-bold text-primary">
+                    {status === 'paid' ? 'Paid & Settled' : 'Completed'}
                   </span>
                 </div>
               </div>
@@ -97,22 +75,18 @@ const PaymentSuccess = () => {
 
           <button
             onClick={() => navigate('/mybookings')}
-            className="w-full py-3 px-6 rounded-xl bg-green-500 text-white font-bold hover:bg-green-600 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-green-500/20"
+            className="w-full py-3.5 px-6 rounded-2xl bg-primary text-white font-bold hover:bg-primary-hover transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary/25 text-sm"
           >
-            View My Bookings
-            <ArrowRight className="w-5 h-5" />
+            <span>View My Bookings</span>
+            <ArrowRight className="w-4 h-4" />
           </button>
 
           <button
             onClick={() => navigate('/')}
-            className="w-full mt-3 py-3 px-6 rounded-xl border font-bold transition-colors flex items-center justify-center gap-2"
-            style={{
-              borderColor: theme.border,
-              color: theme.textSecondary
-            }}
+            className="w-full mt-3 py-3 px-6 rounded-2xl border border-border hover:bg-surface-sunken text-muted hover:text-text font-bold transition-colors flex items-center justify-center gap-2 text-xs"
           >
-            <Home className="w-5 h-5" />
-            Back to Home
+            <Home className="w-4 h-4" />
+            <span>Back to Home</span>
           </button>
         </motion.div>
       </div>

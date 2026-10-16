@@ -14,22 +14,13 @@ import {
   Car
 } from 'lucide-react';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
-import damageService from '@/services/damageService';
+import damageService from '@/features/damage/damageService';
 
 const MyDamageReports = () => {
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const theme = {
-    bg: isDarkMode ? '#0f172a' : '#f8f9fa',
-    cardBg: isDarkMode ? '#1e293b' : '#ffffff',
-    text: isDarkMode ? '#f1f5f9' : '#1F2937',
-    textSecondary: isDarkMode ? '#cbd5e1' : '#6B7280',
-    border: isDarkMode ? '#334155' : '#e5e7eb',
-    inputBg: isDarkMode ? '#0f172a' : '#f8f9fa',
-  };
 
   useEffect(() => {
     fetchReports();
@@ -39,10 +30,9 @@ const MyDamageReports = () => {
     try {
       setLoading(true);
       const response = await damageService.getUserDamageReports();
-      setReports(response.data);
+      setReports(response.data || []);
     } catch (error) {
       console.error('Failed to fetch reports:', error);
-      alert('Failed to load damage reports');
     } finally {
       setLoading(false);
     }
@@ -51,25 +41,27 @@ const MyDamageReports = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'approved':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return <CheckCircle className="w-4 h-4 text-primary" />;
       case 'rejected':
-        return <XCircle className="w-5 h-5 text-red-500" />;
+        return <XCircle className="w-4 h-4 text-rose-500" />;
       case 'under_review':
-        return <Eye className="w-5 h-5 text-blue-500" />;
+        return <Eye className="w-4 h-4 text-accent" />;
       default:
-        return <Clock className="w-5 h-5 text-yellow-500" />;
+        return <Clock className="w-4 h-4 text-accent" />;
     }
   };
 
   const getStatusBadge = (status) => {
-    const badges = {
-      pending: 'px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold border border-yellow-200',
-      under_review: 'px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold border border-blue-200',
-      approved: 'px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold border border-green-200',
-      rejected: 'px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200',
-      resolved: 'px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold border border-gray-200'
-    };
-    return badges[status] || badges.pending;
+    switch (status) {
+      case 'approved':
+        return 'px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-mono font-bold';
+      case 'rejected':
+        return 'px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20 text-xs font-mono font-bold';
+      case 'under_review':
+        return 'px-2.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20 text-xs font-mono font-bold';
+      default:
+        return 'px-2.5 py-0.5 rounded-full bg-surface-sunken text-muted border border-border text-xs font-mono font-bold';
+    }
   };
 
   const getStatusText = (status) => {
@@ -84,34 +76,26 @@ const MyDamageReports = () => {
   };
 
   return (
-    <div 
-      className="min-h-screen pb-12 transition-colors duration-300"
-      style={{ backgroundColor: theme.bg }}
-    >
+    <div className="min-h-screen bg-bg text-text pb-12 transition-colors duration-300 font-sans">
       <DashboardNavbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center border"
-              style={{
-                backgroundColor: 'rgba(249, 115, 22, 0.1)',
-                borderColor: 'rgba(249, 115, 22, 0.3)'
-              }}
-            >
-              <AlertTriangle className="w-6 h-6 text-orange-500" />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center border border-primary/25 bg-primary/10 shadow-sm shadow-primary/10">
+              <AlertTriangle className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-black" style={{ color: theme.text }}>
+              <h1 className="text-3xl md:text-4xl font-display font-black tracking-tight text-text">
                 My Damage Reports
               </h1>
-              <p style={{ color: theme.textSecondary }}>
-                Track your submitted damage reports and their status
+              <p className="text-xs md:text-sm text-muted">
+                Track your submitted damage reports, AI diagnostic estimates, and resolution status
               </p>
             </div>
           </div>
@@ -120,28 +104,24 @@ const MyDamageReports = () => {
         {/* Content */}
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary border-t-transparent" />
           </div>
         ) : reports.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="rounded-2xl border p-12 text-center"
-            style={{
-              backgroundColor: theme.cardBg,
-              borderColor: theme.border
-            }}
+            className="rounded-3xl border border-border bg-surface p-12 text-center shadow-xs"
           >
-            <FileText className="w-16 h-16 mx-auto mb-4 opacity-30" style={{ color: theme.textSecondary }} />
-            <h3 className="text-xl font-bold mb-2" style={{ color: theme.text }}>
+            <FileText className="w-16 h-16 mx-auto mb-4 text-muted/30" />
+            <h3 className="text-xl font-display font-bold text-text mb-2">
               No Damage Reports
             </h3>
-            <p className="mb-6" style={{ color: theme.textSecondary }}>
-              You haven't submitted any damage reports yet
+            <p className="text-sm text-muted mb-6">
+              You haven't submitted any damage reports yet.
             </p>
             <button
               onClick={() => navigate('/mybookings')}
-              className="px-6 py-3 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 transition"
+              className="px-6 py-3 rounded-xl bg-primary text-white font-bold hover:bg-primary-hover transition-colors shadow-md shadow-primary/20 text-xs"
             >
               View My Bookings
             </button>
@@ -151,14 +131,10 @@ const MyDamageReports = () => {
             {reports.map((report, idx) => (
               <motion.div
                 key={report._id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                className="rounded-2xl border p-6 hover:border-orange-500/30 transition-colors"
-                style={{
-                  backgroundColor: theme.cardBg,
-                  borderColor: theme.border
-                }}
+                transition={{ delay: idx * 0.05 }}
+                className="rounded-3xl border border-border bg-surface p-6 hover:border-primary/40 transition-colors shadow-xs"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -169,7 +145,7 @@ const MyDamageReports = () => {
                         {getStatusText(report.status)}
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold" style={{ color: theme.text }}>
+                    <h3 className="text-lg font-display font-bold text-text">
                       {report.car?.brand} {report.car?.model}
                     </h3>
                   </div>
@@ -183,33 +159,27 @@ const MyDamageReports = () => {
                         key={i}
                         src={img}
                         alt="Damage"
-                        className="w-full h-24 object-cover rounded-lg"
+                        className="w-full h-24 object-cover rounded-xl border border-border"
                       />
                     ))}
                   </div>
                 )}
 
                 {/* Description */}
-                <p className="text-sm mb-4 line-clamp-2" style={{ color: theme.textSecondary }}>
+                <p className="text-xs text-muted mb-4 line-clamp-2">
                   {report.description}
                 </p>
 
                 {/* AI Analysis */}
                 {report.aiAnalysis && (
-                  <div 
-                    className="mb-4 p-4 rounded-xl border"
-                    style={{
-                      backgroundColor: theme.inputBg,
-                      borderColor: theme.border
-                    }}
-                  >
-                    <p className="text-xs font-bold mb-1" style={{ color: theme.textSecondary }}>
-                      AI Analysis
+                  <div className="mb-4 p-4 rounded-2xl border border-border bg-surface-sunken">
+                    <p className="text-[10px] font-mono uppercase font-bold text-muted mb-1">
+                      AI Diagnostic Scan
                     </p>
-                    <p className="text-sm font-semibold mb-1" style={{ color: theme.text }}>
+                    <p className="text-xs font-semibold text-text mb-1">
                       {report.aiAnalysis.damageType} • {report.aiAnalysis.severity}
                     </p>
-                    <p className="text-xs text-green-500 font-bold">
+                    <p className="text-xs text-primary font-mono font-bold">
                       Est. Cost: ₹{report.aiAnalysis.estimatedCost?.toLocaleString()}
                     </p>
                   </div>
@@ -217,18 +187,16 @@ const MyDamageReports = () => {
 
                 {/* Admin Decision */}
                 {report.status === 'approved' && report.actualCost && (
-                  <div 
-                    className="mb-4 p-4 rounded-xl border border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800/40"
-                  >
-                    <p className="text-xs font-bold text-green-700 dark:text-green-400 mb-1 flex items-center gap-1.5">
-                      <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+                  <div className="mb-4 p-4 rounded-2xl border border-primary/25 bg-primary/5">
+                    <p className="text-xs font-bold text-primary mb-1 flex items-center gap-1.5 font-mono">
+                      <CheckCircle className="w-3.5 h-3.5" />
                       Approved by Admin
                     </p>
-                    <p className="text-lg font-black text-green-600 dark:text-green-400">
+                    <p className="text-base font-mono font-bold text-primary">
                       Final Cost: ₹{report.actualCost.toLocaleString()}
                     </p>
                     {report.adminNotes && (
-                      <p className="text-xs text-green-700 dark:text-green-300 mt-2">
+                      <p className="text-xs text-muted mt-2">
                         Note: {report.adminNotes}
                       </p>
                     )}
@@ -236,37 +204,30 @@ const MyDamageReports = () => {
                 )}
 
                 {report.status === 'rejected' && report.adminNotes && (
-                  <div 
-                    className="mb-4 p-4 rounded-xl border border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-800/40"
-                  >
-                    <p className="text-xs font-bold text-red-700 dark:text-red-400 mb-1 flex items-center gap-1.5">
-                      <XCircle className="w-3.5 h-3.5 text-red-600" />
-                      Rejected
+                  <div className="mb-4 p-4 rounded-2xl border border-rose-500/20 bg-rose-500/5">
+                    <p className="text-xs font-bold text-rose-500 mb-1 flex items-center gap-1.5 font-mono">
+                      <XCircle className="w-3.5 h-3.5" />
+                      Claim Dismissed
                     </p>
-                    <p className="text-sm text-red-600 dark:text-red-400">
+                    <p className="text-xs text-text">
                       {report.adminNotes}
                     </p>
                   </div>
                 )}
 
                 {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: theme.border }}>
-                  <div className="flex items-center gap-2 text-xs" style={{ color: theme.textSecondary }}>
-                    <Calendar className="w-4 h-4" />
+                <div className="flex items-center justify-between pt-4 border-t border-border">
+                  <div className="flex items-center gap-2 text-xs font-mono text-muted">
+                    <Calendar className="w-4 h-4 text-subtle" />
                     {new Date(report.createdAt).toLocaleDateString()}
                   </div>
                   
                   <button
                     onClick={() => navigate(`/damage-report/${report._id}`)}
-                    className="px-4 py-2 rounded-xl border font-bold hover:bg-opacity-50 transition text-sm flex items-center gap-2"
-                    style={{
-                      backgroundColor: theme.cardBg,
-                      borderColor: theme.border,
-                      color: theme.text
-                    }}
+                    className="px-4 py-2 rounded-xl border border-border bg-surface hover:bg-surface-sunken text-text font-bold transition-colors text-xs flex items-center gap-2 shadow-2xs"
                   >
-                    <Eye className="w-4 h-4" />
-                    View Details
+                    <Eye className="w-3.5 h-3.5 text-primary" />
+                    <span>View Details</span>
                   </button>
                 </div>
               </motion.div>

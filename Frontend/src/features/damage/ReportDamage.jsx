@@ -28,15 +28,6 @@ const ReportDamage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const theme = {
-    bg: isDarkMode ? '#0f172a' : '#f8f9fa',
-    cardBg: isDarkMode ? '#1e293b' : '#ffffff',
-    text: isDarkMode ? '#f1f5f9' : '#1F2937',
-    textSecondary: isDarkMode ? '#cbd5e1' : '#6B7280',
-    border: isDarkMode ? '#334155' : '#e5e7eb',
-    inputBg: isDarkMode ? '#0f172a' : '#f8f9fa',
-  };
-
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     
@@ -155,74 +146,61 @@ const ReportDamage = () => {
   return (
     <>
       <DashboardNavbar />
-      <div 
-        className="min-h-screen pb-12 transition-colors duration-300"
-        style={{ backgroundColor: theme.bg }}
-      >
-        
+      <div className="min-h-screen bg-bg text-text pb-12 transition-colors duration-300 font-sans">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
           {/* Back Button */}
           <button 
             onClick={() => navigate(-1)} 
-            className="flex items-center gap-2 mb-6 transition font-medium hover:text-green-500"
-            style={{ color: theme.textSecondary }}
+            className="flex items-center gap-2 mb-6 transition font-medium text-muted hover:text-primary"
           >
-            <ArrowLeft size={20} /> Back
+            <ArrowLeft size={18} /> <span>Back</span>
           </button>
 
           {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
           >
-            <h1 className="text-3xl md:text-4xl font-black mb-2" style={{ color: theme.text }}>
+            <h1 className="text-3xl md:text-4xl font-display font-black tracking-tight text-text mb-2">
               Report Vehicle Damage
             </h1>
-            <p style={{ color: theme.textSecondary }}>
-              Upload photos and describe the damage. Our AI will help assess the situation.
+            <p className="text-muted text-sm">
+              Upload photos and describe the incident. Our AI diagnostic system will inspect and generate an immediate assessment.
             </p>
           </motion.div>
 
           {success ? (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="rounded-2xl border p-8 text-center"
-              style={{
-                backgroundColor: theme.cardBg,
-                borderColor: theme.border
-              }}
+              className="rounded-3xl border border-border bg-surface p-8 text-center shadow-lg"
             >
-              <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2" style={{ color: theme.text }}>
+              <CheckCircle className="w-16 h-16 text-primary mx-auto mb-4" />
+              <h2 className="text-2xl font-display font-bold text-text mb-2">
                 Report Submitted Successfully!
               </h2>
-              <p style={{ color: theme.textSecondary }}>
-                Our team will review your report and contact you soon.
+              <p className="text-muted text-sm">
+                Our fleet operations team will review your report and update the deposit escrow status.
               </p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit}>
               {/* Image Upload Section */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="rounded-2xl border p-6 mb-6"
-                style={{
-                  backgroundColor: theme.cardBg,
-                  borderColor: theme.border
-                }}
+                className="rounded-3xl border border-border bg-surface p-6 mb-6 shadow-xs"
               >
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: theme.text }}>
-                  <Camera className="w-5 h-5 text-green-500" />
+                <h2 className="text-lg font-display font-bold text-text mb-4 flex items-center gap-2">
+                  <Camera className="w-5 h-5 text-primary" />
                   Upload Damage Photos
                 </h2>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                   {images.map(img => (
-                    <div key={img.id} className="relative group rounded-xl overflow-hidden border" style={{ borderColor: theme.border }}>
+                    <div key={img.id} className="relative group rounded-2xl overflow-hidden border border-border bg-surface-sunken">
                       <img 
                         src={img.preview}
                         alt="Damage"
@@ -231,23 +209,22 @@ const ReportDamage = () => {
 
                       {/* Laser AI Scanning Overlay */}
                       {analyzing && (
-                        <div className="absolute inset-0 bg-blue-950/60 backdrop-blur-[1px] z-10 flex flex-col justify-between p-2">
-                          <div className="flex items-center justify-between text-[9px] font-mono text-cyan-300 font-bold uppercase tracking-wider">
+                        <div className="absolute inset-0 bg-overlay/80 backdrop-blur-xs z-10 flex flex-col justify-between p-2">
+                          <div className="flex items-center justify-between text-[9px] font-mono text-accent font-bold uppercase tracking-wider">
                             <span className="flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
                               Scanning
                             </span>
-                            <span className="text-emerald-400">AI Active</span>
+                            <span className="text-primary font-bold">AI Active</span>
                           </div>
 
-                          {/* Animated laser line */}
                           <motion.div
                             animate={{ y: [-40, 80, -40] }}
                             transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-                            className="w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_#22d3ee]"
+                            className="w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_12px_rgba(163,79,50,0.8)]"
                           />
 
-                          <div className="text-[8px] font-mono text-cyan-200 text-center tracking-widest uppercase">
+                          <div className="text-[8px] font-mono text-muted text-center tracking-widest uppercase">
                             Analyzing Matrix
                           </div>
                         </div>
@@ -257,7 +234,7 @@ const ReportDamage = () => {
                         <button
                           type="button"
                           onClick={() => removeImage(img.id)}
-                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500/90 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                          className="absolute top-2 right-2 w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-rose-600"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -267,11 +244,10 @@ const ReportDamage = () => {
 
                   {images.length < 5 && (
                     <label 
-                      className="h-32 rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer hover:border-green-500 transition-all hover:bg-green-500/5 group"
-                      style={{ borderColor: theme.border }}
+                      className="h-32 rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-all hover:bg-primary/5 group"
                     >
-                      <Upload className="w-7 h-7 mb-2 text-slate-400 group-hover:text-green-500 group-hover:scale-110 transition-all" />
-                      <span className="text-xs font-bold" style={{ color: theme.textSecondary }}>
+                      <Upload className="w-6 h-6 mb-2 text-muted group-hover:text-primary group-hover:scale-110 transition-all" />
+                      <span className="text-xs font-bold text-muted group-hover:text-text">
                         Upload Photo
                       </span>
                       <input
@@ -285,8 +261,8 @@ const ReportDamage = () => {
                   )}
                 </div>
 
-                <p className="text-xs" style={{ color: theme.textSecondary }}>
-                  Upload up to 5 photos. Supported formats: JPG, PNG. Max size: 5MB per image.
+                <p className="text-xs text-muted font-mono">
+                  Upload up to 5 photos. Formats: JPG, PNG. Max: 5MB per image.
                 </p>
 
                 {images.length > 0 && !aiAnalysis && (
@@ -296,16 +272,16 @@ const ReportDamage = () => {
                     type="button"
                     onClick={analyzeWithAI}
                     disabled={analyzing}
-                    className="mt-4 px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-blue-500/25"
+                    className="mt-4 px-6 py-3 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold transition-all disabled:opacity-50 flex items-center gap-2 shadow-md shadow-primary/25 text-xs"
                   >
                     {analyzing ? (
                       <>
-                        <Loader className="w-5 h-5 animate-spin" />
+                        <Loader className="w-4 h-4 animate-spin" />
                         <span>AI Diagnostic Scan in Progress...</span>
                       </>
                     ) : (
                       <>
-                        <ImageIcon className="w-5 h-5" />
+                        <ImageIcon className="w-4 h-4" />
                         <span>Analyze with AI Diagnostic</span>
                       </>
                     )}
@@ -316,62 +292,58 @@ const ReportDamage = () => {
               {/* AI Analysis Results */}
               {aiAnalysis && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-2xl border p-6 mb-6 relative overflow-hidden"
-                  style={{
-                    backgroundColor: isDarkMode ? 'rgba(30, 58, 138, 0.15)' : 'rgba(239, 246, 255, 0.9)',
-                    borderColor: 'rgba(59, 130, 246, 0.3)'
-                  }}
+                  className="rounded-3xl border border-primary/30 bg-primary/5 p-6 mb-6 relative overflow-hidden"
                 >
-                  <div className="flex items-center justify-between mb-4 border-b pb-3" style={{ borderColor: 'rgba(59, 130, 246, 0.2)' }}>
-                    <h3 className="text-base font-black flex items-center gap-2 text-blue-600 dark:text-blue-400">
-                      <CheckCircle className="w-5 h-5 text-emerald-500" />
+                  <div className="flex items-center justify-between mb-4 border-b border-primary/20 pb-3">
+                    <h3 className="text-base font-display font-black flex items-center gap-2 text-text">
+                      <CheckCircle className="w-5 h-5 text-primary" />
                       AI Inspection Assessment
                     </h3>
-                    <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20 font-bold uppercase">
+                    <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-bold uppercase">
                       Automated Report
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                    <div className="p-3 rounded-xl border bg-white/50 dark:bg-slate-900/50" style={{ borderColor: theme.border }}>
-                      <span className="text-[11px] font-bold uppercase tracking-wider block mb-1" style={{ color: theme.textSecondary }}>
+                    <div className="p-3.5 rounded-2xl border border-border bg-surface">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider block mb-1 text-muted">
                         Damage Classification
                       </span>
-                      <p className="font-bold text-sm" style={{ color: theme.text }}>
+                      <p className="font-bold text-sm text-text">
                         {aiAnalysis.damageType || 'Surface Damage'}
                       </p>
                     </div>
 
-                    <div className="p-3 rounded-xl border bg-white/50 dark:bg-slate-900/50" style={{ borderColor: theme.border }}>
-                      <span className="text-[11px] font-bold uppercase tracking-wider block mb-1" style={{ color: theme.textSecondary }}>
+                    <div className="p-3.5 rounded-2xl border border-border bg-surface">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider block mb-1 text-muted">
                         Estimated Severity
                       </span>
                       <p className={`font-bold text-sm capitalize ${
                         String(aiAnalysis.severity).toLowerCase() === 'high' ? 'text-rose-500' :
-                        String(aiAnalysis.severity).toLowerCase() === 'medium' ? 'text-amber-500' : 'text-emerald-500'
+                        String(aiAnalysis.severity).toLowerCase() === 'medium' ? 'text-accent' : 'text-primary'
                       }`}>
                         {aiAnalysis.severity || 'Minor'}
                       </p>
                     </div>
 
-                    <div className="p-3 rounded-xl border bg-white/50 dark:bg-slate-900/50" style={{ borderColor: theme.border }}>
-                      <span className="text-[11px] font-bold uppercase tracking-wider block mb-1" style={{ color: theme.textSecondary }}>
+                    <div className="p-3.5 rounded-2xl border border-border bg-surface">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider block mb-1 text-muted">
                         Estimated Cost
                       </span>
-                      <p className="font-extrabold text-base text-emerald-500">
+                      <p className="font-mono font-bold text-base text-primary">
                         ₹{Number(aiAnalysis.estimatedCost || 0).toLocaleString()}
                       </p>
                     </div>
                   </div>
 
                   {aiAnalysis.description && (
-                    <div className="p-3.5 rounded-xl border bg-white/40 dark:bg-slate-900/40" style={{ borderColor: theme.border }}>
-                      <span className="text-[11px] font-bold uppercase tracking-wider block mb-1 text-slate-400">
+                    <div className="p-3.5 rounded-2xl border border-border bg-surface/70">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider block mb-1 text-muted">
                         Detailed AI Findings
                       </span>
-                      <p className="text-xs leading-relaxed" style={{ color: theme.text }}>
+                      <p className="text-xs text-text leading-relaxed">
                         {aiAnalysis.description}
                       </p>
                     </div>
@@ -381,37 +353,28 @@ const ReportDamage = () => {
 
               {/* Description */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="rounded-2xl border p-6 mb-6"
-                style={{
-                  backgroundColor: theme.cardBg,
-                  borderColor: theme.border
-                }}
+                className="rounded-3xl border border-border bg-surface p-6 mb-6 shadow-xs"
               >
-                <h2 className="text-xl font-bold mb-4" style={{ color: theme.text }}>
+                <h2 className="text-lg font-display font-bold text-text mb-4">
                   Describe the Damage
                 </h2>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Please provide details about what happened, when it occurred, and any other relevant information..."
-                  rows={6}
-                  className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 transition-colors resize-none"
-                  style={{
-                    backgroundColor: theme.inputBg,
-                    borderColor: theme.border,
-                    color: theme.text
-                  }}
+                  placeholder="Please provide details about what happened, when it occurred, and any other relevant incident notes..."
+                  rows={5}
+                  className="w-full rounded-2xl border border-border bg-surface-sunken p-4 text-sm text-text focus:outline-none focus:border-primary transition-colors resize-none placeholder:text-muted"
                 />
               </motion.div>
 
               {/* Error Message */}
               {error && (
-                <div className="rounded-xl border p-4 mb-6 bg-red-500/10 flex items-center gap-3" style={{ borderColor: 'rgba(239, 68, 68, 0.3)' }}>
-                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                  <p className="text-sm text-red-600">{error}</p>
+                <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 mb-6 flex items-center gap-3">
+                  <AlertCircle className="w-5 h-5 text-rose-500 flex-shrink-0" />
+                  <p className="text-xs text-rose-500 font-semibold">{error}</p>
                 </div>
               )}
 
@@ -419,14 +382,14 @@ const ReportDamage = () => {
               <motion.button
                 type="submit"
                 disabled={loading || images.length === 0}
-                whileHover={{ scale: loading ? 1 : 1.02 }}
-                whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full py-4 rounded-xl bg-green-500 text-white font-bold hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-green-500/20"
+                whileHover={{ scale: loading ? 1 : 1.01 }}
+                whileTap={{ scale: loading ? 1 : 0.99 }}
+                className="w-full py-4 rounded-2xl bg-primary text-white font-bold hover:bg-primary-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary/25 text-sm"
               >
                 {loading ? (
                   <>
                     <Loader className="w-5 h-5 animate-spin" />
-                    Submitting Report...
+                    <span>Submitting Report...</span>
                   </>
                 ) : (
                   'Submit Damage Report'

@@ -17,7 +17,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
-import damageService from '@/services/damageService';
+import damageService from '@/features/damage/damageService';
 
 const DamageReportDetail = () => {
   const { id } = useParams();
@@ -25,15 +25,6 @@ const DamageReportDetail = () => {
   const { isDarkMode } = useTheme();
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const theme = {
-    bg: isDarkMode ? '#0f172a' : '#f8f9fa',
-    cardBg: isDarkMode ? '#1e293b' : '#ffffff',
-    text: isDarkMode ? '#f1f5f9' : '#1F2937',
-    textSecondary: isDarkMode ? '#cbd5e1' : '#6B7280',
-    border: isDarkMode ? '#334155' : '#e5e7eb',
-    inputBg: isDarkMode ? '#0f172a' : '#f8f9fa',
-  };
 
   useEffect(() => {
     fetchReport();
@@ -46,7 +37,6 @@ const DamageReportDetail = () => {
       setReport(response.data);
     } catch (error) {
       console.error('Failed to fetch report:', error);
-      alert('Failed to load damage report details');
       navigate(-1);
     } finally {
       setLoading(false);
@@ -56,36 +46,33 @@ const DamageReportDetail = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'approved':
-        return <CheckCircle className="w-8 h-8 text-green-500" />;
+        return <CheckCircle className="w-8 h-8 text-primary" />;
       case 'rejected':
-        return <XCircle className="w-8 h-8 text-red-500" />;
+        return <XCircle className="w-8 h-8 text-rose-500" />;
       case 'under_review':
-        return <Eye className="w-8 h-8 text-blue-500" />;
+        return <Eye className="w-8 h-8 text-accent" />;
       default:
-        return <Clock className="w-8 h-8 text-yellow-500" />;
+        return <Clock className="w-8 h-8 text-accent" />;
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'approved':
-        return 'text-green-500';
+        return 'text-primary';
       case 'rejected':
-        return 'text-red-500';
+        return 'text-rose-500';
       case 'under_review':
-        return 'text-blue-500';
+        return 'text-accent';
       default:
-        return 'text-yellow-500';
+        return 'text-muted';
     }
   };
 
   if (loading) {
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: theme.bg }}
-      >
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+      <div className="min-h-screen bg-bg flex items-center justify-center font-sans">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -95,35 +82,31 @@ const DamageReportDetail = () => {
   }
 
   return (
-    <div 
-      className="min-h-screen pb-12 transition-colors duration-300"
-      style={{ backgroundColor: theme.bg }}
-    >
+    <div className="min-h-screen bg-bg text-text pb-12 transition-colors duration-300 font-sans">
       <DashboardNavbar />
       
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
         {/* Back Button */}
         <button 
           onClick={() => navigate(-1)} 
-          className="flex items-center gap-2 mb-6 transition font-medium hover:text-orange-500"
-          style={{ color: theme.textSecondary }}
+          className="flex items-center gap-2 mb-6 transition font-medium text-muted hover:text-primary"
         >
-          <ArrowLeft size={20} /> Back
+          <ArrowLeft size={18} /> <span>Back</span>
         </button>
 
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-black mb-2" style={{ color: theme.text }}>
+              <h1 className="text-3xl md:text-4xl font-display font-black tracking-tight text-text mb-2">
                 Damage Report Details
               </h1>
-              <p style={{ color: theme.textSecondary }}>
-                Report ID: {report._id}
+              <p className="text-xs font-mono text-muted">
+                Report ID: #{report._id}
               </p>
             </div>
             {getStatusIcon(report.status)}
@@ -132,30 +115,27 @@ const DamageReportDetail = () => {
 
         {/* Status Banner */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className={`rounded-2xl border p-6 mb-6 ${
-            report.status === 'approved' ? 'bg-green-50 border-green-200' :
-            report.status === 'rejected' ? 'bg-red-50 border-red-200' :
-            report.status === 'under_review' ? 'bg-blue-50 border-blue-200' :
-            'bg-yellow-50 border-yellow-200'
+          className={`rounded-3xl border p-6 mb-6 ${
+            report.status === 'approved' ? 'bg-primary/5 border-primary/25' :
+            report.status === 'rejected' ? 'bg-rose-500/5 border-rose-500/25' :
+            'bg-accent/5 border-accent/25'
           }`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm font-bold uppercase tracking-wider ${getStatusColor(report.status)}`}>
+              <p className={`text-xs font-mono font-bold uppercase tracking-wider ${getStatusColor(report.status)}`}>
                 Status: {report.status.replace('_', ' ').toUpperCase()}
               </p>
               {report.status === 'approved' && report.actualCost && (
-                <p className="text-2xl font-black text-green-600 mt-2">
+                <p className="text-2xl font-mono font-bold text-primary mt-2">
                   Final Cost: ₹{report.actualCost.toLocaleString()}
                 </p>
               )}
               {report.adminNotes && (
-                <p className={`text-sm mt-2 ${
-                  report.status === 'approved' ? 'text-green-700' : 'text-red-700'
-                }`}>
+                <p className="text-xs text-muted mt-2">
                   Admin Note: {report.adminNotes}
                 </p>
               )}
@@ -168,17 +148,13 @@ const DamageReportDetail = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Images */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="rounded-2xl border p-6"
-              style={{
-                backgroundColor: theme.cardBg,
-                borderColor: theme.border
-              }}
+              className="rounded-3xl border border-border bg-surface p-6 shadow-xs"
             >
-              <h2 className="text-xl font-black mb-4 flex items-center gap-2" style={{ color: theme.text }}>
-                <AlertTriangle className="w-5 h-5 text-orange-500" />
+              <h2 className="text-lg font-display font-bold text-text mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-accent" />
                 Damage Photos
               </h2>
               {report.images && report.images.length > 0 ? (
@@ -188,32 +164,28 @@ const DamageReportDetail = () => {
                       key={i}
                       src={img}
                       alt={`Damage ${i + 1}`}
-                      className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-80 transition"
+                      className="w-full h-48 object-cover rounded-2xl cursor-pointer hover:opacity-85 transition border border-border"
                       onClick={() => window.open(img, '_blank')}
                     />
                   ))}
                 </div>
               ) : (
-                <p style={{ color: theme.textSecondary }}>No images uploaded</p>
+                <p className="text-xs text-muted">No images uploaded</p>
               )}
             </motion.div>
 
             {/* Description */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="rounded-2xl border p-6"
-              style={{
-                backgroundColor: theme.cardBg,
-                borderColor: theme.border
-              }}
+              className="rounded-3xl border border-border bg-surface p-6 shadow-xs"
             >
-              <h2 className="text-xl font-black mb-4 flex items-center gap-2" style={{ color: theme.text }}>
-                <FileText className="w-5 h-5 text-orange-500" />
+              <h2 className="text-lg font-display font-bold text-text mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" />
                 Description
               </h2>
-              <p className="leading-relaxed" style={{ color: theme.text }}>
+              <p className="text-sm text-text leading-relaxed">
                 {report.description}
               </p>
             </motion.div>
@@ -221,33 +193,32 @@ const DamageReportDetail = () => {
             {/* AI Analysis */}
             {report.aiAnalysis && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="rounded-2xl border p-6 bg-blue-50"
-                style={{ borderColor: 'rgba(59, 130, 246, 0.3)' }}
+                className="rounded-3xl border border-primary/25 bg-primary/5 p-6"
               >
-                <h2 className="text-xl font-black mb-4 text-blue-700 flex items-center gap-2">
-                  <Sparkles size={20} className="text-blue-600" />
+                <h2 className="text-lg font-display font-bold mb-4 text-text flex items-center gap-2">
+                  <Sparkles size={18} className="text-primary" />
                   <span>AI Automated Inspection Analysis</span>
                 </h2>
                 <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <p className="text-xs font-bold text-blue-600 mb-1">Damage Type</p>
-                    <p className="font-bold text-blue-800">{report.aiAnalysis.damageType}</p>
+                  <div className="p-3 rounded-2xl bg-surface border border-border">
+                    <p className="text-[10px] font-mono font-bold uppercase text-muted mb-1">Damage Type</p>
+                    <p className="font-bold text-xs text-text">{report.aiAnalysis.damageType}</p>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-blue-600 mb-1">Severity</p>
-                    <p className="font-bold text-blue-800">{report.aiAnalysis.severity}</p>
+                  <div className="p-3 rounded-2xl bg-surface border border-border">
+                    <p className="text-[10px] font-mono font-bold uppercase text-muted mb-1">Severity</p>
+                    <p className="font-bold text-xs text-text">{report.aiAnalysis.severity}</p>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-blue-600 mb-1">Estimated Cost</p>
-                    <p className="font-bold text-blue-800">
+                  <div className="p-3 rounded-2xl bg-surface border border-border">
+                    <p className="text-[10px] font-mono font-bold uppercase text-muted mb-1">Estimated Cost</p>
+                    <p className="font-mono font-bold text-xs text-primary">
                       ₹{report.aiAnalysis.estimatedCost?.toLocaleString()}
                     </p>
                   </div>
                 </div>
-                <p className="text-sm text-blue-700">
+                <p className="text-xs text-muted leading-relaxed">
                   {report.aiAnalysis.description}
                 </p>
               </motion.div>
@@ -258,30 +229,26 @@ const DamageReportDetail = () => {
           <div className="space-y-6">
             {/* Booking Info */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 15 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="rounded-2xl border p-6"
-              style={{
-                backgroundColor: theme.cardBg,
-                borderColor: theme.border
-              }}
+              className="rounded-3xl border border-border bg-surface p-6 shadow-xs"
             >
-              <h3 className="text-lg font-black mb-4 flex items-center gap-2" style={{ color: theme.text }}>
-                <Car className="w-5 h-5 text-orange-500" />
+              <h3 className="text-base font-display font-bold text-text mb-4 flex items-center gap-2">
+                <Car className="w-5 h-5 text-primary" />
                 Vehicle Details
               </h3>
-              <div className="space-y-3 text-sm">
+              <div className="space-y-3 text-xs">
                 <div>
-                  <p className="text-xs font-bold" style={{ color: theme.textSecondary }}>Car</p>
-                  <p className="font-bold" style={{ color: theme.text }}>
+                  <p className="font-mono font-bold text-muted">Car</p>
+                  <p className="font-bold text-sm text-text">
                     {report.car?.brand} {report.car?.model}
                   </p>
                 </div>
                 {report.car?.registrationNumber && (
                   <div>
-                    <p className="text-xs font-bold" style={{ color: theme.textSecondary }}>Registration</p>
-                    <p className="font-bold" style={{ color: theme.text }}>
+                    <p className="font-mono font-bold text-muted">Registration</p>
+                    <p className="font-mono font-bold text-text">
                       {report.car.registrationNumber}
                     </p>
                   </div>
@@ -291,29 +258,25 @@ const DamageReportDetail = () => {
 
             {/* User Info */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 15 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="rounded-2xl border p-6"
-              style={{
-                backgroundColor: theme.cardBg,
-                borderColor: theme.border
-              }}
+              className="rounded-3xl border border-border bg-surface p-6 shadow-xs"
             >
-              <h3 className="text-lg font-black mb-4 flex items-center gap-2" style={{ color: theme.text }}>
-                <User className="w-5 h-5 text-orange-500" />
+              <h3 className="text-base font-display font-bold text-text mb-4 flex items-center gap-2">
+                <User className="w-5 h-5 text-accent" />
                 Reported By
               </h3>
-              <div className="space-y-3 text-sm">
+              <div className="space-y-3 text-xs">
                 <div>
-                  <p className="text-xs font-bold" style={{ color: theme.textSecondary }}>Name</p>
-                  <p className="font-bold" style={{ color: theme.text }}>
+                  <p className="font-mono font-bold text-muted">Name</p>
+                  <p className="font-bold text-text">
                     {report.user?.name}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold" style={{ color: theme.textSecondary }}>Email</p>
-                  <p className="font-bold" style={{ color: theme.text }}>
+                  <p className="font-mono font-bold text-muted">Email</p>
+                  <p className="font-mono text-muted">
                     {report.user?.email}
                   </p>
                 </div>
@@ -322,30 +285,26 @@ const DamageReportDetail = () => {
 
             {/* Timeline */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 15 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="rounded-2xl border p-6"
-              style={{
-                backgroundColor: theme.cardBg,
-                borderColor: theme.border
-              }}
+              className="rounded-3xl border border-border bg-surface p-6 shadow-xs"
             >
-              <h3 className="text-lg font-black mb-4 flex items-center gap-2" style={{ color: theme.text }}>
-                <Calendar className="w-5 h-5 text-orange-500" />
+              <h3 className="text-base font-display font-bold text-text mb-4 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-subtle" />
                 Timeline
               </h3>
-              <div className="space-y-3 text-sm">
+              <div className="space-y-3 text-xs font-mono">
                 <div>
-                  <p className="text-xs font-bold" style={{ color: theme.textSecondary }}>Submitted</p>
-                  <p className="font-bold" style={{ color: theme.text }}>
+                  <p className="font-bold text-muted">Submitted</p>
+                  <p className="font-bold text-text">
                     {new Date(report.createdAt).toLocaleString()}
                   </p>
                 </div>
                 {report.reviewedAt && (
                   <div>
-                    <p className="text-xs font-bold" style={{ color: theme.textSecondary }}>Reviewed</p>
-                    <p className="font-bold" style={{ color: theme.text }}>
+                    <p className="font-bold text-muted">Reviewed</p>
+                    <p className="font-bold text-text">
                       {new Date(report.reviewedAt).toLocaleString()}
                     </p>
                   </div>
@@ -355,37 +314,31 @@ const DamageReportDetail = () => {
 
             {/* Cost Summary */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 15 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
-              className="rounded-2xl border p-6"
-              style={{
-                backgroundColor: theme.cardBg,
-                borderColor: theme.border
-              }}
+              className="rounded-3xl border border-border bg-surface p-6 shadow-xs"
             >
-              <h3 className="text-lg font-black mb-4 flex items-center gap-2" style={{ color: theme.text }}>
-                <DollarSign className="w-5 h-5 text-orange-500" />
+              <h3 className="text-base font-display font-bold text-text mb-4 flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-primary" />
                 Cost Summary
               </h3>
-              <div className="space-y-3 text-sm">
+              <div className="space-y-3 text-xs font-mono">
                 <div className="flex justify-between">
-                  <span style={{ color: theme.textSecondary }}>AI Estimate</span>
-                  <span className="font-bold" style={{ color: theme.text }}>
+                  <span className="text-muted">AI Estimate</span>
+                  <span className="font-bold text-text">
                     ₹{report.estimatedCost?.toLocaleString()}
                   </span>
                 </div>
                 {report.actualCost && (
-                  <>
-                    <div className="border-t pt-3" style={{ borderColor: theme.border }}>
-                      <div className="flex justify-between">
-                        <span style={{ color: theme.textSecondary }}>Final Cost</span>
-                        <span className="font-black text-lg text-green-500">
-                          ₹{report.actualCost.toLocaleString()}
-                        </span>
-                      </div>
+                  <div className="border-t border-border pt-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted">Final Cost</span>
+                      <span className="font-bold text-base text-primary">
+                        ₹{report.actualCost.toLocaleString()}
+                      </span>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             </motion.div>
