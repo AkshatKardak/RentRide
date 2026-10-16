@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme } from "@/hooks/useTheme";
 import {
   Car,
   Calendar,
@@ -12,17 +12,16 @@ import {
   ArrowRight,
   AlertTriangle,
   Zap,
-  AlertCircle
+  AlertCircle,
+  ShieldCheck
 } from "lucide-react";
 import { bookingService } from '@/services/bookingService';
 import damageService from '@/services/damageService';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
 import EChartCard from "@/components/ui/EChartCard";
 import { carService } from '@/services/carService';
-
-/* =========================
-   MAIN COMPONENT
-========================= */
+import { getCarImageUrl } from '@/features/cars/carImageMap';
+import { CountUp } from '@/components/fx';
 
 const AppDashboard = () => {
   const navigate = useNavigate();
@@ -42,7 +41,7 @@ const AppDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [isDarkMode]);
 
   const fetchDashboardData = async () => {
     try {
@@ -53,7 +52,7 @@ const AppDashboard = () => {
         setUserName(firstName);
       }
 
-      // Fetch user data
+      // Fetch user bookings and damage reports
       const [bookingsRes, damagesRes] = await Promise.all([
         bookingService.getUserBookings(),
         damageService.getUserDamageReports()
@@ -80,14 +79,14 @@ const AppDashboard = () => {
         items.push({
           id: b._id,
           type: 'booking',
-          title: 'Booking Payment Due',
-          car: b.car ? `${b.car.brand} ${b.car.model}` : 'Unknown Car',
+          title: 'Trip Payment Due',
+          car: b.car ? `${b.car.brand} ${b.car.model}` : 'Unknown Vehicle',
           amount: b.totalPrice,
           link: '/payment',
           data: {
             bookingId: b._id,
             carId: b.car?._id,
-            carName: b.car ? `${b.car.brand} ${b.car.model}` : 'Unknown Car',
+            carName: b.car ? `${b.car.brand} ${b.car.model}` : 'Unknown Vehicle',
             totalPrice: b.totalPrice,
             startDate: b.startDate,
             endDate: b.endDate,
@@ -100,14 +99,14 @@ const AppDashboard = () => {
         items.push({
           id: d._id,
           type: 'damage',
-          title: 'Damage Repair Bill',
-          car: d.car ? `${d.car.brand} ${d.car.model}` : 'Unknown Car',
+          title: 'Damage Claim Assessment',
+          car: d.car ? `${d.car.brand} ${d.car.model}` : 'Unknown Vehicle',
           amount: d.actualCost,
           link: '/payment',
           data: {
             damageReportId: d._id,
             carId: d.car?._id,
-            carName: d.car ? `${d.car.brand} ${d.car.model}` : 'Unknown Car',
+            carName: d.car ? `${d.car.brand} ${d.car.model}` : 'Unknown Vehicle',
             actualCost: d.actualCost,
             bookingId: d.booking?._id || d.booking
           }
@@ -116,7 +115,7 @@ const AppDashboard = () => {
 
       setPendingItems(items);
 
-      // Find current rental (confirmed and future end date)
+      // Find current active rental
       const now = new Date();
       const current = bookings.find(b =>
         b.status === 'confirmed' &&
@@ -126,7 +125,7 @@ const AppDashboard = () => {
 
       if (current) {
         setCurrentRental({
-          name: current.car ? `${current.car.brand} ${current.car.model}` : 'Unknown Car',
+          name: current.car ? `${current.car.brand} ${current.car.model}` : 'Active Vehicle',
           endDate: new Date(current.endDate).toLocaleDateString()
         });
       }
@@ -141,7 +140,7 @@ const AppDashboard = () => {
         console.warn('Could not fetch recommendations:', cErr.message);
       }
 
-      // Generate Spending Analytics Chart if bookings exist
+      // Generate Spending Analytics Chart in Terracotta & Copper
       if (bookings.length > 0) {
         const validBookings = bookings.filter(b => b.status !== 'cancelled');
         if (validBookings.length > 0) {
@@ -154,39 +153,41 @@ const AppDashboard = () => {
             xAxis: {
               type: 'category',
               data: tripLabels,
-              axisLine: { lineStyle: { color: isDarkMode ? '#475569' : '#cbd5e1' } }
+              axisLine: { lineStyle: { color: isDarkMode ? 'rgba(243, 238, 229, 0.2)' : '#D8CBB8' } },
+              axisLabel: { color: isDarkMode ? '#B3AA9C' : '#6B6459', fontSize: 11 }
             },
             yAxis: {
               type: 'value',
-              axisLabel: { formatter: '₹{value}' },
-              splitLine: { lineStyle: { color: isDarkMode ? '#334155' : '#f1f5f9' } }
+              axisLabel: { formatter: '₹{value}', color: isDarkMode ? '#B3AA9C' : '#6B6459', fontSize: 11 },
+              splitLine: { lineStyle: { color: isDarkMode ? 'rgba(243, 238, 229, 0.08)' : '#E8E0D3' } }
             },
             series: [{
               data: tripAmounts,
               type: 'bar',
-              itemStyle: { color: '#10b981', borderRadius: [6, 6, 0, 0] }
+              itemStyle: {
+                color: isDarkMode ? '#B85D3B' : '#A34F32',
+                borderRadius: [8, 8, 0, 0]
+              }
             }]
           });
         }
       }
 
-      // Generate Recent Activity
+      // Generate Timeline Activity
       const activities = [];
 
-      // Add recent bookings
       bookings.slice(0, 3).forEach(b => {
         activities.push({
           title: `Booking ${b.status.charAt(0).toUpperCase() + b.status.slice(1)}`,
-          sub: `${b.car?.brand} ${b.car?.model} • ${new Date(b.createdAt).toLocaleDateString()}`,
+          sub: `${b.car?.brand || 'Car'} ${b.car?.model || ''} • ${new Date(b.createdAt).toLocaleDateString()}`,
           status: b.status === 'confirmed' ? 'success' : 'info',
           date: new Date(b.createdAt)
         });
       });
 
-      // Add recent damages
       damages.slice(0, 3).forEach(d => {
         let status = 'info';
-        let title = "Damage Reported";
+        let title = "Damage Report Filed";
         if (d.status === 'approved') {
           status = 'warning';
           title = "Damage Approved";
@@ -197,13 +198,12 @@ const AppDashboard = () => {
 
         activities.push({
           title: title,
-          sub: `${d.car?.brand} ${d.car?.model} • ${new Date(d.createdAt).toLocaleDateString()}`,
+          sub: `${d.car?.brand || 'Car'} ${d.car?.model || ''} • ${new Date(d.createdAt).toLocaleDateString()}`,
           status: status,
           date: new Date(d.createdAt)
         });
       });
 
-      // Sort by date desc
       activities.sort((a, b) => b.date - a.date);
       setRecentActivity(activities.slice(0, 4));
 
@@ -212,103 +212,81 @@ const AppDashboard = () => {
     }
   };
 
-  const theme = {
-    bg: isDarkMode ? '#0f172a' : '#f8f9fa',
-    cardBg: isDarkMode ? '#1e293b' : '#ffffff',
-    text: isDarkMode ? '#f1f5f9' : '#1F2937',
-    textSecondary: isDarkMode ? '#cbd5e1' : '#6B7280',
-    border: isDarkMode ? '#334155' : '#e5e7eb',
-    inputBg: isDarkMode ? '#0f172a' : '#f8f9fa',
-  };
-
   return (
     <>
       <DashboardNavbar />
-      <div
-        className="min-h-screen pt-20 transition-colors duration-300"
-        style={{ backgroundColor: theme.bg }}
-      >
-        <main className="max-w-7xl mx-auto px-6 py-10 space-y-10">
+      <div className="min-h-screen bg-bg transition-colors duration-300">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
           {/* WELCOME SECTION */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-            <div className="space-y-2">
-              <h1 className="text-4xl font-black tracking-tight" style={{ color: theme.text }}>
-                Welcome back, <span className="text-green-500 italic">{userName}</span>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+            <div className="space-y-1">
+              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-text font-display">
+                Welcome back, <span className="text-primary">{userName}</span>
               </h1>
-              <p className="text-lg max-w-md" style={{ color: theme.textSecondary }}>
-                Your premium garage is ready. Where would you like to drive today?
+              <p className="text-xs sm:text-sm text-text-muted">
+                Your mobility garage is active. Where are you traveling today?
               </p>
             </div>
 
             <button
               type="button"
               onClick={() => navigate("/browsecars")}
-              className="flex items-center gap-3 bg-green-500 text-white px-8 py-4 rounded-2xl hover:bg-green-600 transition-all shadow-lg shadow-green-500/20 font-black tracking-widest text-sm"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-primary/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Plus size={20} /> NEW BOOKING
+              <Plus size={16} /> New Booking
             </button>
           </div>
 
           {/* STATS SECTION */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <StatCard
               title="Current Rental"
-              value={currentRental ? currentRental.name : "No Active Rental"}
-              sub={currentRental ? `Return by ${currentRental.endDate}` : "Ready to book"}
-              icon={<Car className="w-5 h-5 text-green-500" />}
-              theme={theme}
+              value={currentRental ? currentRental.name : "No Active Trip"}
+              sub={currentRental ? `Return by ${currentRental.endDate}` : "Fleet ready to dispatch"}
+              icon={<Car className="w-5 h-5 text-primary" />}
             />
             <StatCard
               title="Total Bookings"
-              value={stats.totalBookings}
-              sub={`${stats.activeBookings} active trips`}
-              icon={<Calendar className="w-5 h-5 text-green-500" />}
-              theme={theme}
+              value={<CountUp to={stats.totalBookings} />}
+              sub={`${stats.activeBookings} active reservations`}
+              icon={<Calendar className="w-5 h-5 text-accent" />}
             />
             <StatCard
               title="Pending Actions"
-              value={stats.pendingPayments + stats.pendingDamages}
-              sub="Payments & Reports"
-              icon={<AlertTriangle className="w-5 h-5 text-orange-500" />}
-              theme={theme}
+              value={<CountUp to={stats.pendingPayments + stats.pendingDamages} />}
+              sub="Payments & Inspections"
+              icon={<AlertTriangle className="w-5 h-5 text-warning" />}
             />
           </div>
 
           {/* QUICK ACTIONS */}
-          <div className="space-y-6">
-            <h2
-              className="text-xl font-black uppercase tracking-widest opacity-70 flex items-center gap-2"
-              style={{ color: theme.text }}
-            >
-              <Zap size={18} className="text-emerald-500" />
-              <span>Quick Access</span>
+          <div className="space-y-3">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-text-subtle flex items-center gap-1.5 font-mono">
+              <Zap size={14} className="text-primary" />
+              <span>Quick Navigation</span>
             </h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <QuickAction
                 icon={<Car />}
-                label="Browse Cars"
+                label="Browse Fleet"
                 onClick={() => navigate("/browsecars")}
-                theme={theme}
               />
               <QuickAction
                 icon={<Calendar />}
                 label="My Bookings"
                 onClick={() => navigate("/mybookings")}
-                theme={theme}
               />
               <QuickAction
                 icon={<AlertTriangle />}
                 label="Damage Reports"
                 onClick={() => navigate("/mybookings")}
-                theme={theme}
                 highlight={stats.pendingDamages > 0}
               />
               <QuickAction
                 icon={<CreditCard />}
-                label="Payments"
+                label="Payment Hub"
                 onClick={() => navigate("/payment")}
-                theme={theme}
                 highlight={stats.pendingPayments > 0}
               />
             </div>
@@ -316,32 +294,28 @@ const AppDashboard = () => {
 
           {/* ACTION ITEMS SECTION */}
           {pendingItems.length > 0 && (
-            <div className="space-y-6">
-              <h2
-                className="text-xl font-black uppercase tracking-widest opacity-70 flex items-center gap-2"
-                style={{ color: theme.text }}
-              >
-                <AlertCircle size={18} className="text-rose-500" />
-                <span>Action Required</span>
+            <div className="space-y-3">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-danger flex items-center gap-1.5 font-mono">
+                <AlertCircle size={14} />
+                <span>Action Required ({pendingItems.length})</span>
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {pendingItems.map((item, idx) => (
                   <div
                     key={idx}
-                    className="rounded-2xl p-6 border shadow-lg flex items-center justify-between group transition-all"
-                    style={{ backgroundColor: theme.cardBg, borderColor: 'rgba(239, 68, 68, 0.2)' }}
+                    className="rounded-2xl p-4 border border-danger/30 bg-surface shadow-xs flex items-center justify-between transition-all"
                   >
-                    <div className="space-y-1">
-                      <p className="text-[10px] font-black text-red-500 uppercase tracking-widest">Remaining</p>
-                      <h4 className="font-black text-sm" style={{ color: theme.text }}>{item.title}</h4>
-                      <p className="text-xs opacity-60" style={{ color: theme.textSecondary }}>{item.car}</p>
-                      <p className="text-lg font-black text-green-500 italic">₹{item.amount?.toLocaleString()}</p>
+                    <div className="space-y-0.5">
+                      <p className="text-[10px] font-bold text-danger uppercase tracking-wider">Pending Action</p>
+                      <h4 className="font-bold text-xs text-text">{item.title}</h4>
+                      <p className="text-[11px] text-text-muted">{item.car}</p>
+                      <p className="text-sm font-black text-primary font-mono tabular-nums">₹{item.amount?.toLocaleString('en-IN')}</p>
                     </div>
                     <button
                       onClick={() => navigate(item.link, { state: item.data })}
-                      className="p-3 rounded-xl bg-red-500 text-white shadow-lg shadow-red-500/20 hover:scale-110 active:scale-95 transition-all"
+                      className="p-2.5 rounded-xl bg-danger hover:bg-danger/90 text-white shadow-xs transition-all hover:scale-105 active:scale-95"
                     >
-                      <ArrowRight size={20} />
+                      <ArrowRight size={16} />
                     </button>
                   </div>
                 ))}
@@ -350,75 +324,55 @@ const AppDashboard = () => {
           )}
 
           {/* MAIN LAYOUT GRID */}
-          <div className="grid lg:grid-cols-3 gap-10">
+          <div className="grid lg:grid-cols-3 gap-6">
 
             {/* USER ANALYTICS & RECOMMENDED SECTION */}
             <div className="lg:col-span-2 space-y-6">
               {spendingChartData && (
                 <EChartCard
                   title="Rental Spending Activity"
-                  subtitle="Trip expenses across your rental history"
+                  subtitle="Expenses across recent rental trips"
                   options={spendingChartData}
                   height="250px"
                 />
               )}
 
               <div className="flex justify-between items-center">
-                <h2
-                  className="text-xl font-black uppercase tracking-widest opacity-70"
-                  style={{ color: theme.text }}
-                >
+                <h2 className="text-xs font-bold uppercase tracking-wider text-text-subtle font-mono">
                   Recommended For You
                 </h2>
                 <button
                   onClick={() => navigate("/browsecars")}
-                  className="text-green-500 text-sm font-black flex items-center gap-2 hover:translate-x-1 transition-transform"
+                  className="text-primary text-xs font-bold flex items-center gap-1 hover:translate-x-0.5 transition-transform"
                 >
-                  EXPLORE ALL <ArrowRight size={16} />
+                  <span>Explore All</span>
+                  <ArrowRight size={13} />
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {recommendedCars.length === 0 ? (
-                  <div className="col-span-2 p-8 text-center text-slate-400 text-sm">
+                  <div className="col-span-2 p-8 text-center text-text-muted text-xs bg-surface border border-border rounded-2xl">
                     No recommendations currently available
                   </div>
                 ) : (
                   recommendedCars.slice(0, 2).map((car) => (
-                    <CarCard
+                    <DashboardCarCard
                       key={car._id}
-                      name={car.name || `${car.brand} ${car.model}`}
-                      price={`₹${(car.pricePerDay || 2200).toLocaleString()}`}
-                      tag={car.category?.toUpperCase() || 'VERIFIED'}
-                      image={car.primaryImage || car.images?.[0] || PorscheImg}
-                      specs={`${car.year} • ${car.transmission} • ${car.fuelType}`}
-                      carId={car._id}
-                      theme={theme}
+                      car={car}
                     />
                   ))
                 )}
               </div>
             </div>
 
-            {/* RECENT ACTIVITY SECTION */}
-            <div
-              className="rounded-3xl p-8 border shadow-xl h-fit"
-              style={{
-                backgroundColor: theme.cardBg,
-                borderColor: theme.border
-              }}
-            >
-              <h2
-                className="text-xl font-black uppercase tracking-widest mb-8 border-b pb-4"
-                style={{
-                  color: theme.text,
-                  borderColor: theme.border
-                }}
-              >
-                Timeline
+            {/* RECENT ACTIVITY TIMELINE */}
+            <div className="rounded-2xl p-5 border border-border bg-surface shadow-xs h-fit space-y-4">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-text font-mono border-b border-border pb-3">
+                Recent Activity
               </h2>
 
-              <div className="space-y-8">
+              <div className="space-y-4">
                 {recentActivity.length > 0 ? (
                   recentActivity.map((item, idx) => (
                     <ActivityItem
@@ -426,170 +380,120 @@ const AppDashboard = () => {
                       title={item.title}
                       sub={item.sub}
                       status={item.status}
-                      theme={theme}
                     />
                   ))
                 ) : (
-                  <p className="text-sm text-center opacity-50" style={{ color: theme.textSecondary }}>
-                    No recent activity
+                  <p className="text-xs text-center text-text-subtle py-4">
+                    No recent activity records
                   </p>
                 )}
               </div>
 
               <button
                 onClick={() => navigate('/mybookings')}
-                className="w-full mt-10 py-4 text-sm font-black rounded-2xl border transition-colors hover:bg-opacity-80"
-                style={{
-                  backgroundColor: theme.inputBg,
-                  borderColor: theme.border,
-                  color: theme.textSecondary
-                }}
+                className="w-full mt-4 py-2.5 text-xs font-semibold rounded-xl border border-border bg-surface-sunken hover:bg-surface text-text-muted hover:text-text transition-colors"
               >
-                VIEW ALL ACTIVITY
+                View All Activity
               </button>
             </div>
           </div>
         </main>
 
-        {/* FLOAT ACTION - AI Assistant button */}
+        {/* FLOAT ACTION - AI Assistant */}
         <button
           type="button"
           onClick={() => navigate("/aiassistant")}
-          className="
-            fixed bottom-10 right-10 z-50
-            w-16 h-16 rounded-3xl
-            bg-green-500 text-white
-            flex items-center justify-center
-            shadow-2xl shadow-green-500/40
-            hover:scale-110 hover:-translate-y-2 transition-all duration-300
-          "
+          className="fixed bottom-8 right-8 z-50 w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary to-accent text-white flex items-center justify-center shadow-lg shadow-primary/30 hover:scale-110 active:scale-95 transition-all duration-200"
+          title="Open AI Vehicle Assistant"
+          aria-label="AI Assistant"
         >
-          <Sparkles size={28} />
+          <Sparkles size={24} />
         </button>
       </div>
     </>
   );
 };
 
-/* =========================
-   SUB COMPONENTS
-========================= */
-
-const StatCard = ({ title, value, sub, icon, theme }) => (
-  <div
-    className="rounded-3xl p-8 border shadow-xl flex items-start justify-between group hover:border-green-500/50 transition-colors"
-    style={{
-      backgroundColor: theme.cardBg,
-      borderColor: theme.border
-    }}
-  >
+const StatCard = ({ title, value, sub, icon }) => (
+  <div className="rounded-2xl p-5 border border-border bg-surface shadow-xs flex items-start justify-between group hover:border-primary/40 transition-colors">
     <div>
-      <p className="text-xs font-black uppercase tracking-widest mb-2" style={{ color: theme.textSecondary }}>
+      <p className="text-[11px] font-bold uppercase tracking-wider text-text-subtle mb-1">
         {title}
       </p>
-      <h3 className="text-3xl font-black" style={{ color: theme.text }}>
+      <h3 className="text-2xl font-black text-text font-display">
         {value}
       </h3>
-      <p className="text-xs text-green-500 font-bold mt-3 bg-green-500/5 inline-block px-2 py-1 rounded-lg">
+      <p className="text-xs text-primary font-semibold mt-2 bg-primary-soft inline-block px-2 py-0.5 rounded-lg border border-primary/20">
         {sub}
       </p>
     </div>
-    <div
-      className="p-3 rounded-2xl group-hover:bg-green-500/10 transition-colors"
-      style={{ backgroundColor: theme.inputBg }}
-    >
+    <div className="p-2.5 rounded-xl bg-surface-sunken group-hover:bg-primary-soft transition-colors shrink-0">
       {icon}
     </div>
   </div>
 );
 
-const QuickAction = ({ icon, label, onClick, theme, highlight }) => (
+const QuickAction = ({ icon, label, onClick, highlight }) => (
   <button
     onClick={onClick}
-    className={`rounded-3xl p-8 flex flex-col items-center gap-4 border shadow-xl hover:translate-y-[-8px] transition-all group ${highlight ? 'hover:border-orange-500' : 'hover:border-green-500'
-      }`}
-    style={{
-      backgroundColor: theme.cardBg,
-      borderColor: highlight ? 'rgba(249, 115, 22, 0.3)' : theme.border
-    }}
+    className={`rounded-2xl p-4 flex flex-col items-center gap-2.5 border shadow-xs hover:-translate-y-1 transition-all group bg-surface ${
+      highlight ? 'border-warning/40 hover:border-warning' : 'border-border hover:border-primary/40'
+    }`}
   >
     <div
-      className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all shadow-inner ${highlight
-        ? 'group-hover:bg-orange-500 group-hover:text-white'
-        : 'group-hover:bg-green-500 group-hover:text-white'
-        }`}
-      style={{
-        backgroundColor: highlight ? 'rgba(249, 115, 22, 0.1)' : theme.inputBg,
-        color: highlight ? '#f97316' : theme.textSecondary
-      }}
+      className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
+        highlight
+          ? 'bg-warning-soft text-warning group-hover:bg-warning group-hover:text-white'
+          : 'bg-surface-sunken text-text-muted group-hover:bg-primary group-hover:text-white'
+      }`}
     >
-      {React.cloneElement(icon, { size: 28 })}
+      {React.cloneElement(icon, { size: 22 })}
     </div>
-    <span className="text-sm font-black uppercase tracking-widest" style={{ color: theme.text }}>
+    <span className="text-xs font-semibold text-text">
       {label}
     </span>
   </button>
 );
 
-const CarCard = ({ name, price, tag, image, specs, theme }) => {
+const DashboardCarCard = ({ car }) => {
   const navigate = useNavigate();
-
-  const handleBookNow = () => {
-    navigate('/browsecars');
-  };
+  const image = getCarImageUrl(car);
 
   return (
-    <div
-      className="group rounded-3xl overflow-hidden border shadow-xl hover:shadow-2xl hover:border-green-500/50 transition-all duration-500 flex flex-col"
-      style={{
-        backgroundColor: theme.cardBg,
-        borderColor: theme.border
-      }}
-    >
-      <div
-        className="h-56 flex items-center justify-center relative p-6"
-        style={{ backgroundColor: theme.inputBg }}
-      >
+    <div className="group rounded-2xl overflow-hidden border border-border bg-surface shadow-xs hover:border-primary/40 transition-all flex flex-col">
+      <div className="aspect-[16/10] flex items-center justify-center relative p-3 bg-surface-sunken/60 overflow-hidden">
         <img
           src={image}
-          alt={name}
-          className="h-full object-contain group-hover:scale-110 transition-transform duration-700"
+          alt={car.name || `${car.brand} ${car.model}`}
+          className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
         />
-        <span className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1.5 rounded-xl font-black text-[10px] tracking-widest shadow-lg shadow-green-500/20">
-          {tag}
+        <span className="absolute top-2.5 left-2.5 bg-primary-soft border border-primary/20 text-primary px-2 py-0.5 rounded-md font-bold text-[9px] uppercase tracking-wider">
+          {car.category || 'Featured'}
         </span>
       </div>
 
-      <div className="p-8 space-y-4 flex-1 flex flex-col justify-between">
+      <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
         <div>
-          <h3
-            className="text-2xl font-black group-hover:text-green-500 transition-colors"
-            style={{ color: theme.text }}
-          >
-            {name}
+          <h3 className="text-sm font-bold text-text font-display group-hover:text-primary transition-colors line-clamp-1">
+            {car.name || `${car.brand} ${car.model}`}
           </h3>
-          <p className="text-sm font-medium mt-1" style={{ color: theme.textSecondary }}>
-            {specs}
+          <p className="text-[11px] text-text-muted mt-0.5">
+            {car.year || '2023'} • {car.transmission || 'Manual'} • {car.fuelType || 'Petrol'}
           </p>
         </div>
 
-        <div
-          className="flex justify-between items-center pt-6 border-t"
-          style={{ borderColor: theme.border }}
-        >
+        <div className="flex justify-between items-center pt-3 border-t border-border">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: theme.textSecondary }}>
-              Daily Fare
-            </p>
-            <p className="text-2xl font-black text-green-500">
-              {price}
+            <p className="text-[9px] font-bold uppercase tracking-wider text-text-subtle">Daily Fare</p>
+            <p className="text-base font-black text-primary font-mono tabular-nums">
+              ₹{(car.pricePerDay || 2200).toLocaleString('en-IN')}
             </p>
           </div>
           <button
-            onClick={handleBookNow}
-            className="px-6 py-3 rounded-xl text-xs font-black text-white bg-gray-900 hover:bg-green-500 transition-all shadow-lg active:scale-95"
+            onClick={() => navigate(`/car/${car._id}`)}
+            className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary-hover transition-all shadow-xs"
           >
-            BOOK NOW
+            Rent Now
           </button>
         </div>
       </div>
@@ -597,27 +501,21 @@ const CarCard = ({ name, price, tag, image, specs, theme }) => {
   );
 };
 
-const ActivityItem = ({ title, sub, status, theme }) => {
-  const getStatusColor = () => {
+const ActivityItem = ({ title, sub, status }) => {
+  const getBadgeStyle = () => {
     switch (status) {
-      case 'success': return 'bg-green-500';
-      case 'primary': return 'bg-green-500';
-      case 'info': return 'bg-blue-500';
-      case 'warning': return 'bg-orange-500';
-      default: return theme.border;
+      case 'success': return 'bg-success';
+      case 'warning': return 'bg-warning';
+      default: return 'bg-primary';
     }
   };
 
   return (
-    <div className="flex items-start gap-4 relative">
-      <div className={`mt-1.5 w-3 h-3 rounded-full flex-shrink-0 z-10 ${getStatusColor()} shadow-[0_0_10px_rgba(0,0,0,0.1)]`} />
-      <div className="space-y-1">
-        <p className="text-sm font-black leading-none uppercase tracking-wide" style={{ color: theme.text }}>
-          {title}
-        </p>
-        <p className="text-xs font-medium tracking-tight opacity-75" style={{ color: theme.textSecondary }}>
-          {sub}
-        </p>
+    <div className="flex items-start gap-3">
+      <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${getBadgeStyle()}`} />
+      <div className="space-y-0.5 min-w-0">
+        <p className="text-xs font-bold text-text leading-tight">{title}</p>
+        <p className="text-[11px] text-text-muted truncate">{sub}</p>
       </div>
     </div>
   );

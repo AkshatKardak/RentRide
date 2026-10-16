@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 import { Moon, Sun, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 import { loginWithEmail, loginWithGoogle } from '@/services/firebaseAuthService';
 import { toast } from 'react-hot-toast';
-import api from '@/services/api';
+import api from '@/lib/api';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -65,7 +65,6 @@ export default function SignIn() {
 
     try {
       const result = await loginWithGoogle();
-
       if (result.success) {
         toast.success('Successfully logged in with Google!');
         navigate('/dashboard');
@@ -79,90 +78,61 @@ export default function SignIn() {
 
   const handleSubmit = useFirebase ? handleFirebaseSubmit : handleTraditionalSubmit;
 
-  const theme = {
-    bg: isDarkMode ? '#0f172a' : '#FFFFFF',
-    cardBg: isDarkMode ? '#1e293b' : '#FFFFFF',
-    text: isDarkMode ? '#f1f5f9' : '#1F2937',
-    textSecondary: isDarkMode ? '#cbd5e1' : '#6B7280',
-    border: isDarkMode ? '#334155' : '#E5E7EB',
-    inputBg: isDarkMode ? '#1e293b' : '#F8F9FA',
-    primary: isDarkMode ? '#10b981' : '#10b981',
-  };
-
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4 transition-colors duration-300"
-      style={{ backgroundColor: theme.bg }}
-    >
-
-      <div
-        className="max-w-md w-full rounded-2xl shadow-2xl p-8 transition-all duration-300"
-        style={{
-          backgroundColor: theme.cardBg,
-          border: `1px solid ${theme.border}`
-        }}
-      >
+    <div className="min-h-screen flex items-center justify-center px-4 bg-bg transition-colors duration-300">
+      <div className="max-w-md w-full rounded-3xl shadow-xl p-8 border border-border bg-surface transition-all duration-300">
+        
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: theme.text }}>
+          <Link to="/" className="inline-block mb-3">
+            <span className="text-2xl font-black text-primary font-display">RentRide</span>
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-black text-text font-display">
             Welcome Back
           </h1>
-          <p style={{ color: theme.textSecondary }}>
-            Sign in to your RentRide account
+          <p className="text-xs sm:text-sm text-text-muted mt-1">
+            Sign in to access your garage and bookings
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-xl border flex items-center gap-3" style={{
-            backgroundColor: isDarkMode ? 'rgba(239, 68, 68, 0.1)' : '#FEE2E2',
-            borderColor: '#EF4444'
-          }}>
-            <AlertCircle className="w-5 h-5 text-red-500" />
-            <p className="text-sm text-red-500">{error}</p>
+          <div className="mb-6 p-3.5 rounded-xl border border-danger/30 bg-danger-soft flex items-center gap-2.5">
+            <AlertCircle className="w-4 h-4 text-danger shrink-0" />
+            <p className="text-xs text-danger font-medium">{error}</p>
           </div>
         )}
 
         <button
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="w-full mb-6 px-6 py-3 rounded-xl border font-bold flex items-center justify-center gap-3 hover:shadow-md transition-all disabled:opacity-50"
-          style={{
-            backgroundColor: theme.cardBg,
-            borderColor: theme.border,
-            color: theme.text
-          }}
+          className="w-full mb-5 px-5 py-3 rounded-xl border border-border bg-surface-sunken hover:bg-surface font-semibold text-xs text-text flex items-center justify-center gap-2.5 transition-all shadow-xs disabled:opacity-50"
         >
-          <FcGoogle className="w-6 h-6" />
-          {loading ? 'Signing in...' : 'Continue with Google'}
+          <FcGoogle className="w-5 h-5" />
+          <span>{loading ? 'Authenticating...' : 'Continue with Google'}</span>
         </button>
 
-        <div className="flex items-center gap-4 mb-6">
-          <div className="flex-1 h-px" style={{ backgroundColor: theme.border }} />
-          <span className="text-sm" style={{ color: theme.textSecondary }}>OR</span>
-          <div className="flex-1 h-px" style={{ backgroundColor: theme.border }} />
+        <div className="flex items-center gap-3 mb-5">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-[11px] font-bold text-text-subtle uppercase tracking-wider font-mono">OR</span>
+          <div className="flex-1 h-px bg-border" />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: theme.text }}>
+            <label className="block text-xs font-semibold text-text mb-1.5">
               Email Address
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border transition-all duration-300 focus:ring-2 focus:ring-green-500 outline-none"
-              style={{
-                backgroundColor: theme.inputBg,
-                borderColor: theme.border,
-                color: theme.text
-              }}
-              placeholder="Enter your email"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-surface-sunken text-text text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder-text-subtle"
+              placeholder="name@example.com"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: theme.text }}>
+            <label className="block text-xs font-semibold text-text mb-1.5">
               Password
             </label>
             <div className="relative">
@@ -170,22 +140,16 @@ export default function SignIn() {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border transition-all duration-300 focus:ring-2 focus:ring-green-500 outline-none"
-                style={{
-                  backgroundColor: theme.inputBg,
-                  borderColor: theme.border,
-                  color: theme.text
-                }}
-                placeholder="Enter your password"
+                className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-border bg-surface-sunken text-text text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder-text-subtle"
+                placeholder="••••••••"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-                style={{ color: theme.textSecondary }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-subtle hover:text-text"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -193,27 +157,25 @@ export default function SignIn() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: theme.primary }}
+            className="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-white bg-primary hover:bg-primary-hover shadow-md shadow-primary/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 mt-2"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Verifying...' : 'Sign In'}
           </button>
         </form>
 
         <div className="mt-4 text-center">
           <button
             onClick={() => setUseFirebase(!useFirebase)}
-            className="text-xs"
-            style={{ color: theme.textSecondary }}
+            className="text-[11px] text-text-subtle hover:text-primary transition"
           >
-            {useFirebase ? 'Using Firebase Auth' : 'Using Traditional Auth'}
+            {useFirebase ? 'Mode: Cloud Identity (Firebase)' : 'Mode: Local MongoDB Backend'}
           </button>
         </div>
 
-        <p className="text-center mt-6" style={{ color: theme.textSecondary }}>
+        <p className="text-center text-xs text-text-muted mt-6">
           Don't have an account?{' '}
-          <Link to="/signup" className="font-semibold hover:underline" style={{ color: theme.primary }}>
-            Sign Up
+          <Link to="/signup" className="font-bold text-primary hover:underline">
+            Create an Account
           </Link>
         </p>
       </div>

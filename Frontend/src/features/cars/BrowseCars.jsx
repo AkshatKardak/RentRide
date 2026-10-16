@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/useTheme';
 import { 
   Search, 
   Loader2, 
@@ -17,11 +17,12 @@ import {
   CheckCircle2,
   Car as CarIcon,
   RotateCcw,
-  ChevronDown
+  ChevronDown,
+  ArrowRight
 } from 'lucide-react';
 import { carService } from '@/services/carService';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
-import { getCarImageUrl, heroCarImg } from '@/utils/carImageMap';
+import { getCarImageUrl, heroCarImg } from '@/features/cars/carImageMap';
 
 const QUICK_CATEGORIES = ['All', 'Luxury', 'SUV', 'Sedan', 'Sports', 'Electric', 'Hatchback'];
 
@@ -52,16 +53,6 @@ const BrowseCars = () => {
   const [categories, setCategories] = useState(['All']);
   const [transmissions, setTransmissions] = useState(['All']);
   const [fuelTypes, setFuelTypes] = useState(['All']);
-
-  const theme = {
-    bg: isDarkMode ? '#0b1324' : '#f8fafc',
-    cardBg: isDarkMode ? '#111e38' : '#ffffff',
-    cardBorder: isDarkMode ? '#1e293b' : '#e2e8f0',
-    text: isDarkMode ? '#f8fafc' : '#0f172a',
-    textSecondary: isDarkMode ? '#94a3b8' : '#64748b',
-    border: isDarkMode ? '#1e293b' : '#e2e8f0',
-    inputBg: isDarkMode ? '#0a1020' : '#f1f5f9',
-  };
 
   const priceRanges = [
     { label: 'All', value: 'All' },
@@ -193,33 +184,31 @@ const BrowseCars = () => {
   return (
     <>
       <DashboardNavbar />
-      <div 
-        className="min-h-screen pt-20 transition-colors duration-300"
-        style={{ backgroundColor: theme.bg }}
-      >
+      <div className="min-h-screen bg-bg transition-colors duration-300">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          
           {/* Header Section */}
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-3">
-                <Sparkles size={14} className="text-emerald-400 animate-pulse" /> Verified Indian Rental Fleet
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-soft border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-3">
+                <Sparkles size={14} className="text-primary animate-pulse" /> Verified Indian Rental Fleet
               </div>
-              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight" style={{ color: theme.text }}>
-                Browse <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-500">Cars</span>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tight text-text font-display">
+                Browse <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-hover to-accent">Fleet</span>
               </h1>
-              <p className="text-sm md:text-base mt-2" style={{ color: theme.textSecondary }}>
-                Choose from our verified fleet of <span className="font-bold text-emerald-400">{totalCount || displayCars.length}</span> vehicles with transparent pricing and model-accurate photography.
+              <p className="text-xs sm:text-sm text-text-muted mt-2">
+                Choose from our verified fleet of <span className="font-bold text-primary font-mono">{totalCount || displayCars.length}</span> vehicles with transparent pricing and model-accurate photography.
               </p>
             </div>
 
             {/* Quick Sort Dropdown */}
-            <div className="flex items-center gap-2 self-start md:self-auto bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800">
-              <span className="text-xs font-semibold px-2 text-slate-400">Sort:</span>
+            <div className="flex items-center gap-2 self-start md:self-auto bg-surface p-1.5 rounded-2xl border border-border shadow-xs">
+              <span className="text-xs font-semibold px-2 text-text-muted">Sort:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 aria-label="Sort cars by"
-                className="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-bold px-3 py-2 rounded-xl focus:ring-2 focus:ring-emerald-500/30 cursor-pointer outline-none"
+                className="bg-surface-sunken border border-border text-text text-xs font-semibold px-3 py-1.5 rounded-xl focus:ring-2 focus:ring-primary/20 cursor-pointer outline-none"
               >
                 <option value="featured">Featured First</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -239,10 +228,10 @@ const BrowseCars = () => {
                   <button
                     key={cat}
                     onClick={() => setCategory(cat)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-200 whitespace-nowrap border ${
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap border ${
                       active
-                        ? 'bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 border-emerald-400 shadow-md shadow-emerald-500/20 scale-105'
-                        : 'bg-slate-900/80 text-slate-300 border-slate-800 hover:border-slate-700 hover:bg-slate-850'
+                        ? 'bg-primary text-white border-primary shadow-sm shadow-primary/25 scale-[1.02]'
+                        : 'bg-surface text-text-muted border-border hover:border-primary/30 hover:text-text'
                     }`}
                   >
                     {cat}
@@ -252,8 +241,8 @@ const BrowseCars = () => {
             </div>
 
             {/* Quick Transmission Mode Toggle */}
-            <div className="flex items-center gap-1.5 self-start sm:self-auto bg-slate-900/80 p-1 rounded-xl border border-slate-800 text-xs font-bold">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider px-2">Mode:</span>
+            <div className="flex items-center gap-1.5 self-start sm:self-auto bg-surface p-1 rounded-xl border border-border text-xs font-semibold shadow-xs">
+              <span className="text-[10px] text-text-subtle uppercase tracking-wider px-2">Mode:</span>
               {['All', 'Automatic', 'Manual'].map(t => {
                 const active = transmission.toLowerCase() === t.toLowerCase();
                 return (
@@ -261,10 +250,10 @@ const BrowseCars = () => {
                     key={t}
                     type="button"
                     onClick={() => setTransmission(t)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
                       active
-                        ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-primary text-white shadow-xs'
+                        : 'text-text-muted hover:text-text'
                     }`}
                   >
                     {t}
@@ -276,35 +265,25 @@ const BrowseCars = () => {
 
           {/* Search & Filter Bar */}
           <div className="mb-8">
-            <div 
-              className="flex flex-col md:flex-row gap-3 p-3 rounded-2xl shadow-lg border backdrop-blur-md"
-              style={{
-                backgroundColor: theme.cardBg,
-                borderColor: theme.border
-              }}
-            >
+            <div className="flex flex-col md:flex-row gap-3 p-3 rounded-2xl shadow-sm border border-border bg-surface">
               {/* Search Input */}
               <div className="flex-1 relative">
                 <Search 
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" 
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-subtle" 
                 />
                 <input
                   type="text"
-                  placeholder="Search by brand (Toyota, Tata, Porsche...), model, or city..."
+                  placeholder="Search by brand (Toyota, Tata, Hyundai...), model, or city..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border-none focus:ring-2 focus:ring-emerald-500/30 transition-colors text-sm font-medium outline-none"
-                  style={{
-                    backgroundColor: theme.inputBg,
-                    color: theme.text
-                  }}
+                  className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-sunken border border-border/80 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors text-xs font-medium outline-none text-text placeholder-text-subtle"
                 />
                 {search && (
                   <button 
                     onClick={() => setSearch('')}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-subtle hover:text-text"
                   >
-                    <X size={16} />
+                    <X size={14} />
                   </button>
                 )}
               </div>
@@ -312,12 +291,12 @@ const BrowseCars = () => {
               {/* Filter Toggle Button */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-slate-950 font-bold text-sm rounded-xl hover:from-emerald-400 hover:to-green-500 transition-all shadow-md shadow-emerald-500/20 flex items-center justify-center gap-2 relative"
+                className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white font-semibold text-xs rounded-xl transition-all shadow-sm shadow-primary/20 flex items-center justify-center gap-2"
               >
-                <SlidersHorizontal size={18} />
-                Filters
+                <SlidersHorizontal size={14} />
+                <span>Filters</span>
                 {activeFiltersCount > 0 && (
-                  <span className="bg-slate-950 text-emerald-400 text-xs font-black rounded-full px-1.5 py-0.5 ml-1 border border-emerald-400/40">
+                  <span className="bg-white text-primary text-[10px] font-black rounded-full px-1.5 py-0.2">
                     {activeFiltersCount}
                   </span>
                 )}
@@ -326,9 +305,9 @@ const BrowseCars = () => {
               {activeFiltersCount > 0 && (
                 <button
                   onClick={handleClearAll}
-                  className="px-4 py-3 border border-rose-500/40 text-rose-400 hover:bg-rose-500/10 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5"
+                  className="px-4 py-2.5 border border-danger/30 text-danger hover:bg-danger-soft text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1.5"
                 >
-                  <RotateCcw size={14} />
+                  <RotateCcw size={12} />
                   Reset
                 </button>
               )}
@@ -341,27 +320,18 @@ const BrowseCars = () => {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="p-6 rounded-2xl shadow-xl border mt-4 overflow-hidden"
-                  style={{
-                    backgroundColor: theme.cardBg,
-                    borderColor: theme.border
-                  }}
+                  className="p-5 rounded-2xl shadow-md border border-border bg-surface mt-3 overflow-hidden"
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Brand Filter */}
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-400">
+                      <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-text-subtle">
                         Brand
                       </label>
                       <select
                         value={brand}
                         onChange={(e) => setBrand(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border focus:ring-2 focus:ring-emerald-500/20 cursor-pointer text-xs font-medium"
-                        style={{
-                          backgroundColor: theme.inputBg,
-                          borderColor: theme.border,
-                          color: theme.text
-                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer text-xs font-medium outline-none"
                       >
                         {brands.map(b => <option key={b} value={b}>{b}</option>)}
                       </select>
@@ -369,18 +339,13 @@ const BrowseCars = () => {
 
                     {/* Transmission Filter */}
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-400">
+                      <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-text-subtle">
                         Transmission
                       </label>
                       <select
                         value={transmission}
                         onChange={(e) => setTransmission(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border focus:ring-2 focus:ring-emerald-500/20 cursor-pointer text-xs font-medium capitalize"
-                        style={{
-                          backgroundColor: theme.inputBg,
-                          borderColor: theme.border,
-                          color: theme.text
-                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer text-xs font-medium capitalize outline-none"
                       >
                         {transmissions.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
@@ -388,18 +353,13 @@ const BrowseCars = () => {
 
                     {/* Fuel Type Filter */}
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-400">
+                      <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-text-subtle">
                         Fuel Type
                       </label>
                       <select
                         value={fuelType}
                         onChange={(e) => setFuelType(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border focus:ring-2 focus:ring-emerald-500/20 cursor-pointer text-xs font-medium capitalize"
-                        style={{
-                          backgroundColor: theme.inputBg,
-                          borderColor: theme.border,
-                          color: theme.text
-                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer text-xs font-medium capitalize outline-none"
                       >
                         {fuelTypes.map(f => <option key={f} value={f}>{f}</option>)}
                       </select>
@@ -407,97 +367,47 @@ const BrowseCars = () => {
 
                     {/* Price Range Filter */}
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-400">
-                        Budget Per Day
+                      <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-text-subtle">
+                        Price Range
                       </label>
                       <select
                         value={priceRange}
                         onChange={(e) => setPriceRange(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border focus:ring-2 focus:ring-emerald-500/20 cursor-pointer text-xs font-medium"
-                        style={{
-                          backgroundColor: theme.inputBg,
-                          borderColor: theme.border,
-                          color: theme.text
-                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer text-xs font-medium outline-none"
                       >
                         {priceRanges.map(pr => <option key={pr.value} value={pr.value}>{pr.label}</option>)}
                       </select>
                     </div>
                   </div>
-
-                  <div className="flex justify-end gap-3 mt-5 pt-4 border-t border-slate-800">
-                    <button
-                      onClick={handleClearAll}
-                      className="px-5 py-2 text-xs font-bold text-slate-400 hover:text-slate-200 transition"
-                    >
-                      Clear Filters
-                    </button>
-                    <button
-                      onClick={() => setShowFilters(false)}
-                      className="px-6 py-2 bg-emerald-500 text-slate-950 text-xs font-bold rounded-xl hover:bg-emerald-400 transition"
-                    >
-                      Done
-                    </button>
-                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Active Filter Tags */}
-            {activeFiltersCount > 0 && (
-              <div className="flex flex-wrap items-center gap-2 mt-4">
-                <span className="text-xs text-slate-400 font-semibold mr-1">Active:</span>
-                {brand !== 'All' && (
-                  <FilterTag label={`Brand: ${brand}`} onRemove={() => setBrand('All')} />
-                )}
-                {category !== 'All' && (
-                  <FilterTag label={`Category: ${category}`} onRemove={() => setCategory('All')} />
-                )}
-                {transmission !== 'All' && (
-                  <FilterTag label={`Transmission: ${transmission}`} onRemove={() => setTransmission('All')} />
-                )}
-                {fuelType !== 'All' && (
-                  <FilterTag label={`Fuel: ${fuelType}`} onRemove={() => setFuelType('All')} />
-                )}
-                {priceRange !== 'All' && (
-                  <FilterTag 
-                    label={`Price: ${priceRanges.find(pr => pr.value === priceRange)?.label}`} 
-                    onRemove={() => setPriceRange('All')} 
-                  />
-                )}
-              </div>
-            )}
           </div>
 
-          {/* Cars Grid */}
+          {/* Cars List / Loading / Empty States */}
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-24">
-              <Loader2 className="w-12 h-12 text-emerald-400 animate-spin mb-4" />
-              <p className="text-sm text-slate-400 font-medium">Loading fleet catalog...</p>
-            </div>
-          ) : error ? (
-            <div className="text-center py-20 bg-slate-900/50 rounded-3xl border border-slate-800 p-8">
-              <AlertCircle size={40} className="mx-auto text-rose-400 mb-3" />
-              <p className="text-lg font-bold mb-4 text-rose-400">{error}</p>
-              <button
-                onClick={() => loadCars(limit, false)}
-                className="px-6 py-2.5 bg-emerald-500 text-slate-950 font-bold text-sm rounded-xl hover:bg-emerald-400 transition"
-              >
-                Retry
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="h-96 rounded-2xl bg-surface border border-border p-5 flex flex-col justify-between animate-pulse">
+                  <div className="h-44 bg-surface-sunken rounded-xl" />
+                  <div className="space-y-2 mt-4">
+                    <div className="h-4 bg-surface-sunken rounded w-3/4" />
+                    <div className="h-3 bg-surface-sunken rounded w-1/2" />
+                  </div>
+                  <div className="h-10 bg-surface-sunken rounded-xl mt-4" />
+                </div>
+              ))}
             </div>
           ) : displayCars.length === 0 ? (
-            <div className="text-center py-24 bg-slate-900/40 rounded-3xl border border-slate-800 p-8">
-              <CarIcon size={48} className="mx-auto text-slate-500 mb-4 opacity-60" />
-              <h3 className="text-xl font-bold mb-2" style={{ color: theme.text }}>
-                No vehicles match your criteria
-              </h3>
-              <p className="text-sm mb-6" style={{ color: theme.textSecondary }}>
-                Try clearing filters or search by a different brand or model.
+            <div className="py-20 text-center bg-surface border border-border rounded-3xl p-8 max-w-xl mx-auto shadow-sm">
+              <CarIcon className="w-12 h-12 mx-auto text-text-subtle mb-3" />
+              <h3 className="text-base font-bold text-text font-display">No matching vehicles found</h3>
+              <p className="text-xs text-text-muted mt-1 max-w-md mx-auto">
+                Try widening your price range, clearing brand/category filters, or searching for other Indian hub locations.
               </p>
               <button
                 onClick={handleClearAll}
-                className="px-6 py-2.5 bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 hover:from-emerald-300 hover:to-green-400 transition"
+                className="mt-5 px-5 py-2.5 bg-primary hover:bg-primary-hover text-white font-semibold text-xs rounded-xl shadow-sm transition"
               >
                 Clear All Filters
               </button>
@@ -510,7 +420,6 @@ const BrowseCars = () => {
                     key={car._id || index}
                     car={car}
                     index={index}
-                    theme={theme}
                     onBook={() => handleBookCar(car)}
                     onDetails={() => handleViewDetails(car._id)}
                   />
@@ -523,17 +432,17 @@ const BrowseCars = () => {
                   <button
                     onClick={handleLoadMore}
                     disabled={loadingMore}
-                    className="px-8 py-3.5 bg-slate-900 hover:bg-slate-850 border border-slate-700 hover:border-emerald-500/50 text-slate-200 hover:text-white font-extrabold text-sm rounded-2xl shadow-xl transition-all duration-300 flex items-center gap-3 hover:shadow-emerald-500/10 group disabled:opacity-50"
+                    className="px-8 py-3 bg-surface hover:bg-surface-sunken border border-border hover:border-primary text-text font-bold text-xs rounded-xl shadow-sm transition-all duration-200 flex items-center gap-3 disabled:opacity-50"
                   >
                     {loadingMore ? (
                       <>
-                        <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
+                        <Loader2 className="w-4 h-4 text-primary animate-spin" />
                         <span>Loading more vehicles...</span>
                       </>
                     ) : (
                       <>
                         <span>Load More Vehicles</span>
-                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-semibold">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary-soft text-primary font-semibold">
                           Showing {displayCars.length} of {totalCount}
                         </span>
                       </>
@@ -549,64 +458,38 @@ const BrowseCars = () => {
   );
 };
 
-// Filter Tag Component
-const FilterTag = ({ label, onRemove }) => (
-  <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-semibold">
-    <span>{label}</span>
-    <button
-      onClick={onRemove}
-      className="hover:bg-emerald-500/20 rounded-full p-0.5 transition"
-    >
-      <X size={12} />
-    </button>
-  </div>
-);
-
-const CarCard = ({ car, index, theme, onBook, onDetails }) => {
-  // Resolve image through multi-tier accurate resolver
+const CarCard = ({ car, index, onBook, onDetails }) => {
   const imageSrc = getCarImageUrl(car);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: Math.min(index * 0.03, 0.3), duration: 0.35 }}
+      transition={{ delay: Math.min(index * 0.02, 0.25), duration: 0.3 }}
       className="group h-full flex flex-col"
-      whileHover={{ y: -6 }}
+      whileHover={{ y: -5 }}
     >
-      <div 
-        className="relative h-full rounded-2xl flex flex-col justify-between p-5 border transition-all duration-300 hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 overflow-hidden"
-        style={{
-          backgroundColor: theme.cardBg,
-          borderColor: theme.cardBorder
-        }}
-      >
-        {/* Neon Accent Corner Brackets on Hover */}
-        <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-tl-2xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-br-2xl pointer-events-none" />
-
+      <div className="relative h-full rounded-2xl flex flex-col justify-between p-5 bg-surface border border-border hover:border-primary/40 shadow-xs hover:shadow-md transition-all duration-300 overflow-hidden">
+        
         <div>
-          {/* Image Showcase Stage */}
-          <div className="relative w-full h-48 rounded-xl bg-gradient-to-b from-slate-800/40 via-slate-900/30 to-slate-950/70 border border-slate-800/80 p-3 flex items-center justify-center overflow-hidden mb-4 group-hover:border-emerald-500/30 transition-all">
-            {/* Ambient Radial Hover Glow */}
-            <div className="absolute inset-0 bg-radial from-emerald-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
+          {/* Image Showcase Stage with fixed 16:10 aspect ratio and sunken backdrop */}
+          <div className="relative aspect-[16/10] w-full rounded-xl bg-surface-sunken/60 border border-border/50 p-3 flex items-center justify-center overflow-hidden mb-3.5">
             {/* Category Badge */}
-            <div className="absolute top-3 left-3 z-20">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-slate-950/85 border border-slate-700/80 text-emerald-400 backdrop-blur-md shadow-sm">
+            <div className="absolute top-2.5 left-2.5 z-20">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-surface/90 border border-border text-text-muted backdrop-blur-xs shadow-xs">
                 {car.category || 'Standard'}
               </span>
             </div>
 
             {/* Trust or Availability Badge */}
-            <div className="absolute top-3 right-3 z-20">
+            <div className="absolute top-2.5 right-2.5 z-20">
               {car.available ? (
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 backdrop-blur-md flex items-center gap-1 shadow-sm">
-                  <ShieldCheck size={12} className="text-emerald-400" />
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-primary-soft text-primary border border-primary/20 backdrop-blur-xs flex items-center gap-1 shadow-xs">
+                  <ShieldCheck size={12} className="text-primary" />
                   {car.trustScore ? `${car.trustScore}% Trust` : 'Verified'}
                 </span>
               ) : (
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-500/15 border border-rose-500/30 text-rose-400 backdrop-blur-md flex items-center gap-1">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-danger-soft text-danger border border-danger/20 backdrop-blur-xs flex items-center gap-1">
                   <AlertCircle size={12} /> Booked
                 </span>
               )}
@@ -620,75 +503,75 @@ const CarCard = ({ car, index, theme, onBook, onDetails }) => {
                 e.currentTarget.onerror = null;
                 e.currentTarget.src = heroCarImg;
               }}
-              className="w-full h-full object-contain filter drop-shadow-[0_10px_16px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:scale-105 relative z-10"
+              className="max-h-full max-w-full object-contain filter drop-shadow-sm transition-transform duration-300 group-hover:scale-105 relative z-10"
             />
           </div>
 
           {/* Vehicle Identity */}
-          <div className="space-y-1.5 mb-3">
+          <div className="space-y-1 mb-3">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-extrabold uppercase tracking-widest text-emerald-400">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-accent font-mono">
                 {car.brand}
               </span>
               {car.city && (
-                <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <MapPin size={11} className="text-emerald-400/80" /> {car.city}
+                <span className="text-[11px] text-text-subtle flex items-center gap-1">
+                  <MapPin size={11} className="text-primary" /> {car.city}
                 </span>
               )}
             </div>
 
-            <h3 className="font-extrabold text-lg text-slate-100 group-hover:text-emerald-300 transition-colors line-clamp-1">
+            <h3 className="font-bold text-base text-text font-display group-hover:text-primary transition-colors line-clamp-1">
               {car.name || `${car.brand} ${car.model}`}
             </h3>
 
-            <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+            <p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
               {car.description || `Experience superior driving dynamics and verified safety with this ${car.brand} ${car.model}.`}
             </p>
           </div>
 
           {/* Specs Feature Strip */}
-          <div className="grid grid-cols-3 gap-2 py-2.5 mb-2.5 border-y border-slate-800/80">
-            <div className="flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-800/40 text-[11px] text-slate-300 font-medium">
-              <Users size={13} className="text-emerald-400" />
+          <div className="grid grid-cols-3 gap-2 py-2 mb-2.5 border-y border-border">
+            <div className="flex items-center justify-center gap-1.5 py-1 rounded-lg bg-surface-sunken text-[11px] text-text-muted font-medium">
+              <Users size={12} className="text-primary" />
               <span>{car.seats || 5} Seats</span>
             </div>
-            <div className="flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-800/40 text-[11px] text-slate-300 font-medium capitalize">
-              <Fuel size={13} className="text-emerald-400" />
+            <div className="flex items-center justify-center gap-1.5 py-1 rounded-lg bg-surface-sunken text-[11px] text-text-muted font-medium capitalize">
+              <Fuel size={12} className="text-primary" />
               <span className="truncate">{car.fuelType || 'Petrol'}</span>
             </div>
-            <div className="flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-800/40 text-[11px] text-slate-300 font-medium capitalize">
-              <Gauge size={13} className="text-emerald-400" />
+            <div className="flex items-center justify-center gap-1.5 py-1 rounded-lg bg-surface-sunken text-[11px] text-text-muted font-medium capitalize">
+              <Gauge size={12} className="text-primary" />
               <span className="truncate">{car.transmission || 'Manual'}</span>
             </div>
           </div>
 
           {/* Sibling Variant Mode Indicator */}
           {car.availableTransmissions?.length > 1 && (
-            <div className="mb-2.5 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-[10px]">
-              <span className="text-slate-400 font-semibold">Fleet Options:</span>
-              <span className="text-emerald-400 font-bold uppercase tracking-wider">
-                {car.availableTransmissions.join(' • ')}
+            <div className="mb-2 px-2.5 py-1 rounded-lg bg-accent-soft border border-accent/20 flex items-center justify-between text-[10px]">
+              <span className="text-text-muted font-semibold">Also available in:</span>
+              <span className="text-accent font-bold uppercase tracking-wider">
+                {car.availableTransmissions.filter(t => t.toLowerCase() !== car.transmission?.toLowerCase()).join(' • ')}
               </span>
             </div>
           )}
         </div>
 
         {/* Pricing & Call-to-Action */}
-        <div className="flex items-center justify-between pt-2 mt-2 gap-2 border-t border-slate-800/40">
+        <div className="flex items-center justify-between pt-3 mt-1 gap-2 border-t border-border">
           <div>
-            <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Daily Rate</span>
+            <span className="text-[10px] text-text-subtle uppercase tracking-wider block font-semibold">Daily Rate</span>
             <div className="flex items-baseline gap-0.5">
-              <span className="text-xl font-black text-emerald-400">
-                ₹{car.pricePerDay?.toLocaleString() || 0}
+              <span className="text-lg font-black text-primary font-mono tabular-nums">
+                ₹{car.pricePerDay?.toLocaleString('en-IN') || 0}
               </span>
-              <span className="text-xs text-slate-400 font-normal">/day</span>
+              <span className="text-[10px] text-text-subtle font-normal">/day</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={onDetails}
-              className="px-3 py-2 text-xs font-bold text-slate-300 hover:text-white border border-slate-700 hover:border-emerald-500/60 rounded-xl transition-all duration-200 bg-slate-800/60 hover:bg-slate-850"
+              className="px-3 py-1.5 text-xs font-semibold text-text-muted hover:text-text border border-border hover:border-border-strong rounded-xl transition-all duration-200 bg-surface-raised"
             >
               Details
             </button>
@@ -696,10 +579,10 @@ const CarCard = ({ car, index, theme, onBook, onDetails }) => {
             <button
               onClick={car.available ? onBook : null}
               disabled={!car.available}
-              className={`px-4 py-2 text-xs font-extrabold rounded-xl transition-all duration-200 shadow-md ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all duration-200 shadow-xs ${
                 car.available
-                  ? 'bg-gradient-to-r from-emerald-400 to-green-500 text-slate-950 hover:from-emerald-300 hover:to-green-400 shadow-emerald-500/20 hover:shadow-emerald-500/40'
-                  : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
+                  ? 'bg-primary hover:bg-primary-hover text-white shadow-primary/20'
+                  : 'bg-surface-sunken text-text-subtle border border-border cursor-not-allowed'
               }`}
             >
               {car.available ? 'Rent Now' : 'Booked'}
