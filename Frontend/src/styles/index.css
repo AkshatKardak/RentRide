@@ -1,90 +1,210 @@
 @import "tailwindcss";
+@import "./tokens.css";
 
 @theme {
-  /* ===== LIGHT MODE ===== */
-  --color-primary: #10b981;
-  --color-primary-hover: #059669;
-  --color-background: #FFFFFF;
-  --color-background-secondary: #F8F9FA;
-  --color-text-primary: #1F2937;
-  --color-text-secondary: #6B7280;
-  --color-border-light: #E5E7EB;
-  
-  /* ===== DARK MODE ===== */
-  --color-dark-bg: #0f172a;
-  --color-dark-bg-secondary: #1e293b;
-  --color-dark-bg-card: #1e293b;
-  --color-dark-text: #f1f5f9;
-  --color-dark-text-secondary: #cbd5e1;
-  --color-dark-border: #334155;
-  --color-dark-primary: #10b981;
-  --color-dark-primary-hover: #059669;
-  
-  --font-display: 'Inter', sans-serif;
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  /* Semantic surface & background */
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-overlay: var(--overlay);
+
+  /* Borders */
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  /* Text */
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+  --color-text-inverse: var(--text-inverse);
+
+  /* Brand / Primary */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+
+  /* Accent */
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+
+  /* Feedback / Semantic */
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  /* Backward-compatible aliases for existing components */
+  --color-background: var(--bg);
+  --color-background-secondary: var(--bg-subtle);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--text-muted);
+  --color-border-light: var(--border);
+  --color-dark-bg: var(--bg);
+  --color-dark-bg-secondary: var(--bg-subtle);
+  --color-dark-bg-card: var(--surface);
+  --color-dark-text: var(--text);
+  --color-dark-text-secondary: var(--text-muted);
+  --color-dark-border: var(--border);
+  --color-dark-primary: var(--primary);
+  --color-dark-primary-hover: var(--primary-hover);
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   * {
-    border-color: var(--color-border-light);
-  }
-
-  :root.dark * {
-    border-color: var(--color-dark-border);
+    border-color: var(--border);
   }
 
   body {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
+    background-color: var(--bg);
+    color: var(--text);
     overflow-x: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  /* Light Mode */
-  body {
-    background-color: var(--color-background);
-    color: var(--color-text-primary);
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    font-weight: 600;
   }
 
-  /* Dark Mode */
-  :root.dark body {
-    background-color: var(--color-dark-bg);
-    color: var(--color-dark-text);
+  code, kbd, samp, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-subtle);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-subtle);
   }
 }
 
 @layer utilities {
   .glass-panel {
-    background-color: rgba(255, 255, 255, 0.8);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    background-color: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
   }
 
-  :root.dark .glass-panel {
-    background-color: rgba(30, 41, 59, 0.8);
-    border: 1px solid rgba(51, 65, 85, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  html.dark .glass-panel {
+    background-color: rgba(28, 27, 24, 0.75);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
   }
 
   .input-glass {
-    background-color: var(--color-background-secondary);
-    border: 1px solid var(--color-border-light);
-    border-radius: 0.75rem;
-    padding: 0.5rem 1rem;
+    background-color: var(--surface-sunken);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 0.625rem 1rem;
     font-size: 0.875rem;
-    color: var(--color-text-primary);
+    color: var(--text);
     outline: none;
-    transition: all 0.3s;
+    transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
   }
 
-  :root.dark .input-glass {
-    background-color: var(--color-dark-bg-secondary);
-    border-color: var(--color-dark-border);
-    color: var(--color-dark-text);
+  .input-glass:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--ring);
+  }
+
+  .btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-fg);
+    font-weight: 600;
+    border-radius: var(--r-md);
+    padding: 0.625rem 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all var(--motion-fast);
+    box-shadow: 0 2px 8px rgba(163, 79, 50, 0.25);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(163, 79, 50, 0.35);
+  }
+
+  .btn-primary:active {
+    background-color: var(--primary-active);
+    transform: translateY(0);
+  }
+
+  .btn-secondary {
+    background-color: var(--surface-raised);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-weight: 500;
+    border-radius: var(--r-md);
+    padding: 0.625rem 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all var(--motion-fast);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--surface-sunken);
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+  }
+
+  .badge-terracotta {
+    background-color: var(--primary-soft);
+    color: var(--primary);
+    border: 1px solid rgba(163, 79, 50, 0.2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    letter-spacing: 0.02em;
+  }
+
+  .badge-copper {
+    background-color: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid rgba(184, 121, 74, 0.2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
   }
 
   .animate-spin-slow {
