@@ -1,7 +1,17 @@
 import axios from 'axios';
 
-// Use environment variable with proper fallback
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://rentridebackend-seven.vercel.app/api';
+const resolveApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  // If running in local browser, default to running local backend on port 5000
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    if (!envUrl || envUrl.includes('onrender.com')) {
+      return 'http://localhost:5000/api';
+    }
+  }
+  return envUrl || 'https://rentridebackend-seven.vercel.app/api';
+};
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,

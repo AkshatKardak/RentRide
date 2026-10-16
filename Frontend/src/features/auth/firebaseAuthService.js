@@ -9,7 +9,7 @@ import {
 import { auth } from '@/config/firebase';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Google Sign-In with POPUP - OPTIMIZED
 export const loginWithGoogle = async () => {
@@ -190,9 +190,12 @@ export const getCurrentUser = () => {
   });
 };
 
+export const registerWithEmail = signupWithEmail;
+
 const firebaseAuthService = {
   loginWithGoogle,
   loginWithEmail,
+  signupWithEmail,
   registerWithEmail,
   signOut,
   getCurrentUser

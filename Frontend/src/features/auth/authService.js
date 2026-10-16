@@ -40,13 +40,21 @@ export const authService = {
 
   // Get user from localStorage
   getUser: () => {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    try {
+      const user = localStorage.getItem('user');
+      if (user && user !== 'undefined' && user !== 'null') {
+        return JSON.parse(user);
+      }
+      return null;
+    } catch {
+      return null;
+    }
   },
 
   // Check if user is authenticated
   isAuthenticated: () => {
-    return !!localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    return !!(token && token !== 'undefined' && token !== 'null');
   },
 };
 

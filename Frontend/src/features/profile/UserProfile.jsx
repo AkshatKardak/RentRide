@@ -60,8 +60,11 @@ const UserProfile = () => {
       });
 
       if (response.success) {
-        toast.success('Profile details updated successfully');
-        const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+        let currentUser = {};
+        try {
+          const raw = localStorage.getItem('user');
+          if (raw && raw !== 'undefined' && raw !== 'null') currentUser = JSON.parse(raw);
+        } catch {}
         localStorage.setItem('user', JSON.stringify({ ...currentUser, ...response.data }));
       }
     } catch (error) {

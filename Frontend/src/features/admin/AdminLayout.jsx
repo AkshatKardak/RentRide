@@ -26,9 +26,15 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
 
-  const adminUser = JSON.parse(
-    localStorage.getItem('adminUser') || '{"name":"Admin User","email":"admin@rentride.com"}'
-  );
+  const rawAdminUser = localStorage.getItem('adminUser');
+  let adminUser = { name: "Admin User", email: "admin@rentride.com" };
+  if (rawAdminUser && rawAdminUser !== 'undefined' && rawAdminUser !== 'null') {
+    try {
+      adminUser = JSON.parse(rawAdminUser);
+    } catch (e) {
+      // keep fallback
+    }
+  }
 
   const navItems = [
     { label: 'Overview', path: '/admin/dashboard', icon: LayoutDashboard },

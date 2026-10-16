@@ -40,10 +40,14 @@ import Analytics from "@/features/admin/Analytics";
 
 export default function App() {
   const location = useLocation();
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+  const checkToken = () => {
+    const t = localStorage.getItem('token');
+    return !!(t && t !== 'undefined' && t !== 'null');
+  };
+  const [isLoggedIn, setIsLoggedIn] = useState(checkToken);
 
   useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem('token'));
+    setIsLoggedIn(checkToken());
   }, [location.pathname]);
 
   const isAdminRoute = location.pathname.startsWith('/admin');
@@ -51,7 +55,7 @@ export default function App() {
   const isLandingPage = landingRoutes.includes(location.pathname);
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors">
+    <div className="min-h-screen bg-bg text-text transition-colors duration-200">
       <Toaster
         position="top-right"
         reverseOrder={false}

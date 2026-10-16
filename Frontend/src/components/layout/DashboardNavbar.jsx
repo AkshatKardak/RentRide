@@ -55,7 +55,13 @@ const DashboardNavbar = () => {
 
   useEffect(() => {
     const raw = localStorage.getItem("user");
-    if (raw) setUser(JSON.parse(raw));
+    if (raw && raw !== 'undefined' && raw !== 'null') {
+      try {
+        setUser(JSON.parse(raw));
+      } catch (err) {
+        console.warn('Failed to parse user in navbar:', err);
+      }
+    }
   }, []);
 
   // Close dropdowns when clicking outside

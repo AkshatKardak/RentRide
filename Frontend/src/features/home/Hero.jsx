@@ -4,9 +4,10 @@ import { Search, Calendar, MapPin, Zap, Shield, Clock, ArrowRight } from 'lucide
 import { motion } from 'framer-motion'
 import herocar from '@/assets/herocar1.png';
 import { Reveal, HoverLift } from '@/components/fx';
+import { getStoredItem } from '@/utils/safeStorage';
 
 export default function Hero() {
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const user = getStoredItem('user', null);
 
   return (
     <section id="hero" className="relative overflow-hidden bg-bg">
