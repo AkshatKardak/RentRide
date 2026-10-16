@@ -48,3 +48,5 @@ export const aiService = {
     return response.data;
   }
 };
+
+export default aiService;

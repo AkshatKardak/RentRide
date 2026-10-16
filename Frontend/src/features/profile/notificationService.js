@@ -63,3 +63,5 @@ export const notificationService = {
     deleteNotification,
     clearAllNotifications
 };
+
+export default notificationService;

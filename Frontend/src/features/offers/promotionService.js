@@ -46,3 +46,5 @@ export const promotionService = {
     }
   }
 };
+
+export default promotionService;

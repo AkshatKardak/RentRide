@@ -49,3 +49,5 @@ export const authService = {
     return !!localStorage.getItem('token');
   },
 };
+
+export default authService;

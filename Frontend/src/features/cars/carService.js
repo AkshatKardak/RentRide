@@ -114,3 +114,5 @@ export const carService = {
     }
   }
 };
+
+export default carService;

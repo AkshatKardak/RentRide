@@ -189,3 +189,13 @@ export const getCurrentUser = () => {
     );
   });
 };
+
+const firebaseAuthService = {
+  loginWithGoogle,
+  loginWithEmail,
+  registerWithEmail,
+  signOut,
+  getCurrentUser
+};
+
+export default firebaseAuthService;
