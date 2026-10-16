@@ -1,0 +1,122 @@
+/* ==========================================================================
+   RENTRIDE DESIGN TOKENS — TERRACOTTA + GRAPHITE PALETTE
+   ========================================================================== */
+
+:root {
+  /* Surfaces (LIGHT) */
+  --bg:              #FAF7F1;
+  --bg-subtle:       #F3EEE5;   /* cream */
+  --surface:         #FFFFFF;
+  --surface-raised:  #FFFFFF;
+  --surface-sunken:  #F3EEE5;
+  --overlay:         rgba(32, 32, 30, 0.45);
+
+  /* Borders */
+  --border:          #E8E0D3;
+  --border-strong:   #D8CBB8;
+
+  /* Text */
+  --text:            #20201E;   /* graphite */
+  --text-muted:      #6B6459;
+  --text-subtle:     #948C7E;
+  --text-inverse:    #FAF7F1;
+
+  /* Brand */
+  --primary:         #A34F32;   /* terracotta */
+  --primary-hover:   #B9623E;   /* burnt orange */
+  --primary-active:  #8C4329;
+  --primary-fg:      #FAF7F1;
+  --primary-soft:    #F6E7DF;
+  --accent:          #B8794A;   /* copper */
+  --accent-soft:     #F3E7DA;
+
+  /* Semantic */
+  --success:         #3F7D58;
+  --success-soft:    #E3F0E8;
+  --warning:         #B9821F;
+  --warning-soft:    #F7EBD6;
+  --danger:          #A83A34;
+  --danger-soft:     #F6E3E1;
+  --info:            #4A6E8C;
+  --info-soft:       #E4ECF2;
+
+  /* Focus ring */
+  --ring:            rgba(163, 79, 50, 0.40);
+
+  /* Radii / shadows / gradient */
+  --r-sm:            10px;
+  --r-md:            14px;
+  --r-lg:            20px;
+  --r-xl:            28px;
+  --shadow-sm:       0 1px 2px rgba(32, 32, 30, 0.06);
+  --shadow-md:       0 8px 24px -10px rgba(32, 32, 30, 0.18);
+  --shadow-lg:       0 24px 60px -24px rgba(32, 32, 30, 0.28);
+  --grad-brand:      linear-gradient(135deg, #B9623E 0%, #A34F32 55%, #B8794A 120%);
+  --grad-hero-scrim: linear-gradient(180deg, rgba(250, 247, 241, 0.2) 0%, rgba(250, 247, 241, 0.85) 100%);
+
+  /* Typography */
+  --font-display:    'Clash Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans:       'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:       'JetBrains Mono', 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Type scale */
+  --fs-xs:   0.75rem;    /* 12px */
+  --fs-sm:   0.875rem;   /* 14px */
+  --fs-base: 1rem;       /* 16px */
+  --fs-lg:   1.125rem;   /* 18px */
+  --fs-xl:   1.25rem;    /* 20px */
+  --fs-2xl:  1.5rem;     /* 24px */
+  --fs-3xl:  1.875rem;   /* 30px */
+  --fs-4xl:  2.25rem;    /* 36px */
+  --fs-5xl:  3rem;       /* 48px */
+  --fs-6xl:  4rem;       /* 64px */
+
+  /* Motion tokens */
+  --motion-fast:   150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-slow:   400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-enter:  700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark {
+  /* Surfaces (DARK) */
+  --bg:              #11110F;
+  --bg-subtle:       #16150F;
+  --surface:         #1C1B18;
+  --surface-raised:  #23221C;
+  --surface-sunken:  #0D0D0B;
+  --overlay:         rgba(0, 0, 0, 0.65);
+
+  --border:          rgba(243, 238, 229, 0.10);
+  --border-strong:   rgba(243, 238, 229, 0.18);
+
+  --text:            #F3EEE5;   /* cream */
+  --text-muted:      #B3AA9C;
+  --text-subtle:     #7D766A;
+  --text-inverse:    #1C1B18;
+
+  --primary:         #B85D3B;
+  --primary-hover:   #C96E48;
+  --primary-active:  #A34F32;
+  --primary-fg:      #FAF7F1;
+  --primary-soft:    rgba(184, 93, 59, 0.16);
+  --accent:          #C68A5A;   /* copper (lifted for dark) */
+  --accent-soft:     rgba(198, 138, 90, 0.14);
+
+  --success:         #5FA37A;
+  --success-soft:    rgba(95, 163, 122, 0.15);
+  --warning:         #D9A23B;
+  --warning-soft:    rgba(217, 162, 59, 0.15);
+  --danger:          #D4604A;
+  --danger-soft:     rgba(212, 96, 74, 0.15);
+  --info:            #6FA0C4;
+  --info-soft:       rgba(111, 160, 196, 0.15);
+
+  --ring:            rgba(184, 93, 59, 0.50);
+
+  --shadow-sm:       0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md:       0 10px 30px -12px rgba(0, 0, 0, 0.65);
+  --shadow-lg:       0 30px 70px -30px rgba(0, 0, 0, 0.8);
+  --grad-brand:      linear-gradient(135deg, #C96E48 0%, #B85D3B 50%, #C68A5A 130%);
+  --grad-hero-scrim: linear-gradient(180deg, rgba(17, 17, 15, 0.2) 0%, rgba(17, 17, 15, 0.85) 100%);
+}

@@ -24,5 +24,6 @@ backend/.env*
 # OS & Editor
 .DS_Store
 Thumbs.db
+desktop.ini
 .vscode/
 .idea/

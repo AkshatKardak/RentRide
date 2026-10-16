@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Moon, Sun } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
-import Logo from '../../assets/logo.png';
+import { useTheme } from '@/context/ThemeContext';
+import Logo from '@/assets/logo.png';
 
 
 export default function Navbar() {

@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  /* ===== LIGHT MODE ===== */
+  --color-primary: #10b981;
+  --color-primary-hover: #059669;
+  --color-background: #FFFFFF;
+  --color-background-secondary: #F8F9FA;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-border-light: #E5E7EB;
+  
+  /* ===== DARK MODE ===== */
+  --color-dark-bg: #0f172a;
+  --color-dark-bg-secondary: #1e293b;
+  --color-dark-bg-card: #1e293b;
+  --color-dark-text: #f1f5f9;
+  --color-dark-text-secondary: #cbd5e1;
+  --color-dark-border: #334155;
+  --color-dark-primary: #10b981;
+  --color-dark-primary-hover: #059669;
+  
+  --font-display: 'Inter', sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  * {
+    border-color: var(--color-border-light);
+  }
+
+  :root.dark * {
+    border-color: var(--color-dark-border);
+  }
+
+  body {
+    font-family: var(--font-display);
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Light Mode */
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+  }
+
+  /* Dark Mode */
+  :root.dark body {
+    background-color: var(--color-dark-bg);
+    color: var(--color-dark-text);
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    background-color: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+
+  :root.dark .glass-panel {
+    background-color: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .input-glass {
+    background-color: var(--color-background-secondary);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    outline: none;
+    transition: all 0.3s;
+  }
+
+  :root.dark .input-glass {
+    background-color: var(--color-dark-bg-secondary);
+    border-color: var(--color-dark-border);
+    color: var(--color-dark-text);
+  }
+
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

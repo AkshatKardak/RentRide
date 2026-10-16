@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Car, Mail, Phone, MapPin } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
-import facebook from '../../assets/facebook.png';
-import twitter from '../../assets/twitter.png';
-import instagram from '../../assets/instagram.png';
+import { useTheme } from '@/context/ThemeContext';
+import facebook from '@/assets/facebook.png';
+import twitter from '@/assets/twitter.png';
+import instagram from '@/assets/instagram.png';
 
 const Footer = () => {
   const { isDarkMode } = useTheme();

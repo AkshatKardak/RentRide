@@ -16,9 +16,9 @@ import {
   Sun,
   ExternalLink
 } from "lucide-react";
-import { useTheme } from "../../context/ThemeContext";
-import Logo from "../../assets/logo.png";
-import { notificationService } from "../../services/notificationService";
+import { useTheme } from "@/context/ThemeContext";
+import Logo from "@/assets/logo.png";
+import { notificationService } from "@/services/notificationService";
 import { toast } from "react-hot-toast";
 
 const DashboardNavbar = () => {
