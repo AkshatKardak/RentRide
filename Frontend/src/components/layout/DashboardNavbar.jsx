@@ -16,10 +16,9 @@ import {
   Sun,
   ExternalLink
 } from "lucide-react";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme } from "@/hooks/useTheme";
 import Logo from "@/assets/logo.png";
 import { notificationService } from "@/services/notificationService";
-import { toast } from "react-hot-toast";
 
 const DashboardNavbar = () => {
   const navigate = useNavigate();
@@ -41,7 +40,6 @@ const DashboardNavbar = () => {
 
   useEffect(() => {
     fetchNotifications();
-    // Poll for notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -126,16 +124,16 @@ const DashboardNavbar = () => {
 
   const getNotifIcon = (type) => {
     switch (type) {
-      case 'success': return <CheckCircle size={18} className="text-green-500" />;
-      case 'warning': return <AlertCircle size={18} className="text-yellow-500" />;
-      case 'error': return <AlertCircle size={18} className="text-red-500" />;
-      default: return <Info size={18} className="text-blue-500" />;
+      case 'success': return <CheckCircle size={16} className="text-success" />;
+      case 'warning': return <AlertCircle size={16} className="text-warning" />;
+      case 'error': return <AlertCircle size={16} className="text-danger" />;
+      default: return <Info size={16} className="text-info" />;
     }
   };
 
   const tabs = [
     { label: "Dashboard", path: "/dashboard" },
-    { label: "Browse Cars", path: "/browsecars" },
+    { label: "Browse Fleet", path: "/browsecars" },
     { label: "My Bookings", path: "/mybookings" },
     { label: "Payment", path: "/payment" },
     { label: "Offers", path: "/offers" },
@@ -146,54 +144,37 @@ const DashboardNavbar = () => {
 
   return (
     <motion.header
-      initial={{ y: -24, opacity: 0 }}
+      initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.35 }}
-      style={{
-        backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.8)' : 'rgba(255, 255, 255, 0.8)',
-        borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-      }}
-      className="sticky top-0 z-50 backdrop-blur-md border-b shadow-sm transition-all duration-300"
+      transition={{ duration: 0.3 }}
+      className="sticky top-0 z-50 bg-surface/85 backdrop-blur-md border-b border-border shadow-sm transition-all duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Left: logo */}
         <button
           onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-3 hover:opacity-90 transition"
+          className="flex items-center gap-2 hover:opacity-90 transition focus:outline-none"
           type="button"
         >
-          <img src={Logo} alt="RentRide" className="h-50 w-auto object-contain" />
+          <img src={Logo} alt="RentRide" className="h-10 w-auto object-contain" />
         </button>
 
         {/* Center: tabs (desktop) */}
-        <nav
-          className="hidden md:flex items-center gap-2 border rounded-full px-2 py-1 transition-colors"
-          style={{
-            backgroundColor: isDarkMode ? '#1e293b' : '#f8f9fa',
-            borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-          }}
-        >
+        <nav className="hidden md:flex items-center gap-1.5 border border-border bg-surface-sunken/80 rounded-full px-2 py-1 transition-colors">
           {tabs.map((t) => (
             <button
               key={t.path}
               onClick={() => navigate(t.path)}
               type="button"
-              className="relative px-4 py-2 rounded-full text-sm font-semibold transition"
-              style={{
-                color: isActive(t.path)
-                  ? '#10b981'
-                  : isDarkMode ? '#cbd5e1' : '#6B7280'
-              }}
+              className={`relative px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-colors ${
+                isActive(t.path) ? 'text-primary' : 'text-text-muted hover:text-text'
+              }`}
             >
               {isActive(t.path) && (
                 <motion.span
                   layoutId="activeTab"
-                  className="absolute inset-0 rounded-full border shadow-sm"
-                  style={{
-                    backgroundColor: isDarkMode ? '#0f172a' : '#ffffff',
-                    borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-                  }}
-                  transition={{ type: "spring", stiffness: 220, damping: 22 }}
+                  className="absolute inset-0 rounded-full bg-surface border border-border shadow-xs"
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
               <span className="relative z-10">{t.label}</span>
@@ -201,23 +182,20 @@ const DashboardNavbar = () => {
           ))}
         </nav>
 
-        {/* Right: icons + profile */}
-        <div className="flex items-center gap-1.5">
+        {/* Right: actions + profile */}
+        <div className="flex items-center gap-2">
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleTheme}
-            className="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-opacity-50 transition-all shadow-sm relative group"
-            style={{
-              backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-              borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-            }}
+            className="w-9 h-9 rounded-full border border-border bg-surface hover:bg-surface-sunken flex items-center justify-center transition-all shadow-xs"
             type="button"
             title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            aria-label="Toggle theme"
           >
             {isDarkMode ? (
-              <Sun size={20} className="text-yellow-400" />
+              <Sun size={17} className="text-accent" />
             ) : (
-              <Moon size={20} className="text-gray-500" />
+              <Moon size={17} className="text-text-muted" />
             )}
           </button>
 
@@ -229,116 +207,73 @@ const DashboardNavbar = () => {
                 setShowSettings(false);
                 setShowUserMenu(false);
               }}
-              className="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-opacity-50 transition-all shadow-sm relative"
-              style={{
-                backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-                borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-              }}
+              className="w-9 h-9 rounded-full border border-border bg-surface hover:bg-surface-sunken flex items-center justify-center transition-all shadow-xs relative"
               type="button"
+              aria-label="Notifications"
             >
-              <Bell className="w-5 h-5" style={{ color: isDarkMode ? '#cbd5e1' : '#6B7280' }} />
+              <Bell className="w-4 h-4 text-text-muted" />
               {unreadCount > 0 && (
-                <span
-                  className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2"
-                  style={{ borderColor: isDarkMode ? '#0f172a' : '#ffffff' }}
-                ></span>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full ring-2 ring-surface" />
               )}
             </button>
 
             <AnimatePresence>
               {showNotifications && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute right-0 mt-2 w-80 rounded-2xl shadow-xl border overflow-hidden"
-                  style={{
-                    backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-                    borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-                  }}
+                  exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                  className="absolute right-0 mt-2 w-80 rounded-2xl shadow-xl border border-border bg-surface overflow-hidden z-50"
                 >
-                  <div
-                    className="p-4 border-b flex justify-between items-center"
-                    style={{ borderColor: isDarkMode ? '#334155' : '#e5e7eb' }}
-                  >
-                    <h3 className="font-bold" style={{ color: isDarkMode ? '#f1f5f9' : '#1F2937' }}>
+                  <div className="p-3.5 border-b border-border flex justify-between items-center bg-surface-subtle">
+                    <h3 className="font-semibold text-xs text-text">
                       Notifications
                     </h3>
                     {notifications.length > 0 && (
                       <div className="flex gap-2">
                         <button
                           onClick={clearAllNotifications}
-                          className="text-[10px] text-red-500 font-semibold hover:underline"
+                          className="text-[11px] text-danger hover:underline font-medium"
                         >
-                          Clear all
+                          Clear
                         </button>
                         <button
                           onClick={() => {
                             navigate('/notifications');
                             setShowNotifications(false);
                           }}
-                          className="text-[10px] text-blue-500 font-semibold hover:underline flex items-center gap-1"
+                          className="text-[11px] text-primary hover:underline font-medium flex items-center gap-1"
                         >
                           View all <ExternalLink size={10} />
                         </button>
                       </div>
                     )}
                   </div>
-                  <div className="max-h-96 overflow-y-auto">
+                  <div className="max-h-80 overflow-y-auto divide-y divide-border/60">
                     {notifications.length === 0 ? (
-                      <div className="p-8 text-center text-sm" style={{ color: isDarkMode ? '#cbd5e1' : '#6B7280' }}>
-                        No notifications
+                      <div className="p-8 text-center text-xs text-text-muted">
+                        No new notifications
                       </div>
                     ) : (
-                      notifications.map((notif) => (
+                      notifications.slice(0, 5).map((notif) => (
                         <button
-                          key={notif.id}
-                          onClick={() => markAsRead(notif.id)}
-                          className="w-full p-4 border-b hover:bg-opacity-50 transition text-left"
-                          style={{
-                            backgroundColor: !notif.read
-                              ? (isDarkMode ? 'rgba(16, 185, 129, 0.05)' : 'rgba(16, 185, 129, 0.05)')
-                              : 'transparent',
-                            borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-                          }}
+                          key={notif._id || notif.id}
+                          onClick={() => markAsRead(notif._id || notif.id)}
+                          className={`w-full p-3.5 text-left transition-colors flex gap-2.5 items-start ${
+                            !notif.read ? 'bg-primary-soft/30 hover:bg-primary-soft/50' : 'hover:bg-surface-sunken'
+                          }`}
                         >
-                          <div className="flex gap-3">
-                            <div className="mt-1">
-                              {getNotifIcon(notif.type)}
-                            </div>
-                            <div className="flex-1">
-                              <p className="font-semibold text-xs" style={{ color: isDarkMode ? '#f1f5f9' : '#1F2937' }}>
-                                {notif.title}
-                              </p>
-                              <p className="text-[10px] mt-0.5" style={{ color: isDarkMode ? '#cbd5e1' : '#6B7280' }}>
-                                {notif.message}
-                              </p>
-                              <p className="text-[10px] mt-1" style={{ color: isDarkMode ? '#94a3b8' : '#9CA3AF' }}>
-                                {formatNotifTime(notif.createdAt)}
-                              </p>
-                            </div>
-                            {!notif.read && <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2"></div>}
+                          <div className="mt-0.5 shrink-0">{getNotifIcon(notif.type)}</div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-xs text-text truncate">{notif.title}</p>
+                            <p className="text-[11px] text-text-muted line-clamp-2 mt-0.5">{notif.message}</p>
+                            <p className="text-[10px] text-text-subtle font-mono mt-1">{formatNotifTime(notif.createdAt)}</p>
                           </div>
+                          {!notif.read && <span className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 shrink-0" />}
                         </button>
-                      )).slice(0, 5)
+                      ))
                     )}
                   </div>
-                  {notifications.length > 5 && (
-                    <button
-                      onClick={() => {
-                        navigate('/notifications');
-                        setShowNotifications(false);
-                      }}
-                      className="w-full py-2 text-center text-xs font-bold border-t hover:bg-opacity-50 transition"
-                      style={{
-                        color: '#10b981',
-                        borderColor: isDarkMode ? '#334155' : '#e5e7eb',
-                        backgroundColor: isDarkMode ? '#1e293b' : '#f8f9fa'
-                      }}
-                    >
-                      View all notifications
-                    </button>
-                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -352,66 +287,39 @@ const DashboardNavbar = () => {
                 setShowNotifications(false);
                 setShowUserMenu(false);
               }}
-              className="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-opacity-50 transition-all shadow-sm"
-              style={{
-                backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-                borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-              }}
+              className="w-9 h-9 rounded-full border border-border bg-surface hover:bg-surface-sunken flex items-center justify-center transition-all shadow-xs"
               type="button"
+              aria-label="Settings"
             >
-              <Settings className="w-5 h-5" style={{ color: isDarkMode ? '#cbd5e1' : '#6B7280' }} />
+              <Settings className="w-4 h-4 text-text-muted" />
             </button>
 
             <AnimatePresence>
               {showSettings && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute right-0 mt-2 w-56 rounded-2xl shadow-xl border overflow-hidden"
-                  style={{
-                    backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-                    borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-                  }}
+                  exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                  className="absolute right-0 mt-2 w-52 rounded-2xl shadow-xl border border-border bg-surface overflow-hidden p-1.5 z-50"
                 >
-                  <div className="p-2">
-                    <button
-                      onClick={() => {
-                        navigate('/settings');
-                        setShowSettings(false);
-                      }}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-opacity-50 rounded-xl transition"
-                      style={{ color: isDarkMode ? '#f1f5f9' : '#1F2937' }}
-                    >
-                      Account Settings
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate('/settings');
-                        setShowSettings(false);
-                      }}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-opacity-50 rounded-xl transition"
-                      style={{ color: isDarkMode ? '#f1f5f9' : '#1F2937' }}
-                    >
-                      Preferences
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate('/help-support');
-                        setShowSettings(false);
-                      }}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-opacity-50 rounded-xl transition"
-                      style={{ color: isDarkMode ? '#f1f5f9' : '#1F2937' }}
-                    >
-                      Help & Support
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => { navigate('/settings'); setShowSettings(false); }}
+                    className="w-full px-3.5 py-2 text-left text-xs text-text hover:bg-surface-sunken rounded-xl transition"
+                  >
+                    Account Settings
+                  </button>
+                  <button
+                    onClick={() => { navigate('/help-support'); setShowSettings(false); }}
+                    className="w-full px-3.5 py-2 text-left text-xs text-text hover:bg-surface-sunken rounded-xl transition"
+                  >
+                    Help & Support
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Profile */}
+          {/* Profile User Dropdown */}
           <div className="relative" ref={userMenuRef}>
             <button
               onClick={() => {
@@ -419,60 +327,39 @@ const DashboardNavbar = () => {
                 setShowNotifications(false);
                 setShowSettings(false);
               }}
-              className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full border hover:bg-opacity-50 transition-all shadow-sm"
-              style={{
-                backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-                borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-              }}
+              className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-border bg-surface hover:bg-surface-sunken transition-all shadow-xs"
               type="button"
             >
-              <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-primary to-accent text-white flex items-center justify-center text-[11px] font-bold">
                 {avatarText}
               </div>
-              <ChevronDown size={16} style={{ color: isDarkMode ? '#cbd5e1' : '#6B7280' }} />
+              <ChevronDown size={14} className="text-text-muted" />
             </button>
 
             <AnimatePresence>
               {showUserMenu && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute right-0 mt-2 w-56 rounded-2xl shadow-xl border overflow-hidden"
-                  style={{
-                    backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-                    borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-                  }}
+                  exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                  className="absolute right-0 mt-2 w-56 rounded-2xl shadow-xl border border-border bg-surface overflow-hidden z-50"
                 >
-                  <div
-                    className="p-4 border-b"
-                    style={{ borderColor: isDarkMode ? '#334155' : '#e5e7eb' }}
-                  >
-                    <p className="font-semibold" style={{ color: isDarkMode ? '#f1f5f9' : '#1F2937' }}>
-                      {user?.name || "User"}
-                    </p>
-                    <p className="text-xs mt-1" style={{ color: isDarkMode ? '#cbd5e1' : '#6B7280' }}>
-                      {user?.email || "user@example.com"}
-                    </p>
+                  <div className="p-3 border-b border-border bg-surface-subtle">
+                    <p className="font-semibold text-xs text-text">{user?.name || "User"}</p>
+                    <p className="text-[11px] text-text-muted truncate mt-0.5">{user?.email || "user@example.com"}</p>
                   </div>
-                  <div className="p-2">
+                  <div className="p-1.5 space-y-0.5">
                     <button
-                      onClick={() => {
-                        navigate('/profile');
-                        setShowUserMenu(false);
-                      }}
-                      className="w-full px-4 py-2.5 text-left text-sm hover:bg-opacity-50 rounded-xl transition flex items-center gap-2"
-                      style={{ color: isDarkMode ? '#f1f5f9' : '#1F2937' }}
+                      onClick={() => { navigate('/profile'); setShowUserMenu(false); }}
+                      className="w-full px-3 py-2 text-left text-xs text-text hover:bg-surface-sunken rounded-xl transition flex items-center gap-2"
                     >
-                      <User size={16} />
-                      Profile
+                      <User size={14} /> Profile
                     </button>
                     <button
                       onClick={handleLogout}
-                      className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 rounded-xl transition flex items-center gap-2"
+                      className="w-full px-3 py-2 text-left text-xs text-danger hover:bg-danger-soft rounded-xl transition flex items-center gap-2"
                     >
-                      <LogOut size={16} />
-                      Logout
+                      <LogOut size={14} /> Logout
                     </button>
                   </div>
                 </motion.div>
@@ -480,18 +367,13 @@ const DashboardNavbar = () => {
             </AnimatePresence>
           </div>
 
-          {/* Mobile menu toggle */}
+          {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden w-10 h-10 rounded-full border flex items-center justify-center hover:bg-opacity-50 transition-all"
-            style={{
-              backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-              borderColor: isDarkMode ? '#334155' : '#e5e7eb',
-              color: isDarkMode ? '#cbd5e1' : '#1F2937'
-            }}
+            className="md:hidden w-9 h-9 rounded-full border border-border flex items-center justify-center text-text"
             type="button"
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
@@ -503,61 +385,31 @@ const DashboardNavbar = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden border-t overflow-hidden"
-            style={{
-              backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-              borderColor: isDarkMode ? '#334155' : '#e5e7eb'
-            }}
+            className="md:hidden border-t border-border bg-surface px-4 py-3 space-y-1 overflow-hidden"
           >
-            <div className="px-4 py-4 space-y-2">
-              {tabs.map((t) => (
-                <button
-                  key={t.path}
-                  onClick={() => {
-                    navigate(t.path);
-                    setMobileOpen(false);
-                  }}
-                  className="w-full px-4 py-2.5 text-left text-sm rounded-xl transition"
-                  style={{
-                    backgroundColor: isActive(t.path)
-                      ? (isDarkMode ? 'rgba(16, 185, 129, 0.1)' : 'rgba(16, 185, 129, 0.1)')
-                      : 'transparent',
-                    color: isActive(t.path)
-                      ? '#10b981'
-                      : isDarkMode ? '#f1f5f9' : '#1F2937',
-                    fontWeight: isActive(t.path) ? '600' : '400'
-                  }}
-                >
-                  {t.label}
-                </button>
-              ))}
+            {tabs.map((t) => (
               <button
-                onClick={() => {
-                  navigate('/profile');
-                  setMobileOpen(false);
-                }}
-                className="w-full px-4 py-2.5 text-left text-sm rounded-xl transition"
-                style={{ color: isDarkMode ? '#f1f5f9' : '#1F2937' }}
+                key={t.path}
+                onClick={() => { navigate(t.path); setMobileOpen(false); }}
+                className={`w-full px-3 py-2 text-left text-xs rounded-xl transition ${
+                  isActive(t.path) ? 'bg-primary-soft text-primary font-bold' : 'text-text hover:bg-surface-sunken'
+                }`}
               >
-                Profile
+                {t.label}
               </button>
-              <button
-                onClick={() => {
-                  navigate('/settings');
-                  setMobileOpen(false);
-                }}
-                className="w-full px-4 py-2.5 text-left text-sm rounded-xl transition"
-                style={{ color: isDarkMode ? '#f1f5f9' : '#1F2937' }}
-              >
-                Settings
-              </button>
-              <button
-                onClick={handleLogout}
-                className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 rounded-xl transition"
-              >
-                Logout
-              </button>
-            </div>
+            ))}
+            <button
+              onClick={() => { navigate('/profile'); setMobileOpen(false); }}
+              className="w-full px-3 py-2 text-left text-xs text-text hover:bg-surface-sunken rounded-xl transition"
+            >
+              Profile
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-full px-3 py-2 text-left text-xs text-danger hover:bg-danger-soft rounded-xl transition"
+            >
+              Logout
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

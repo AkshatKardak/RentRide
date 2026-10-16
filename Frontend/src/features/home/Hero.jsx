@@ -1,172 +1,154 @@
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { Search, Calendar, MapPin, Zap, Shield, Clock } from 'lucide-react'
+import { Search, Calendar, MapPin, Zap, Shield, Clock, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import herocar from '@/assets/herocar1.png';
-import { FadeRight, FadeLeft } from '@/utils/Animation'
+import { Reveal, HoverLift } from '@/components/fx';
 
 export default function Hero() {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
   return (
-    <section className="relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-[-10%] left-[-10%] w-[520px] h-[520px] bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[650px] h-[650px] bg-primary/10 rounded-full blur-[120px]" />
+    <section id="hero" className="relative overflow-hidden bg-bg">
+      {/* Background Decor Scrims */}
+      <div className="absolute inset-0 -z-10 pointer-events-none">
+        <div className="absolute top-[-15%] left-[-10%] w-[550px] h-[550px] bg-primary/10 rounded-full blur-[140px]" />
+        <div className="absolute bottom-[-15%] right-[-10%] w-[680px] h-[680px] bg-accent/10 rounded-full blur-[160px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-28">
-        <div className="flex flex-col lg:flex-row items-center gap-14">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16 lg:py-24">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
 
           {/* Left Content */}
-          <div className="lg:w-1/2 text-text-primary space-y-6">
-            <motion.div
-              variants={FadeRight(0.2)}
-              initial="hidden"
-              animate="visible"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                         bg-primary/10 border border-primary/20
-                         text-sm font-bold text-primary"
-            >
-              Smart rentals • AI powered
-            </motion.div>
+          <div className="lg:w-1/2 space-y-6">
+            <Reveal direction="down" delay={0.1}>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary-soft border border-primary/20 text-xs font-semibold text-primary tracking-wide">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                Smart Rentals • AI Powered Fleet
+              </div>
+            </Reveal>
 
-            <motion.h1
-              variants={FadeRight(0.3)}
-              initial="hidden"
-              animate="visible"
-              className="text-4xl md:text-6xl font-black leading-tight tracking-tight"
-            >
-              Find Your
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-dark">
-                Perfect Ride
-              </span>
-            </motion.h1>
+            <Reveal direction="right" delay={0.2}>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight text-text font-display">
+                Drive Your
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-hover to-accent">
+                  Perfect Journey
+                </span>
+              </h1>
+            </Reveal>
 
-            <motion.p
-              variants={FadeRight(0.4)}
-              initial="hidden"
-              animate="visible"
-              className="text-lg text-text-secondary font-medium leading-relaxed"
-            >
-              Premium cars at unbeatable prices. AI-powered recommendations, smooth booking, and secure payments.
-            </motion.p>
+            <Reveal direction="right" delay={0.3}>
+              <p className="text-base sm:text-lg text-text-muted leading-relaxed font-sans max-w-xl">
+                Premium vehicles across India with verified health records, dynamic transparent pricing, and instant booking without security hassle.
+              </p>
+            </Reveal>
 
             {/* Feature Pills */}
-            <motion.div
-              variants={FadeRight(0.5)}
-              initial="hidden"
-              animate="visible"
-              className="flex flex-wrap gap-4"
-            >
-              {[
-                { icon: <Zap size={18} />, text: 'Instant booking' },
-                { icon: <Shield size={18} />, text: 'Secure payments' },
-                { icon: <Clock size={18} />, text: '24/7 support' }
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl
-                             bg-background-secondary border border-border-light text-text-secondary"
-                >
-                  <span className="text-primary">{item.icon}</span>
-                  <span className="text-sm font-bold uppercase tracking-wider">{item.text}</span>
-                </div>
-              ))}
-            </motion.div>
+            <Reveal direction="right" delay={0.4}>
+              <div className="flex flex-wrap gap-3 pt-1">
+                {[
+                  { icon: <Zap size={16} />, text: 'Instant Approval' },
+                  { icon: <Shield size={16} />, text: '100% Insured' },
+                  { icon: <Clock size={16} />, text: '24/7 Roadside Assist' }
+                ].map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-surface-raised border border-border text-text-muted shadow-xs text-xs font-semibold"
+                  >
+                    <span className="text-primary">{item.icon}</span>
+                    <span>{item.text}</span>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
 
             {/* CTA Buttons */}
-            <motion.div
-              variants={FadeRight(0.6)}
-              initial="hidden"
-              animate="visible"
-              className="flex flex-wrap gap-4 pt-2"
-            >
-              <Link
-                to="/browsecars"
-                className="bg-primary text-white px-8 py-4 rounded-xl text-lg font-black uppercase tracking-widest shadow-lg shadow-primary/20
-                           hover:bg-primary-hover transition-all hover:scale-105 active:scale-95"
-              >
-                Browse Cars
-              </Link>
+            <Reveal direction="up" delay={0.5}>
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <Link
+                  to="/browsecars"
+                  className="px-7 py-3.5 rounded-xl text-sm font-bold bg-primary hover:bg-primary-hover text-white shadow-lg shadow-primary/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] inline-flex items-center gap-2"
+                >
+                  <span>Explore Fleet</span>
+                  <ArrowRight size={16} />
+                </Link>
 
-              <Link
-                to="/offers"
-                className="border-2 border-primary text-primary px-8 py-4 rounded-xl text-lg font-black uppercase tracking-widest
-                           hover:bg-primary hover:text-white transition-all hover:scale-105 active:scale-95"
-              >
-                View Offers
-              </Link>
-            </motion.div>
+                <Link
+                  to="/offers"
+                  className="px-6 py-3.5 rounded-xl text-sm font-semibold border border-border hover:border-primary/40 bg-surface text-text hover:text-primary transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  View Promo Offers
+                </Link>
+              </div>
+            </Reveal>
           </div>
 
           {/* Right Image */}
-          <motion.div
-            variants={FadeLeft(0.3)}
-            initial="hidden"
-            animate="visible"
-            className="lg:w-1/2 relative"
-          >
-            <motion.img
-              src={herocar}
-              alt="Premium Car"
-              className="w-full drop-shadow-[0_20px_50px_rgba(16,163,16,0.2)]"
-              animate={{ y: [0, -18, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            <div className="absolute inset-0 -z-10 blur-3xl bg-gradient-to-r from-primary/20 to-primary-hover/10 rounded-full" />
-          </motion.div>
+          <div className="lg:w-1/2 relative flex items-center justify-center">
+            <Reveal direction="left" delay={0.3} className="w-full">
+              <div className="relative">
+                <motion.img
+                  src={herocar}
+                  alt="Premium Luxury Car"
+                  className="w-full max-w-lg lg:max-w-full mx-auto drop-shadow-2xl relative z-10"
+                  animate={{ y: [0, -12, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <div className="absolute inset-0 -z-10 blur-3xl bg-gradient-to-tr from-primary/25 to-accent/20 rounded-full scale-90" />
+              </div>
+            </Reveal>
+          </div>
         </div>
 
-        {/* Quick Search Card - Only shown after login */}
+        {/* Quick Search Card */}
         {user && (
-          <motion.div
-            variants={FadeRight(0.7)}
-            initial="hidden"
-            animate="visible"
-            className="bg-white rounded-xl shadow-2xl p-6 max-w-4xl mx-auto mt-16"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  <MapPin size={16} className="inline mr-1" />
-                  Location
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter city"
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary"
-                />
+          <Reveal direction="up" delay={0.6}>
+            <div className="bg-surface rounded-2xl shadow-xl border border-border p-6 max-w-4xl mx-auto mt-12 transition-all">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-text-muted mb-2">
+                    <MapPin size={14} className="inline mr-1 text-primary" />
+                    City or Airport
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Mumbai, Bangalore, Delhi..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-surface-sunken text-text placeholder-text-subtle text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-text-muted mb-2">
+                    <Calendar size={14} className="inline mr-1 text-primary" />
+                    Pick-up Date
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-surface-sunken text-text text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-text-muted mb-2">
+                    <Calendar size={14} className="inline mr-1 text-primary" />
+                    Drop-off Date
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-surface-sunken text-text text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  <Calendar size={16} className="inline mr-1" />
-                  Pick-up Date
-                </label>
-                <input
-                  type="date"
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  <Calendar size={16} className="inline mr-1" />
-                  Return Date
-                </label>
-                <input
-                  type="date"
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary"
-                />
-              </div>
+              <Link
+                to="/browsecars"
+                className="w-full mt-5 py-3 rounded-xl bg-primary hover:bg-primary-hover text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md shadow-primary/20 transition-all"
+              >
+                <Search size={16} />
+                Find Available Vehicles
+              </Link>
             </div>
-
-            <button className="w-full mt-4 bg-primary hover:bg-primary-hover text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2">
-              <Search size={20} />
-              Search Available Cars
-            </button>
-          </motion.div>
+          </Reveal>
         )}
       </div>
     </section>

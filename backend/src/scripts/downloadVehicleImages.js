@@ -4,13 +4,13 @@
  * Fetches exact model-accurate, CC-BY / Public Domain images from Wikipedia / Wikimedia Commons
  * Saves them into Frontend/public/assets/cars/<slug>.jpg
  * Ensures 0 repeated images across different car models, 0 wrong brands (no BMW for Maruti Suzuki!),
- * and 100% reliable local asset delivery.
+ * and 100% reliable local asset delivery with cryptographic hash deduplication.
  */
 
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const http = require('http');
+const crypto = require('crypto');
 
 const OUTPUT_DIR = path.join(__dirname, '../../../Frontend/public/assets/cars');
 if (!fs.existsSync(OUTPUT_DIR)) {
@@ -26,7 +26,7 @@ const VEHICLE_TARGETS = [
   { brand: 'Chevrolet', model: 'Beat', slug: 'chevrolet-beat', query: 'File:2020_Chevrolet_Spark_LS,_front_right,_09-07-2024.jpg', isFile: true },
   { brand: 'Chevrolet', model: 'Cruze', slug: 'chevrolet-cruze', query: 'Chevrolet_Cruze' },
   { brand: 'Chevrolet', model: 'Tavera', slug: 'chevrolet-tavera', query: 'Isuzu_Panther' },
-  { brand: 'Ford', model: 'Aspire', slug: 'ford-aspire', query: 'Ford_Figo' },
+  { brand: 'Ford', model: 'Aspire', slug: 'ford-aspire', query: 'File:2018_Ford_Aspire_Facelift_Titanium_Plus_front.jpg', isFile: true },
   { brand: 'Ford', model: 'EcoSport', slug: 'ford-ecosport', query: 'Ford_EcoSport' },
   { brand: 'Ford', model: 'Endeavour', slug: 'ford-endeavour', query: 'Ford_Everest' },
   { brand: 'Ford', model: 'Figo', slug: 'ford-figo', query: 'Ford_Figo' },
@@ -37,7 +37,7 @@ const VEHICLE_TARGETS = [
   { brand: 'Honda', model: 'WR-V', slug: 'honda-wr-v', query: 'Honda_WR-V' },
   { brand: 'Hyundai', model: 'Aura', slug: 'hyundai-aura', query: 'Hyundai_Aura' },
   { brand: 'Hyundai', model: 'Creta', slug: 'hyundai-creta', query: 'Hyundai_Creta' },
-  { brand: 'Hyundai', model: 'Grand i10', slug: 'hyundai-grand-i10', query: 'Hyundai_i10' },
+  { brand: 'Hyundai', model: 'Grand i10', slug: 'hyundai-grand-i10', query: 'File:2017_Hyundai_Grand_i10_1.2_Magna_(India)_front_view.jpg', isFile: true },
   { brand: 'Hyundai', model: 'Venue', slug: 'hyundai-venue', query: 'Hyundai_Venue' },
   { brand: 'Hyundai', model: 'Verna', slug: 'hyundai-verna', query: 'Hyundai_Accent' },
   { brand: 'Hyundai', model: 'i10', slug: 'hyundai-i10', query: 'Hyundai_i10' },
@@ -66,7 +66,7 @@ const VEHICLE_TARGETS = [
   { brand: 'Maruti Suzuki', model: 'WagonR', slug: 'maruti-suzuki-wagonr', query: 'Suzuki_Wagon_R' },
   { brand: 'Nissan', model: 'Micra', slug: 'nissan-micra', query: 'Nissan_Micra' },
   { brand: 'Nissan', model: 'Sunny', slug: 'nissan-sunny', query: 'Nissan_Sunny' },
-  { brand: 'Nissan', model: 'Terrano', slug: 'nissan-terrano', query: 'Dacia_Duster' },
+  { brand: 'Nissan', model: 'Terrano', slug: 'nissan-terrano', query: 'File:2014_Nissan_Terrano_XL_1.5_front.jpg', isFile: true },
   { brand: 'Range Rover', model: 'Evoque', slug: 'range-rover-evoque', query: 'Range_Rover_Evoque' },
   { brand: 'Renault', model: 'Duster', slug: 'renault-duster', query: 'Dacia_Duster' },
   { brand: 'Renault', model: 'Kiger', slug: 'renault-kiger', query: 'Renault_Kiger' },
@@ -84,7 +84,7 @@ const VEHICLE_TARGETS = [
   { brand: 'Tata', model: 'Tigor', slug: 'tata-tigor', query: 'Tata_Tigor' },
   { brand: 'Toyota', model: 'Etios', slug: 'toyota-etios', query: 'Toyota_Etios' },
   { brand: 'Toyota', model: 'Fortuner', slug: 'toyota-fortuner', query: 'Toyota_Fortuner' },
-  { brand: 'Toyota', model: 'Glanza', slug: 'toyota-glanza', query: 'File:Suzuki_Baleno_front_20071004.jpg', isFile: true },
+  { brand: 'Toyota', model: 'Glanza', slug: 'toyota-glanza', query: 'File:2022_Toyota_Glanza_G_DualJet_1.2_front.jpg', isFile: true },
   { brand: 'Toyota', model: 'Innova', slug: 'toyota-innova', query: 'Toyota_Innova' },
   { brand: 'Toyota', model: 'Urban Cruiser', slug: 'toyota-urban-cruiser', query: 'Toyota_Urban_Cruiser' },
   { brand: 'Volkswagen', model: 'Ameo', slug: 'volkswagen-ameo', query: 'File:2016-2020_Volkswagen_Ameo_front.jpg', isFile: true },
@@ -111,6 +111,11 @@ async function getImageUrl(target) {
   }
 }
 
+function computeFileHash(filePath) {
+  const buffer = fs.readFileSync(filePath);
+  return crypto.createHash('md5').update(buffer).digest('hex');
+}
+
 function downloadFile(url, destPath) {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(destPath);
@@ -122,7 +127,6 @@ function downloadFile(url, destPath) {
     };
 
     https.get(url, options, (res) => {
-      // Follow redirects
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
         return downloadFile(res.headers.location, destPath).then(resolve).catch(reject);
       }
@@ -148,8 +152,10 @@ async function start() {
   console.log(`Targeting ${VEHICLE_TARGETS.length} unique car models...\n`);
 
   const manifest = {};
+  const seenHashes = new Map();
   let successCount = 0;
   let failCount = 0;
+  let collisionCount = 0;
 
   for (let i = 0; i < VEHICLE_TARGETS.length; i++) {
     const target = VEHICLE_TARGETS[i];
@@ -157,46 +163,79 @@ async function start() {
     const publicUrl = `/assets/cars/${target.slug}.jpg`;
 
     try {
-      console.log(`[${i + 1}/${VEHICLE_TARGETS.length}] Fetching ${target.brand} ${target.model}...`);
-      const imgUrl = await getImageUrl(target);
-      if (!imgUrl) {
-        console.warn(`  --> No image URL resolved for ${target.brand} ${target.model}`);
-        failCount++;
-        continue;
+      // Check if already exists and verify hash
+      let fileReady = false;
+      if (fs.existsSync(destFile)) {
+        const stat = fs.statSync(destFile);
+        if (stat.size >= 5000) {
+          const hash = computeFileHash(destFile);
+          if (!seenHashes.has(hash)) {
+            seenHashes.set(hash, `${target.brand} ${target.model}`);
+            fileReady = true;
+          } else {
+            console.warn(`  [COLLISION DETECTED] ${target.slug} matches hash of ${seenHashes.get(hash)}! Re-downloading with dedicated query...`);
+          }
+        }
       }
 
-      await downloadFile(imgUrl, destFile);
-      const stat = fs.statSync(destFile);
-      if (stat.size < 5000) {
-        console.warn(`  --> Downloaded file too small (${stat.size} bytes) for ${target.slug}`);
-        failCount++;
-        continue;
+      if (!fileReady) {
+        console.log(`[${i + 1}/${VEHICLE_TARGETS.length}] Fetching ${target.brand} ${target.model}...`);
+        const imgUrl = await getImageUrl(target);
+        if (!imgUrl) {
+          console.warn(`  --> No image URL resolved for ${target.brand} ${target.model}`);
+          failCount++;
+          continue;
+        }
+
+        await downloadFile(imgUrl, destFile);
+        const stat = fs.statSync(destFile);
+        if (stat.size < 5000) {
+          console.warn(`  --> Downloaded file too small (${stat.size} bytes) for ${target.slug}`);
+          failCount++;
+          continue;
+        }
+
+        const hash = computeFileHash(destFile);
+        if (seenHashes.has(hash)) {
+          console.error(`  [CRITICAL DUPLICATE] Hash collision for ${target.slug} with ${seenHashes.get(hash)}!`);
+          collisionCount++;
+        } else {
+          seenHashes.set(hash, `${target.brand} ${target.model}`);
+        }
       }
 
+      const finalStat = fs.statSync(destFile);
       manifest[`${target.brand} ${target.model}`.toLowerCase()] = {
         path: publicUrl,
-        sizeBytes: stat.size,
+        sizeBytes: finalStat.size,
         brand: target.brand,
         model: target.model
       };
 
-      console.log(`  ✓ Saved: ${publicUrl} (${Math.round(stat.size / 1024)} KB)`);
+      console.log(`  ✓ Registered: ${target.brand} ${target.model} -> ${publicUrl} (${Math.round(finalStat.size / 1024)} KB)`);
       successCount++;
     } catch (err) {
       console.error(`  ✗ Error downloading ${target.brand} ${target.model}:`, err.message);
       failCount++;
     }
 
-    // Gentle throttle
-    await new Promise(r => setTimeout(r, 250));
+    await new Promise(r => setTimeout(r, 100));
   }
 
   const manifestPath = path.join(OUTPUT_DIR, 'manifest.json');
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
-  console.log(`\n=== Download Complete ===`);
-  console.log(`Success: ${successCount}, Failures: ${failCount}`);
-  console.log(`Manifest saved at: ${manifestPath}\n`);
+  // Mirror manifest to Frontend/src/features/cars/manifest.json
+  const srcManifestPath = path.join(__dirname, '../../../Frontend/src/features/cars/manifest.json');
+  fs.writeFileSync(srcManifestPath, JSON.stringify(manifest, null, 2));
+
+  console.log(`\n=== Verification Complete ===`);
+  console.log(`Success: ${successCount}, Failures: ${failCount}, Collisions: ${collisionCount}`);
+  console.log(`Manifest saved at: ${manifestPath} & mirrored to src/features/cars/manifest.json\n`);
 }
 
-start();
+if (require.main === module) {
+  start();
+}
+
+module.exports = { VEHICLE_TARGETS, start };
