@@ -14,7 +14,7 @@ import axios from 'axios';
 import * as echarts from 'echarts';
 import { useTheme } from '@/hooks/useTheme';
 import EChartCard from '@/components/ui/EChartCard';
-import { resolveApiBaseUrl } from '@/lib/api';
+import { resolveApiBaseUrl, getAdminHeaders, adminRequest } from '@/lib/api';
 
 export default function AdminDashboard() {
   const { isDarkMode } = useTheme();
@@ -43,36 +43,36 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const [statsRes, activityRes, revenueRes, maintenanceRes] = await Promise.allSettled([
-        axios.get(`${baseUrl}/admin/stats/dashboard`, { headers }),
-        axios.get(`${baseUrl}/admin/stats/recent-activity?limit=5`, { headers }),
-        axios.get(`${baseUrl}/admin/stats/revenue-analytics`, { headers }),
-        axios.get(`${baseUrl}/admin/maintenance`, { headers })
-      ]);
+        const [statsRes, activityRes, revenueRes, maintenanceRes] = await Promise.allSettled([
+          axios.get(`${baseUrl}/admin/stats/dashboard`, { headers }),
+          axios.get(`${baseUrl}/admin/stats/recent-activity?limit=5`, { headers }),
+          axios.get(`${baseUrl}/admin/stats/revenue-analytics`, { headers }),
+          axios.get(`${baseUrl}/admin/maintenance`, { headers })
+        ]);
 
-      let fetchedStats = stats;
-      if (statsRes.status === 'fulfilled' && statsRes.value.data?.success) {
-        fetchedStats = statsRes.value.data.data;
-        setStats(fetchedStats);
-      }
+        let fetchedStats = stats;
+        if (statsRes.status === 'fulfilled' && statsRes.value.data?.success) {
+          fetchedStats = statsRes.value.data.data;
+          setStats(fetchedStats);
+        }
 
-      if (activityRes.status === 'fulfilled' && activityRes.value.data?.success) {
-        setRecentBookings(activityRes.value.data.data?.bookings || []);
-      }
+        if (activityRes.status === 'fulfilled' && activityRes.value.data?.success) {
+          setRecentBookings(activityRes.value.data.data?.bookings || []);
+        }
 
-      if (maintenanceRes.status === 'fulfilled' && maintenanceRes.value.data?.success) {
-        setMaintenanceAlerts(maintenanceRes.value.data.data || []);
-      }
+        if (maintenanceRes.status === 'fulfilled' && maintenanceRes.value.data?.success) {
+          setMaintenanceAlerts(maintenanceRes.value.data.data || []);
+        }
 
-      const primaryColor = isDarkMode ? '#B85D3B' : '#A34F32';
-      const copperColor = isDarkMode ? '#C68A5A' : '#B8794A';
+        const primaryColor = isDarkMode ? '#B85D3B' : '#A34F32';
+        const copperColor = isDarkMode ? '#C68A5A' : '#B8794A';
 
-      // Configure Revenue Chart
-      if (revenueRes.status === 'fulfilled' && revenueRes.value.data?.success) {
+        // Configure Revenue Chart
+        if (revenueRes.status === 'fulfilled' && revenueRes.value.data?.success) {
         const revData = revenueRes.value.data.data || [];
         if (revData.length > 0) {
           const dates = revData.map(d => d.date || d._id || 'Day');
@@ -182,7 +182,7 @@ export default function AdminDashboard() {
       } else {
         setUtilizationChartData(null);
       }
-
+      });
     } catch (err) {
       console.error('Error fetching admin dashboard:', err);
     } finally {

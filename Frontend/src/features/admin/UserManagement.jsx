@@ -3,7 +3,7 @@ import { Users, Search, Shield, Ban, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/hooks/useTheme';
-import { resolveApiBaseUrl } from '@/lib/api';
+import { resolveApiBaseUrl, getAdminHeaders, adminRequest } from '@/lib/api';
 
 export default function UserManagement() {
   const { isDarkMode } = useTheme();
@@ -18,14 +18,15 @@ export default function UserManagement() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.get(`${baseUrl}/admin/users`, { headers });
-      if (res.data?.success) {
-        setUsers(res.data.data?.users || res.data.data || []);
-      }
+        const res = await axios.get(`${baseUrl}/admin/users`, { headers });
+        if (res.data?.success) {
+          setUsers(res.data.data?.users || res.data.data || []);
+        }
+      });
     } catch (err) {
       console.error('Error fetching users:', err);
       toast.error('Failed to load users');
@@ -37,13 +38,14 @@ export default function UserManagement() {
   const handleToggleStatus = async (userId, currentStatus) => {
     const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
     try {
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      await axios.patch(`${baseUrl}/admin/users/${userId}/status`, { status: newStatus }, { headers });
-      toast.success(`User status changed to ${newStatus}`);
-      setUsers(prev => prev.map(u => u._id === userId ? { ...u, status: newStatus } : u));
+        await axios.patch(`${baseUrl}/admin/users/${userId}/status`, { status: newStatus }, { headers });
+        toast.success(`User status changed to ${newStatus}`);
+        setUsers(prev => prev.map(u => u._id === userId ? { ...u, status: newStatus } : u));
+      });
     } catch (err) {
       toast.error('Failed to update status');
     }

@@ -3,7 +3,7 @@ import { CalendarCheck, Search, CheckCircle2, XCircle, Clock, AlertCircle } from
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/hooks/useTheme';
-import { resolveApiBaseUrl } from '@/lib/api';
+import { resolveApiBaseUrl, getAdminHeaders, adminRequest } from '@/lib/api';
 
 export default function BookingManagement() {
   const { isDarkMode } = useTheme();
@@ -18,18 +18,19 @@ export default function BookingManagement() {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.get(`${baseUrl}/bookings`, {
-        params: { status: statusFilter !== 'All' ? statusFilter : undefined },
-        headers
+        const res = await axios.get(`${baseUrl}/bookings`, {
+          params: { status: statusFilter !== 'All' ? statusFilter : undefined },
+          headers
+        });
+
+        if (res.data?.success) {
+          setBookings(res.data.data || []);
+        }
       });
-
-      if (res.data?.success) {
-        setBookings(res.data.data || []);
-      }
     } catch (err) {
       console.error('Error fetching bookings:', err);
       toast.error('Failed to load bookings');
@@ -40,20 +41,21 @@ export default function BookingManagement() {
 
   const handleUpdateStatus = async (bookingId, newStatus) => {
     try {
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.patch(
-        `${baseUrl}/bookings/${bookingId}/status`,
-        { status: newStatus },
-        { headers }
-      );
+        const res = await axios.patch(
+          `${baseUrl}/bookings/${bookingId}/status`,
+          { status: newStatus },
+          { headers }
+        );
 
-      if (res.data?.success) {
-        toast.success(`Booking status changed to ${newStatus}`);
-        setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, status: newStatus } : b));
-      }
+        if (res.data?.success) {
+          toast.success(`Booking status changed to ${newStatus}`);
+          setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, status: newStatus } : b));
+        }
+      });
     } catch (err) {
       toast.error('Failed to update booking status');
     }

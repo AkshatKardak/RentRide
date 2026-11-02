@@ -3,7 +3,7 @@ import { Tag, Plus, Trash2, CheckCircle2, XCircle, X } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/hooks/useTheme';
-import { resolveApiBaseUrl } from '@/lib/api';
+import { resolveApiBaseUrl, getAdminHeaders, adminRequest } from '@/lib/api';
 
 export default function PricingPromotions() {
   const { isDarkMode } = useTheme();
@@ -31,14 +31,15 @@ export default function PricingPromotions() {
   const fetchPromotions = async () => {
     try {
       setLoading(true);
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.get(`${baseUrl}/admin/promotions`, { headers });
-      if (res.data?.success) {
-        setPromotions(res.data.data || []);
-      }
+        const res = await axios.get(`${baseUrl}/admin/promotions`, { headers });
+        if (res.data?.success) {
+          setPromotions(res.data.data || []);
+        }
+      });
     } catch (err) {
       console.error('Error fetching promotions:', err);
     } finally {
@@ -49,32 +50,33 @@ export default function PricingPromotions() {
   const handleCreatePromo = async (e) => {
     e.preventDefault();
     try {
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const payload = {
-        code: newPromo.code.toUpperCase(),
-        name: newPromo.name || newPromo.code.toUpperCase(),
-        description: newPromo.description || `Special promotion ${newPromo.code}`,
-        category: newPromo.category,
-        type: newPromo.type,
-        value: Number(newPromo.value),
-        minBookingAmount: Number(newPromo.minBookingAmount) || 0,
-        maxDiscount: newPromo.maxDiscount ? Number(newPromo.maxDiscount) : null,
-        tier: newPromo.tier,
-        firstBookingOnly: Boolean(newPromo.firstBookingOnly),
-        validFrom: new Date(),
-        validTo: new Date(newPromo.validUntil),
-        usageLimit: 1000
-      };
+        const payload = {
+          code: newPromo.code.toUpperCase(),
+          name: newPromo.name || newPromo.code.toUpperCase(),
+          description: newPromo.description || `Special promotion ${newPromo.code}`,
+          category: newPromo.category,
+          type: newPromo.type,
+          value: Number(newPromo.value),
+          minBookingAmount: Number(newPromo.minBookingAmount) || 0,
+          maxDiscount: newPromo.maxDiscount ? Number(newPromo.maxDiscount) : null,
+          tier: newPromo.tier,
+          firstBookingOnly: Boolean(newPromo.firstBookingOnly),
+          validFrom: new Date(),
+          validTo: new Date(newPromo.validUntil),
+          usageLimit: 1000
+        };
 
-      const res = await axios.post(`${baseUrl}/admin/promotions`, payload, { headers });
-      if (res.data?.success) {
-        toast.success('Promotion code created successfully');
-        setShowAddModal(false);
-        fetchPromotions();
-      }
+        const res = await axios.post(`${baseUrl}/admin/promotions`, payload, { headers });
+        if (res.data?.success) {
+          toast.success('Promotion code created successfully');
+          setShowAddModal(false);
+          fetchPromotions();
+        }
+      });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to create promo');
     }
@@ -83,13 +85,14 @@ export default function PricingPromotions() {
   const handleDeletePromo = async (id) => {
     if (!window.confirm('Delete this promotion coupon?')) return;
     try {
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      await axios.delete(`${baseUrl}/admin/promotions/${id}`, { headers });
-      toast.success('Promotion removed');
-      setPromotions(prev => prev.filter(p => p._id !== id));
+        await axios.delete(`${baseUrl}/admin/promotions/${id}`, { headers });
+        toast.success('Promotion removed');
+        setPromotions(prev => prev.filter(p => p._id !== id));
+      });
     } catch (err) {
       toast.error('Failed to delete promotion');
     }

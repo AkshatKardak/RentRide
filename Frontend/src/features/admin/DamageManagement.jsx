@@ -3,7 +3,7 @@ import { AlertTriangle, CheckCircle2, XCircle, Eye, ShieldAlert, Image as ImageI
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/hooks/useTheme';
-import { resolveApiBaseUrl } from '@/lib/api';
+import { resolveApiBaseUrl, getAdminHeaders, adminRequest } from '@/lib/api';
 
 export default function DamageManagement() {
   const { isDarkMode } = useTheme();
@@ -18,14 +18,15 @@ export default function DamageManagement() {
   const fetchDamageReports = async () => {
     try {
       setLoading(true);
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.get(`${baseUrl}/admin/damage`, { headers });
-      if (res.data?.success) {
-        setReports(res.data.data || []);
-      }
+        const res = await axios.get(`${baseUrl}/admin/damage`, { headers });
+        if (res.data?.success) {
+          setReports(res.data.data || []);
+        }
+      });
     } catch (err) {
       console.error('Error fetching damage reports:', err);
     } finally {
@@ -35,14 +36,15 @@ export default function DamageManagement() {
 
   const handleUpdateClaim = async (reportId, status) => {
     try {
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      await axios.patch(`${baseUrl}/damages/${reportId}/status`, { status }, { headers });
-      toast.success(`Claim status updated to ${status}`);
-      setReports(prev => prev.map(r => r._id === reportId ? { ...r, status } : r));
-      setSelectedReport(null);
+        await axios.patch(`${baseUrl}/damages/${reportId}/status`, { status }, { headers });
+        toast.success(`Claim status updated to ${status}`);
+        setReports(prev => prev.map(r => r._id === reportId ? { ...r, status } : r));
+        setSelectedReport(null);
+      });
     } catch (err) {
       toast.error('Failed to update claim');
     }

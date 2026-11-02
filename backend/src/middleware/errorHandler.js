@@ -8,6 +8,7 @@ class ErrorResponse extends Error {
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;
+  error.statusCode = err.statusCode || error.statusCode || 500;
 
   // Log error for debugging
   console.error(err);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CreditCard, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import { useTheme } from '@/hooks/useTheme';
-import { resolveApiBaseUrl } from '@/lib/api';
+import { resolveApiBaseUrl, getAdminHeaders, adminRequest } from '@/lib/api';
 
 export default function PaymentRevenue() {
   const { isDarkMode } = useTheme();
@@ -16,14 +16,15 @@ export default function PaymentRevenue() {
   const fetchPayments = async () => {
     try {
       setLoading(true);
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.get(`${baseUrl}/admin/payments`, { headers });
-      if (res.data?.success) {
-        setPayments(res.data.data?.payments || res.data.data || []);
-      }
+        const res = await axios.get(`${baseUrl}/admin/payments`, { headers });
+        if (res.data?.success) {
+          setPayments(res.data.data?.payments || res.data.data || []);
+        }
+      });
     } catch (err) {
       console.error('Error fetching payments:', err);
     } finally {

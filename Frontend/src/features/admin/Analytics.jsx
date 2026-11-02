@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTheme } from '@/hooks/useTheme';
 import EChartCard from '@/components/ui/EChartCard';
-import { resolveApiBaseUrl } from '@/lib/api';
+import { resolveApiBaseUrl, getAdminHeaders, adminRequest } from '@/lib/api';
 
 export default function Analytics() {
   const { isDarkMode } = useTheme();
@@ -21,15 +21,15 @@ export default function Analytics() {
   const fetchAnalyticsData = async () => {
     try {
       setLoading(true);
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const [revRes, vehRes, locRes] = await Promise.allSettled([
-        axios.get(`${baseUrl}/admin/stats/revenue-analytics`, { headers }),
-        axios.get(`${baseUrl}/admin/stats/vehicle-analytics`, { headers }),
-        axios.get(`${baseUrl}/analytics/locations`, { headers })
-      ]);
+        const [revRes, vehRes, locRes] = await Promise.allSettled([
+          axios.get(`${baseUrl}/admin/stats/revenue-analytics`, { headers }),
+          axios.get(`${baseUrl}/admin/stats/vehicle-analytics`, { headers }),
+          axios.get(`${baseUrl}/analytics/locations`, { headers })
+        ]);
 
       const primaryColor = isDarkMode ? '#B85D3B' : '#A34F32';
       const copperColor = isDarkMode ? '#C68A5A' : '#B8794A';
@@ -252,7 +252,7 @@ export default function Analytics() {
       } else {
         setCityChart(null);
       }
-
+      });
     } catch (err) {
       console.error('Error fetching analytics:', err);
     } finally {

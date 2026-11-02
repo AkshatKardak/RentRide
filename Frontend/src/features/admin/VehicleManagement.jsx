@@ -22,7 +22,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/hooks/useTheme';
 import { getCarImageUrl, heroCarImg } from '@/features/cars/carImageMap';
-import { resolveApiBaseUrl } from '@/lib/api';
+import { resolveApiBaseUrl, getAdminHeaders, adminRequest } from '@/lib/api';
 
 export default function VehicleManagement() {
   const { isDarkMode } = useTheme();
@@ -62,21 +62,22 @@ export default function VehicleManagement() {
     if (!imageModalCar) return;
     try {
       setSavingImage(true);
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.patch(
-        `${baseUrl}/admin/cars/${imageModalCar._id}/image`,
-        imageForm,
-        { headers }
-      );
+        const res = await axios.patch(
+          `${baseUrl}/admin/cars/${imageModalCar._id}/image`,
+          imageForm,
+          { headers }
+        );
 
-      if (res.data?.success) {
-        toast.success('Vehicle image updated and verified');
-        setCars(prev => prev.map(c => c._id === imageModalCar._id ? res.data.data : c));
-        setImageModalCar(null);
-      }
+        if (res.data?.success) {
+          toast.success('Vehicle image updated and verified');
+          setCars(prev => prev.map(c => c._id === imageModalCar._id ? res.data.data : c));
+          setImageModalCar(null);
+        }
+      });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to update vehicle image');
     } finally {
@@ -106,24 +107,25 @@ export default function VehicleManagement() {
   const fetchCars = async () => {
     try {
       setLoading(true);
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.get(`${baseUrl}/admin/cars`, {
-        params: {
-          search: search || undefined,
-          category: category !== 'All' ? category : undefined,
-          city: city !== 'All' ? city : undefined,
-          available: available !== 'All' ? available : undefined,
-          limit: 50
-        },
-        headers
+        const res = await axios.get(`${baseUrl}/admin/cars`, {
+          params: {
+            search: search || undefined,
+            category: category !== 'All' ? category : undefined,
+            city: city !== 'All' ? city : undefined,
+            available: available !== 'All' ? available : undefined,
+            limit: 50
+          },
+          headers
+        });
+
+        if (res.data?.success) {
+          setCars(res.data.data || []);
+        }
       });
-
-      if (res.data?.success) {
-        setCars(res.data.data || []);
-      }
     } catch (err) {
       console.error('Error fetching cars:', err);
       toast.error('Failed to load vehicle fleet');
@@ -139,20 +141,21 @@ export default function VehicleManagement() {
 
   const handleToggleAvailability = async (carId, currentVal) => {
     try {
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.patch(
-        `${baseUrl}/admin/cars/${carId}/status`,
-        { available: !currentVal, status: !currentVal ? 'active' : 'maintenance' },
-        { headers }
-      );
+        const res = await axios.patch(
+          `${baseUrl}/admin/cars/${carId}/status`,
+          { available: !currentVal, status: !currentVal ? 'active' : 'maintenance' },
+          { headers }
+        );
 
-      if (res.data?.success) {
-        toast.success(`Vehicle status updated to ${!currentVal ? 'Available' : 'Unavailable'}`);
-        setCars(prev => prev.map(c => c._id === carId ? { ...c, available: !currentVal, status: !currentVal ? 'active' : 'maintenance' } : c));
-      }
+        if (res.data?.success) {
+          toast.success(`Vehicle status updated to ${!currentVal ? 'Available' : 'Unavailable'}`);
+          setCars(prev => prev.map(c => c._id === carId ? { ...c, available: !currentVal, status: !currentVal ? 'active' : 'maintenance' } : c));
+        }
+      });
     } catch (err) {
       toast.error('Failed to update availability');
     }
@@ -165,21 +168,22 @@ export default function VehicleManagement() {
     }
 
     try {
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.patch(
-        `${baseUrl}/admin/cars/${carId}/status`,
-        { pricePerDay: Number(newPrice) },
-        { headers }
-      );
+        const res = await axios.patch(
+          `${baseUrl}/admin/cars/${carId}/status`,
+          { pricePerDay: Number(newPrice) },
+          { headers }
+        );
 
-      if (res.data?.success) {
-        toast.success('Rental price updated');
-        setCars(prev => prev.map(c => c._id === carId ? { ...c, pricePerDay: Number(newPrice) } : c));
-        setEditingCar(null);
-      }
+        if (res.data?.success) {
+          toast.success('Rental price updated');
+          setCars(prev => prev.map(c => c._id === carId ? { ...c, pricePerDay: Number(newPrice) } : c));
+          setEditingCar(null);
+        }
+      });
     } catch (err) {
       toast.error('Failed to update price');
     }
@@ -189,13 +193,14 @@ export default function VehicleManagement() {
     if (!window.confirm('Are you sure you want to remove this vehicle from the fleet?')) return;
 
     try {
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      await axios.delete(`${baseUrl}/admin/cars/${carId}`, { headers });
-      toast.success('Vehicle removed from fleet');
-      setCars(prev => prev.filter(c => c._id !== carId));
+        await axios.delete(`${baseUrl}/admin/cars/${carId}`, { headers });
+        toast.success('Vehicle removed from fleet');
+        setCars(prev => prev.filter(c => c._id !== carId));
+      });
     } catch (err) {
       toast.error('Failed to delete vehicle');
     }
@@ -204,16 +209,17 @@ export default function VehicleManagement() {
   const handleCreateCar = async (e) => {
     e.preventDefault();
     try {
-      const baseUrl = resolveApiBaseUrl();
-      const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      await adminRequest(async () => {
+        const baseUrl = resolveApiBaseUrl();
+        const headers = getAdminHeaders();
 
-      const res = await axios.post(`${baseUrl}/admin/cars`, newCarForm, { headers });
-      if (res.data?.success) {
-        toast.success('Vehicle added to fleet');
-        setShowAddModal(false);
-        fetchCars();
-      }
+        const res = await axios.post(`${baseUrl}/admin/cars`, newCarForm, { headers });
+        if (res.data?.success) {
+          toast.success('Vehicle added to fleet');
+          setShowAddModal(false);
+          fetchCars();
+        }
+      });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to create car');
     }
