@@ -3,6 +3,7 @@ import { CalendarCheck, Search, CheckCircle2, XCircle, Clock, AlertCircle } from
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/hooks/useTheme';
+import { resolveApiBaseUrl } from '@/lib/api';
 
 export default function BookingManagement() {
   const { isDarkMode } = useTheme();
@@ -17,7 +18,7 @@ export default function BookingManagement() {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -39,7 +40,7 @@ export default function BookingManagement() {
 
   const handleUpdateStatus = async (bookingId, newStatus) => {
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 

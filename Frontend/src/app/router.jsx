@@ -11,7 +11,19 @@ export function ProtectedRoute() {
 // Admin Protected Route Guard
 export function AdminRouteGuard({ children }) {
   const token = localStorage.getItem('adminToken');
-  const isValid = !!(token && token !== 'undefined' && token !== 'null');
+  const rawAdminUser = localStorage.getItem('adminUser');
+  let isAdmin = false;
+
+  try {
+    if (rawAdminUser && rawAdminUser !== 'undefined' && rawAdminUser !== 'null') {
+      const parsed = JSON.parse(rawAdminUser);
+      isAdmin = parsed?.role === 'admin' || parsed?.isDemo === true;
+    }
+  } catch (e) {
+    isAdmin = false;
+  }
+
+  const isValid = !!(token && token !== 'undefined' && token !== 'null') && isAdmin;
   if (!isValid) {
     return <Navigate to="/admin/login" replace />;
   }

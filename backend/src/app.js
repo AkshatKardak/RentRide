@@ -22,7 +22,7 @@ const corsOptions = {
             'http://localhost:5174'
         ];
         
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1 || (typeof origin === 'string' && origin.endsWith('.vercel.app'))) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -37,6 +37,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');

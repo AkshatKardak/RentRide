@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CreditCard, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import { useTheme } from '@/hooks/useTheme';
+import { resolveApiBaseUrl } from '@/lib/api';
 
 export default function PaymentRevenue() {
   const { isDarkMode } = useTheme();
@@ -15,7 +16,7 @@ export default function PaymentRevenue() {
   const fetchPayments = async () => {
     try {
       setLoading(true);
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 

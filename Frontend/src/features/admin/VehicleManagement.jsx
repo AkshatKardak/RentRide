@@ -22,6 +22,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/hooks/useTheme';
 import { getCarImageUrl, heroCarImg } from '@/features/cars/carImageMap';
+import { resolveApiBaseUrl } from '@/lib/api';
 
 export default function VehicleManagement() {
   const { isDarkMode } = useTheme();
@@ -61,7 +62,7 @@ export default function VehicleManagement() {
     if (!imageModalCar) return;
     try {
       setSavingImage(true);
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -105,7 +106,7 @@ export default function VehicleManagement() {
   const fetchCars = async () => {
     try {
       setLoading(true);
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -138,7 +139,7 @@ export default function VehicleManagement() {
 
   const handleToggleAvailability = async (carId, currentVal) => {
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -164,7 +165,7 @@ export default function VehicleManagement() {
     }
 
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -188,7 +189,7 @@ export default function VehicleManagement() {
     if (!window.confirm('Are you sure you want to remove this vehicle from the fleet?')) return;
 
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -203,7 +204,7 @@ export default function VehicleManagement() {
   const handleCreateCar = async (e) => {
     e.preventDefault();
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 

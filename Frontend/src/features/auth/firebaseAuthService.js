@@ -8,8 +8,9 @@ import {
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import axios from 'axios';
+import { resolveApiBaseUrl } from '@/lib/api';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = resolveApiBaseUrl();
 
 // Google Sign-In with POPUP - OPTIMIZED
 export const loginWithGoogle = async () => {

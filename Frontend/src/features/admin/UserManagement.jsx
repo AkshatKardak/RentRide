@@ -3,6 +3,7 @@ import { Users, Search, Shield, Ban, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/hooks/useTheme';
+import { resolveApiBaseUrl } from '@/lib/api';
 
 export default function UserManagement() {
   const { isDarkMode } = useTheme();
@@ -17,7 +18,7 @@ export default function UserManagement() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -36,7 +37,7 @@ export default function UserManagement() {
   const handleToggleStatus = async (userId, currentStatus) => {
     const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 

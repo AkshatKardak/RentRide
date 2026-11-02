@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import DashboardNavbar from '@/components/layout/DashboardNavbar';
+import { resolveApiBaseUrl } from '@/lib/api';
 
 const ReportDamage = () => {
   const { bookingId } = useParams();
@@ -66,7 +67,7 @@ const ReportDamage = () => {
       });
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/damages/analyze-ai`,
+        `${resolveApiBaseUrl()}/damages/analyze-ai`,
         formData,
         {
           headers: {
@@ -118,7 +119,7 @@ const ReportDamage = () => {
       });
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/damages`,
+        `${resolveApiBaseUrl()}/damages`,
         formData,
         {
           headers: {

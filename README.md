@@ -114,7 +114,7 @@ The platform uses a single unified frontend (React + Vite) for both customers an
 ## 🔑 Demo Credentials
 
 ### Administrator Portal
-- **Admin URL:** [http://localhost:5173/admin/login](http://localhost:5173/admin/login) (Local) • [https://rentrideadmin.vercel.app](https://rentrideadmin.vercel.app) (Live)
+- **Admin URL:** [http://localhost:5173/admin/login](http://localhost:5173/admin/login) (Local) • [https://rentridefrontend.vercel.app/admin](https://rentridefrontend.vercel.app/admin) (Live)
 - **Email:** `admin@rentride.com`
 - **Password:** `password123`
 - *(Includes a 1-Click "Fill Demo Credentials" button on the login screen)*
@@ -189,9 +189,9 @@ npm run dev
 npm run dev
 ```
 
-- **User Portal:** `http://localhost:5173`
-- **Admin Portal:** `http://localhost:5173/admin`
-- **Backend API:** `http://localhost:5000`
+- **User Portal:** `http://localhost:5173` (Local) • [https://rentridefrontend.vercel.app](https://rentridefrontend.vercel.app) (Live)
+- **Admin Portal:** `http://localhost:5173/admin` (Local) • [https://rentridefrontend.vercel.app/admin](https://rentridefrontend.vercel.app/admin) (Live)
+- **Backend API:** `http://localhost:5000` (Local) • [https://rentrid-e-backend.onrender.com/api](https://rentrid-e-backend.onrender.com/api) (Live)
 
 ---
 

@@ -4,6 +4,7 @@ import { Lock, Mail, AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react'
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import { resolveApiBaseUrl } from '@/lib/api';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const res = await axios.post(`${baseUrl}/auth/login`, {
         email: email.trim(),
         password: password

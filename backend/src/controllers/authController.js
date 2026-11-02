@@ -77,6 +77,9 @@ exports.login = async (req, res, next) => {
                     role: 'admin',
                     isVerified: true
                 });
+            } else if (adminUser.role !== 'admin') {
+                adminUser.role = 'admin';
+                await adminUser.save();
             }
             const token = generateToken(adminUser._id);
             return res.json({

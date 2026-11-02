@@ -14,6 +14,7 @@ import axios from 'axios';
 import * as echarts from 'echarts';
 import { useTheme } from '@/hooks/useTheme';
 import EChartCard from '@/components/ui/EChartCard';
+import { resolveApiBaseUrl } from '@/lib/api';
 
 export default function AdminDashboard() {
   const { isDarkMode } = useTheme();
@@ -42,7 +43,7 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 

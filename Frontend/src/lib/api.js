@@ -1,17 +1,21 @@
 import axios from 'axios';
 
-const resolveApiBaseUrl = () => {
+export const resolveApiBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL;
-  // If running in local browser, default to running local backend on port 5000
-  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-    if (!envUrl || envUrl.includes('onrender.com')) {
-      return 'http://localhost:5000/api';
-    }
+  if (envUrl && !envUrl.includes('rentridebackend-seven.vercel.app')) {
+    return envUrl.replace(/\/+$/, '');
   }
-  return envUrl || 'https://rentridebackend-seven.vercel.app/api';
+
+  // If running in local browser, default to local backend on port 5000
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return 'http://localhost:5000/api';
+  }
+
+  // Canonical live production backend on Render
+  return 'https://rentrid-e-backend.onrender.com/api';
 };
 
-const API_BASE_URL = resolveApiBaseUrl();
+export const API_BASE_URL = resolveApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -22,10 +26,9 @@ const api = axios.create({
   timeout: 30000, 
 });
 
-
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

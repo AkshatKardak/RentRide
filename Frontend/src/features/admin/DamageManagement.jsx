@@ -3,6 +3,7 @@ import { AlertTriangle, CheckCircle2, XCircle, Eye, ShieldAlert, Image as ImageI
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '@/hooks/useTheme';
+import { resolveApiBaseUrl } from '@/lib/api';
 
 export default function DamageManagement() {
   const { isDarkMode } = useTheme();
@@ -17,7 +18,7 @@ export default function DamageManagement() {
   const fetchDamageReports = async () => {
     try {
       setLoading(true);
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -34,7 +35,7 @@ export default function DamageManagement() {
 
   const handleUpdateClaim = async (reportId, status) => {
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const baseUrl = resolveApiBaseUrl();
       const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
