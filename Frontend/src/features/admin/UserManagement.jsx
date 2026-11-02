@@ -24,7 +24,10 @@ export default function UserManagement() {
 
         const res = await axios.get(`${baseUrl}/admin/users`, { headers });
         if (res.data?.success) {
-          setUsers(res.data.data?.users || res.data.data || []);
+          const list = Array.isArray(res.data.data)
+            ? res.data.data
+            : res.data.data?.users || res.data.users || [];
+          setUsers(list);
         }
       });
     } catch (err) {

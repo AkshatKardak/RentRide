@@ -123,7 +123,10 @@ export default function VehicleManagement() {
         });
 
         if (res.data?.success) {
-          setCars(res.data.data || []);
+          const list = Array.isArray(res.data.data)
+            ? res.data.data
+            : res.data.data?.cars || res.data.cars || [];
+          setCars(list);
         }
       });
     } catch (err) {

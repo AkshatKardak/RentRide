@@ -28,7 +28,10 @@ export default function BookingManagement() {
         });
 
         if (res.data?.success) {
-          setBookings(res.data.data || []);
+          const list = Array.isArray(res.data.data)
+            ? res.data.data
+            : res.data.data?.bookings || res.data.bookings || [];
+          setBookings(list);
         }
       });
     } catch (err) {
