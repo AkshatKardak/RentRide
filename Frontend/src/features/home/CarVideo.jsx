@@ -5,7 +5,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { Reveal } from '@/components/fx';
 
 const HERO_VIDEO_SRC = '/assets/video/hero-loop.mp4';
-const HERO_VIDEO_POSTER = '/assets/showcase/banner.jpg';
+const HERO_VIDEO_POSTER = '/assets/banner.jpg';
 
 const CarVideo = () => {
   const [isPlaying, setIsPlaying] = useState(false);

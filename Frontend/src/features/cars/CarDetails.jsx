@@ -189,7 +189,7 @@ const CarDetails = () => {
               </h1>
               
               <div className="flex items-center gap-5 mt-3 text-xs text-text-muted border-b border-border pb-5">
-                <span className="flex items-center gap-1"><MapPin size={14} className="text-primary"/> {car.city || 'Central Hub'}</span>
+                <span className="flex items-center gap-1 font-semibold text-text"><MapPin size={14} className="text-primary"/> Stationed at {car.city ? `${car.city} Hub` : 'Central Hub'}</span>
                 <span className="flex items-center gap-1"><Star size={14} className="text-accent fill-accent"/> {car.rating ? `${car.rating} (${car.totalReviews || 0} reviews)` : 'Verified Fleet'}</span>
               </div>
             </div>

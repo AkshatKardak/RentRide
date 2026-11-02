@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import banner from '@/assets/banner.jpg';
 import { motion } from 'framer-motion'
 import { Send, CheckCircle2 } from 'lucide-react'
 import { Reveal } from '@/components/fx';
 import { toast } from 'react-hot-toast';
+
+const banner = '/assets/banner.jpg';
 
 const Banner = () => {
   const [submitted, setSubmitted] = useState(false);

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
-import Logo from '@/assets/logo.png';
+
+const Logo = '/assets/logo.png';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,14 +32,14 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 transition-all duration-300 shadow-sm bg-surface/90 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
+        <div className="flex justify-between h-20 items-center">
           {/* Logo */}
           <div className="flex items-center">
             <button onClick={() => scrollToSection('hero')} className="flex items-center space-x-2 group focus:outline-none">
               <img
                 src={Logo}
                 alt="RentRide Logo"
-                className="w-48 h-12 object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-14 sm:h-16 w-auto max-w-[260px] object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </button>
           </div>

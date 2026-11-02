@@ -7,12 +7,12 @@ import { useTheme } from '@/hooks/useTheme';
 import { Reveal, StaggerContainer, StaggerItem } from '@/components/fx';
 import { carService } from '@/features/cars/carService';
 
-import RollsRoyce from '@/assets/rolls royce.png';
-import Mercedes from '@/assets/mercedes.png';
-import Bugatti from '@/assets/Bugatti.png';
-import luxury from '@/assets/luxury.png';
-import bluecar from '@/assets/bluecar.png';
-import blackcar from '@/assets/blackcar.png';
+const RollsRoyce = '/assets/rolls royce.png';
+const Mercedes = '/assets/mercedes.png';
+const Bugatti = '/assets/Bugatti.png';
+const luxury = '/assets/luxury.png';
+const bluecar = '/assets/bluecar.png';
+const blackcar = '/assets/blackcar.png';
 
 const showcaseCars = [
   {

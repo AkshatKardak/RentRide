@@ -44,6 +44,7 @@ const BrowseCars = () => {
   const [transmission, setTransmission] = useState('All');
   const [priceRange, setPriceRange] = useState('All');
   const [fuelType, setFuelType] = useState('All');
+  const [city, setCity] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   
   const [showFilters, setShowFilters] = useState(false);
@@ -53,6 +54,7 @@ const BrowseCars = () => {
   const [categories, setCategories] = useState(['All']);
   const [transmissions, setTransmissions] = useState(['All']);
   const [fuelTypes, setFuelTypes] = useState(['All']);
+  const [cities, setCities] = useState(['All', 'Chennai', 'Hyderabad', 'Mumbai', 'Bangalore', 'Delhi', 'Pune', 'Kolkata']);
 
   const priceRanges = [
     { label: 'All', value: 'All' },
@@ -72,6 +74,7 @@ const BrowseCars = () => {
           if (optRes.data.categories?.length) setCategories(optRes.data.categories);
           if (optRes.data.transmissions?.length) setTransmissions(optRes.data.transmissions);
           if (optRes.data.fuelTypes?.length) setFuelTypes(optRes.data.fuelTypes);
+          if (optRes.data.cities?.length) setCities(optRes.data.cities);
         }
       } catch (e) {
         console.warn('Could not fetch filter options:', e.message);
@@ -86,7 +89,7 @@ const BrowseCars = () => {
       loadCars(60, false);
     }, 200);
     return () => clearTimeout(debounceTimer);
-  }, [search, brand, category, transmission, fuelType, priceRange, sortBy]);
+  }, [search, brand, category, transmission, fuelType, priceRange, city, sortBy]);
 
   const loadCars = async (targetLimit = limit, append = false) => {
     try {
@@ -102,6 +105,7 @@ const BrowseCars = () => {
       if (category !== 'All') params.category = category.toLowerCase();
       if (transmission !== 'All') params.transmission = transmission.toLowerCase();
       if (fuelType !== 'All') params.fuelType = fuelType.toLowerCase();
+      if (city !== 'All') params.city = city;
       if (priceRange !== 'All') {
         const [min, max] = priceRange.split('-').map(Number);
         params.minPrice = min;
@@ -152,11 +156,12 @@ const BrowseCars = () => {
     setTransmission('All');
     setPriceRange('All');
     setFuelType('All');
+    setCity('All');
     setSortBy('featured');
     setLimit(60);
   };
 
-  const activeFiltersCount = [brand, category, transmission, priceRange, fuelType].filter(f => f !== 'All').length;
+  const activeFiltersCount = [brand, category, transmission, priceRange, fuelType, city].filter(f => f !== 'All').length;
 
   const handleBookCar = (car) => {
     const days = 2;
@@ -267,6 +272,24 @@ const BrowseCars = () => {
                 >
                   All Trims
                 </button>
+              </div>
+
+              {/* City Hub Quick Filter */}
+              <div className="flex items-center gap-1.5 bg-surface p-1.5 rounded-2xl border border-border shadow-xs">
+                <MapPin size={13} className="text-primary ml-1" />
+                <span className="text-xs font-semibold px-1 text-text-muted">Hub:</span>
+                <select
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  aria-label="Filter cars by city hub"
+                  className="bg-surface-sunken border border-border text-text text-xs font-semibold px-2 py-1.5 rounded-xl focus:ring-2 focus:ring-primary/20 cursor-pointer outline-none capitalize"
+                >
+                  {cities.map(c => (
+                    <option key={c} value={c}>
+                      {c === 'All' ? 'All Indian Hubs' : `${c} Hub`}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Sort Dropdown */}
@@ -391,7 +414,21 @@ const BrowseCars = () => {
                   exit={{ opacity: 0, height: 0 }}
                   className="p-5 rounded-2xl shadow-md border border-border bg-surface mt-3 overflow-hidden"
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {/* City Hub Filter */}
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-text-subtle">
+                        City Hub
+                      </label>
+                      <select
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-border bg-surface-sunken text-text focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer text-xs font-medium capitalize outline-none"
+                      >
+                        {cities.map(c => <option key={c} value={c}>{c === 'All' ? 'All Indian Hubs' : `${c} Hub`}</option>)}
+                      </select>
+                    </div>
+
                     {/* Brand Filter */}
                     <div>
                       <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-text-subtle">
@@ -551,6 +588,12 @@ const CarCard = ({ group, index, onBook, onDetails }) => {
     t => t !== activeCar.transmission?.toLowerCase()
   );
 
+  // Available cities across all variants in this model group
+  const allCitiesInModel = Array.from(new Set(variants.map(v => v.city).filter(Boolean)));
+  const otherCities = allCitiesInModel.filter(
+    c => c.toLowerCase() !== (activeCar.city || '').toLowerCase()
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -591,6 +634,14 @@ const CarCard = ({ group, index, onBook, onDetails }) => {
               )}
             </div>
 
+            {/* Prominent Regional Location Hub Badge directly overlaid on image */}
+            <div className="absolute bottom-2.5 left-2.5 z-20">
+              <span className="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-surface/95 border border-primary/40 text-primary backdrop-blur-md shadow-xs flex items-center gap-1.5">
+                <MapPin size={11} className="text-primary shrink-0" />
+                <span>{activeCar.city ? `${activeCar.city} Hub` : 'Central Hub'}</span>
+              </span>
+            </div>
+
             {/* Model-Accurate Vehicle Image */}
             <motion.img
               key={activeCar._id}
@@ -612,7 +663,7 @@ const CarCard = ({ group, index, onBook, onDetails }) => {
               </span>
               {activeCar.city && (
                 <span className="text-[11px] text-text-subtle flex items-center gap-1">
-                  <MapPin size={11} className="text-primary" /> {activeCar.city}
+                  <MapPin size={11} className="text-primary shrink-0" /> {activeCar.city} Hub
                 </span>
               )}
             </div>
@@ -631,18 +682,31 @@ const CarCard = ({ group, index, onBook, onDetails }) => {
             </p>
           </div>
 
+          {/* Dedicated Stationed Location Section */}
+          <div className="my-2.5 p-2 rounded-xl bg-surface-sunken border border-border flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1.5 font-bold text-text">
+              <MapPin size={13} className="text-primary shrink-0" />
+              <span className="text-text-muted font-semibold text-[11px]">Stationed at:</span>
+              <span className="text-primary font-bold text-[11px] font-mono">{activeCar.city ? `${activeCar.city} Hub` : 'Central Hub'}</span>
+            </div>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary-soft text-primary font-bold">
+              {activeCar.available ? 'Ready for Pickup' : 'Reserved'}
+            </span>
+          </div>
+
           {/* Multi-Variant Selection Chips (When model has multiple trims/transmissions) */}
           {variants.length > 1 && (
             <div className="mb-3">
               <span className="text-[10px] font-semibold uppercase tracking-wider text-text-subtle block mb-1.5">
-                Select Trim / Transmission:
+                Select Trim / Location:
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {variants.map(v => {
                   const isSelected = v._id === activeCar._id;
                   const transTag = v.transmission?.toLowerCase() === 'automatic' ? 'AT' : 'MT';
                   const fuelTag = v.fuelType ? v.fuelType.toUpperCase() : '';
-                  const trimLabel = v.variant && v.variant !== 'Base' ? v.variant : `${transTag} ${fuelTag}`;
+                  const cityTag = v.city ? `${v.city}` : '';
+                  const trimLabel = `${cityTag ? cityTag + ' · ' : ''}${v.variant && v.variant !== 'Base' ? v.variant : `${transTag} ${fuelTag}`}`;
 
                   return (
                     <button
@@ -678,6 +742,18 @@ const CarCard = ({ group, index, onBook, onDetails }) => {
               <span className="truncate">{activeCar.transmission || 'Manual'}</span>
             </div>
           </div>
+
+          {/* Sibling Hub Location Indicator (e.g. Also stationed in: Hyderabad • Mumbai Hub) */}
+          {otherCities.length > 0 && (
+            <div className="mb-2 px-2.5 py-1.5 rounded-lg bg-accent-soft/40 border border-accent/20 flex items-center justify-between text-[10px]">
+              <span className="text-text-muted font-semibold flex items-center gap-1">
+                <MapPin size={10} className="text-accent shrink-0" /> Also stationed in:
+              </span>
+              <span className="text-accent font-bold uppercase tracking-wider">
+                {otherCities.join(' • ')} Hub
+              </span>
+            </div>
+          )}
 
           {/* Sibling Variant Mode Indicator (e.g. Also available in Automatic / Diesel) */}
           {alternativeTransmissions.length > 0 && (

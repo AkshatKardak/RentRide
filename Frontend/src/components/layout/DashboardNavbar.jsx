@@ -17,8 +17,9 @@ import {
   ExternalLink
 } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
-import Logo from "@/assets/logo.png";
 import { notificationService } from '@/features/profile/notificationService';
+
+const Logo = '/assets/logo.png';
 
 const DashboardNavbar = () => {
   const navigate = useNavigate();
@@ -155,14 +156,14 @@ const DashboardNavbar = () => {
       transition={{ duration: 0.3 }}
       className="sticky top-0 z-50 bg-surface/85 backdrop-blur-md border-b border-border shadow-sm transition-all duration-300"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Left: logo */}
         <button
           onClick={() => navigate("/dashboard")}
           className="flex items-center gap-2 hover:opacity-90 transition focus:outline-none"
           type="button"
         >
-          <img src={Logo} alt="RentRide" className="h-10 w-auto object-contain" />
+          <img src={Logo} alt="RentRide" className="h-14 sm:h-16 w-auto max-w-[240px] object-contain transition-transform duration-200 hover:scale-105" />
         </button>
 
         {/* Center: tabs (desktop) */}

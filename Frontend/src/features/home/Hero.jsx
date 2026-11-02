@@ -2,9 +2,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Search, Calendar, MapPin, Zap, Shield, Clock, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
-import herocar from '@/assets/herocar1.png';
 import { Reveal, HoverLift } from '@/components/fx';
 import { getStoredItem } from '@/lib/safeStorage';
+
+const herocar = '/assets/herocar1.png';
 
 export default function Hero() {
   const user = getStoredItem('user', null);

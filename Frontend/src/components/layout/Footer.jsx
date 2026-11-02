@@ -2,9 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, ShieldCheck } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
-import facebook from '@/assets/facebook.png';
-import twitter from '@/assets/twitter.png';
-import instagram from '@/assets/instagram.png';
+
+const facebook = '/assets/facebook.png';
+const twitter = '/assets/twitter.png';
+const instagram = '/assets/instagram.png';
 
 const Footer = () => {
   const { isDarkMode } = useTheme();

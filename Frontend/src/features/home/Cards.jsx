@@ -3,8 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { MapPin, ShieldCheck, Fuel, Star, Sparkles, ArrowRight } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
-import { getCarImageUrl } from '@/features/cars/carImageMap';
-import heroCarImg from '@/assets/herocar.png';
+import { getCarImageUrl, heroCarImg } from '@/features/cars/carImageMap';
 
 const Cards = ({ item }) => {
   const { isDarkMode } = useTheme();

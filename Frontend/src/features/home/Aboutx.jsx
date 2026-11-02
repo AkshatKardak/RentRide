@@ -2,11 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/hooks/useTheme';
 import { Reveal } from '@/components/fx';
-import supercar from '@/assets/Supercar-PNG-Photo-Image.png';
-import maintenance from '@/assets/maintenance.png';
-import steering from '@/assets/steering.png';
-import battery from '@/assets/battery.png';
-import tyre from '@/assets/tyre.png';
+
+const supercar = '/assets/Supercar-PNG-Photo-Image.png';
+const maintenance = '/assets/maintenance.png';
+const steering = '/assets/steering.png';
+const battery = '/assets/battery.png';
+const tyre = '/assets/tyre.png';
 
 const Aboutx = () => {
   const { isDarkMode } = useTheme();
